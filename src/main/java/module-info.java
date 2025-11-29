@@ -11,6 +11,8 @@ module com.example.infection_monitoring_system_desktop_application {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires javafx.base;
+    requires javafx.graphics;
 
     opens com.example.infection_monitoring_system_desktop_application to javafx.fxml;
     opens com.example.infection_monitoring_system_desktop_application.Controller to javafx.fxml;

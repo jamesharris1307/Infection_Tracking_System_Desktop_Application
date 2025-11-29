@@ -12,7 +12,7 @@ public class Application extends javafx.application.Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml")
@@ -20,11 +20,8 @@ public class Application extends javafx.application.Application {
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
-
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Login");
-        primaryStage.setFullScreen(true);
-
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.setTitle("Login");
+        stage.show();
     }
 }
