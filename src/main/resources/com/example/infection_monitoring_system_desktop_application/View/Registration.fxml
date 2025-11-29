@@ -1,72 +1,271 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="1920" prefWidth="1080" style="-fx-background-color: B2CED6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController">
+<AnchorPane minHeight="600" minWidth="800" prefHeight="600" prefWidth="800" style="-fx-background-color: #B2CED6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController">
 
     <children>
-        <!-- Page 1 AnchorPane -->
-        <AnchorPane fx:id="page1AccountDetails" prefHeight="400.0" prefWidth="600.0" visible="false">
-            <children>
-                <!-- Step Circles -->
-                <Circle fill="#96bcb4" layoutX="212.0" layoutY="91.0" radius="18.0" />
-                <Label layoutX="209.0" layoutY="83.0" text="1" textFill="WHITE" />
-            <Line endX="35.66668701171875" endY="8.000007629394531" layoutX="241.0" layoutY="84.0" opacity="0.5" startX="-5.0" startY="8.000007629394531" stroke="#7c9d95" strokeLineCap="ROUND" />
-
-                <Circle fill="#f1f9ff" layoutX="300.0" layoutY="91.0" radius="18.0" />
-                <Label layoutX="296.0" layoutY="83.0" text="2" textFill="#a1a1a1" />
-            <Line endX="35.66668701171875" endY="8.000007629394531" layoutX="329.0" layoutY="83.0" opacity="0.5" startX="-5.0" startY="8.000007629394531" stroke="#7c9d95" strokeLineCap="ROUND" />
-
-                <Circle fill="#f1f9ff" layoutX="388.0" layoutY="91.0" radius="18.0" />
-                <Label layoutX="384.0" layoutY="83.0" text="3" textFill="#a1a1a1" />
-
-                <!-- Input Fields -->
-                <TextField layoutX="201.0" layoutY="130.0" prefHeight="30.0" prefWidth="200.0" promptText="Email" />
-                <PasswordField layoutX="201.0" layoutY="170.0" prefHeight="30.0" prefWidth="200.0" promptText="Password" />
-                <PasswordField layoutX="201.0" layoutY="210.0" prefHeight="30.0" prefWidth="200.0" promptText="Confirm Password" />
-
-                <!-- Buttons -->
-                <Button layoutX="232.0" layoutY="258.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Button>
-                <Hyperlink layoutX="195.0" layoutY="295.0" text="Already have an Account ? Login Here" textFill="#6e6e6e" />
-            </children>
-        </AnchorPane>
-      <AnchorPane fx:id="page1AccountDetails1" prefHeight="400.0" prefWidth="600.0">
+      <AnchorPane fx:id="page1AccountDetails" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Circle fill="#f1f9ff" layoutX="212.0" layoutY="91.0" radius="18.0" />
-            <Label layoutX="209.0" layoutY="83.0" text="1" textFill="#a1a1a1" />
-            <Line endX="35.66668701171875" endY="8.000007629394531" layoutX="241.0" layoutY="84.0" opacity="0.5" startX="-5.0" startY="8.000007629394531" stroke="#7c9d95" strokeLineCap="ROUND" />
-            <Circle fill="#96bcb4" layoutX="300.0" layoutY="91.0" radius="18.0" />
-            <Label layoutX="296.0" layoutY="83.0" text="2" textFill="WHITE" />
-            <Line endX="35.66668701171875" endY="8.000007629394531" layoutX="329.0" layoutY="83.0" opacity="0.5" startX="-5.0" startY="8.000007629394531" stroke="#7c9d95" strokeLineCap="ROUND" />
-            <Circle fill="#f1f9ff" layoutX="388.0" layoutY="91.0" radius="18.0" />
-            <Label layoutX="384.0" layoutY="83.0" text="3" textFill="#a1a1a1" />
-            <TextField layoutX="225.0" layoutY="130.0" prefHeight="30.0" prefWidth="150.0" promptText="Last Name" />
-            <Button layoutX="232.0" layoutY="302.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-            <Hyperlink layoutX="195.0" layoutY="339.0" text="Already have an Account ? Login Here" textFill="#6e6e6e" />
-            <TextField layoutX="50.0" layoutY="130.0" prefHeight="30.0" prefWidth="150.0" promptText="First Name" style="-fx-background-color: F1F9FF; -fx-text-color: F1F9FF;" />
-            <TextField layoutX="50.0" layoutY="185.0" prefHeight="30.0" prefWidth="150.0" promptText="Address Line 1" />
-            <TextField layoutX="225.0" layoutY="185.0" prefHeight="30.0" prefWidth="150.0" promptText="Address Line 2" />
-            <TextField layoutX="400.0" layoutY="185.0" prefHeight="30.0" prefWidth="150.0" promptText="Town or City" />
-            <TextField layoutX="225.0" layoutY="240.0" prefHeight="30.0" prefWidth="150.0" promptText="Postcode" />
-            <TextField layoutX="50.0" layoutY="240.0" prefHeight="30.0" prefWidth="150.0" promptText="County" />
-            <TextField layoutX="400.0" layoutY="240.0" prefHeight="30.0" prefWidth="150.0" promptText="Email" />
-            <DatePicker layoutX="400.0" layoutY="130.0" prefHeight="30.0" prefWidth="150.0" promptText="Date of Birth" />
+              <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                  <VBox alignment="CENTER" maxWidth="600" prefWidth="600" spacing="35">
+      
+                      <!-- Step Indicators Row -->
+                      <HBox alignment="CENTER" spacing="20">
+      
+                          <!-- Step 1 Filled -->
+                          <StackPane>
+                              <Circle fill="#96bcb4" radius="18" />
+                              <Label text="1" textFill="white" />
+                          </StackPane>
+      
+                          <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+      
+                          <!-- Step 2 -->
+                          <StackPane>
+                              <Circle fill="#f1f9ff" radius="18" />
+                              <Label text="2" textFill="#a1a1a1" />
+                          </StackPane>
+      
+                          <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+      
+                          <!-- Step 3 -->
+                          <StackPane>
+                              <Circle fill="#f1f9ff" radius="18" />
+                              <Label text="3" textFill="#a1a1a1" />
+                          </StackPane>
+      
+                      </HBox>
+      
+                      <!-- Page Content -->
+                      <VBox alignment="CENTER" maxWidth="350" prefWidth="350" spacing="15">
+                          <TextField prefHeight="35" promptText="Email" />
+                          <PasswordField prefHeight="35" promptText="Password" />
+                          <PasswordField prefHeight="35" promptText="Confirm Password" />
+      
+                          <Button prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next">
+                              <font>
+                                  <Font name="System Bold" size="12" />
+                              </font>
+                          </Button>
+      
+                          <Hyperlink text="Already have an Account? Login Here" textFill="#6e6e6e" />
+      
+                      </VBox>
+                  </VBox>
+              </StackPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="page2AccountDetails" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+               <children>
+                  <VBox alignment="CENTER" maxWidth="600" prefWidth="600" spacing="20.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="20">
+                           <children>
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#f1f9ff" radius="18" />
+                                    <Label text="1" textFill="#a1a1a1" />
+                                 </children>
+                              </StackPane>
+                              <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#96bcb4" radius="18" />
+                                    <Label text="2" textFill="WHITE" />
+                                 </children>
+                              </StackPane>
+                              <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#f1f9ff" radius="18" />
+                                    <Label text="3" textFill="#a1a1a1" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <TextField prefHeight="35" promptText="First Name">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField prefHeight="35" promptText="Last Name">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <DatePicker prefHeight="35.0" prefWidth="150.0" promptText="Date of Birth">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </DatePicker>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="241.0" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <TextField prefHeight="35" promptText="Address Line 1" />
+                              <TextField prefHeight="35" promptText="Address Line 2">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField prefHeight="35" promptText="Town / City">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="309.0" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <TextField prefHeight="35" promptText="County" />
+                              <TextField prefHeight="35" promptText="Postcode">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField layoutX="310.0" layoutY="17.0" prefHeight="35" promptText="Last Name" />
+                           </children>
+                        </HBox>
+                        <VBox alignment="CENTER" maxWidth="350" prefWidth="350" spacing="15">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0">
+                                 <children>
+                                    <Button prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Back">
+                                       <font>
+                                          <Font name="System Bold" size="12" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets right="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next">
+                                       <font>
+                                          <Font name="System Bold" size="12" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <Hyperlink text="Already have an Account? Login Here" textFill="#6e6e6e" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="page3AccountDetails" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+               <children>
+                  <VBox alignment="CENTER" maxWidth="600" prefWidth="600" spacing="20.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="20">
+                           <children>
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#f1f9ff" radius="18" />
+                                    <Label text="1" textFill="#a1a1a1" />
+                                 </children>
+                              </StackPane>
+                              <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#f1f9ff" radius="18" />
+                                    <Label text="2" textFill="#a1a1a1" />
+                                 </children>
+                              </StackPane>
+                              <Line endX="50" opacity="0.5" startX="0" stroke="#7c9d95" />
+                              <StackPane>
+                                 <children>
+                                    <Circle fill="#96bcb4" radius="18" />
+                                    <Label text="3" textFill="WHITE" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <ComboBox prefWidth="150.0" promptText="Role" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="241.0" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <TextField prefHeight="35" promptText="Address Line 1" />
+                              <TextField prefHeight="35" promptText="Address Line 2">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField prefHeight="35" promptText="Town / City">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="309.0" prefHeight="50.0" prefWidth="500.0">
+                           <children>
+                              <TextField prefHeight="35" promptText="County" />
+                              <TextField prefHeight="35" promptText="Postcode">
+                                 <HBox.margin>
+                                    <Insets left="25.0" right="25.0" />
+                                 </HBox.margin>
+                              </TextField>
+                              <TextField layoutX="310.0" layoutY="17.0" prefHeight="35" promptText="Last Name" />
+                           </children>
+                        </HBox>
+                        <VBox alignment="CENTER" maxWidth="350" prefWidth="350" spacing="15">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0">
+                                 <children>
+                                    <Button prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Back">
+                                       <font>
+                                          <Font name="System Bold" size="12" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets right="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                    <Button prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next">
+                                       <font>
+                                          <Font name="System Bold" size="12" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="20.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
+                              <Hyperlink text="Already have an Account? Login Here" textFill="#6e6e6e" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
          </children>
       </AnchorPane>
     </children>

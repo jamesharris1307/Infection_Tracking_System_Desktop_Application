@@ -6,11 +6,12 @@ import javafx.scene.layout.AnchorPane;
 public class RegistrationController {
 
     @FXML
-    public AnchorPane page1AccountDetails;
+    private AnchorPane page1AccountDetails; // This matches fx:id in FXML
 
     @FXML
     private void initialize() {
-        // Only show page1
+        // Show page 1 when the FXML loads
         page1AccountDetails.setVisible(true);
     }
 }
+

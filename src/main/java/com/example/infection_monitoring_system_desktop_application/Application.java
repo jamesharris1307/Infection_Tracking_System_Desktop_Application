@@ -23,7 +23,7 @@ public class Application extends javafx.application.Application {
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Login");
-        //primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(true);
 
         primaryStage.show();
     }
