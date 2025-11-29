@@ -1,0 +1,30 @@
+package com.example.infection_monitoring_system_desktop_application;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class Application extends javafx.application.Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml")
+        );
+
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Login");
+        //primaryStage.setFullScreen(true);
+
+        primaryStage.show();
+    }
+}
