@@ -39,7 +39,7 @@
         <StackPane fx:id="pageContainer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="80">
 
             <!-- Page 1: Account Details -->
-            <VBox fx:id="page1" alignment="CENTER" spacing="20" visible="true">
+            <VBox fx:id="page1" alignment="CENTER" spacing="20" visible="false">
                 <TextField fx:id="emailField" maxWidth="350" prefHeight="35" promptText="Email" />
                 <PasswordField fx:id="passwordField" maxWidth="350" prefHeight="35" promptText="Password" />
                 <PasswordField fx:id="confirmPasswordField" maxWidth="350" prefHeight="35" promptText="Confirm Password" />
@@ -67,18 +67,18 @@
                     <Button fx:id="back2Button" prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Back" />
                     <Button fx:id="next2Button" prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Next" />
                 </HBox>
-                <Hyperlink text="Already have an Account? Login Here" textFill="#6e6e6e" />
+                <Hyperlink onAction="#viewLogin" text="Already have an Account? Login Here" textFill="#6e6e6e" />
             </VBox>
 
             <!-- Page 3: Role Details -->
-            <VBox fx:id="page3" alignment="CENTER" spacing="20" visible="false">
+            <VBox fx:id="page3" alignment="CENTER" spacing="20">
                 <Label text="All roles except General Public require Verification by an Administrator" />
                 <ComboBox fx:id="roleComboBox" prefWidth="150" promptText="Role" />
                 <HBox alignment="CENTER" spacing="40">
                     <Button fx:id="back3Button" prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Back" />
                     <Button fx:id="submitButton" prefHeight="35" prefWidth="140" style="-fx-background-color: #96bcb4; -fx-text-fill: white;" text="Submit" />
                 </HBox>
-                <Hyperlink text="Already have an Account? Login Here" textFill="#6e6e6e" />
+                <Hyperlink onAction="#viewLogin" text="Already have an Account? Login Here" textFill="#6e6e6e" />
             </VBox>
 
         </StackPane>

@@ -1,0 +1,18 @@
+.root {
+    -fx-background-color: #161616;
+    -fx-text-fill: #FFFFFF;
+}
+
+.text-field, .password-field {
+    -fx-background-color: #1E1E1E;
+    -fx-text-fill: #FFFFFF;
+}
+
+.button {
+    -fx-background-color: #601F9E;
+    -fx-text-fill: #FFFFFF;
+}
+
+.toggle-button {
+    -fx-background-color: #1E1E1E;
+}

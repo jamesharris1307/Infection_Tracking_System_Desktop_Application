@@ -91,21 +91,23 @@ public class RegistrationController {
     @FXML
     private void viewLogin(ActionEvent actionEvent) {
         try {
-            // Load Registration.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"));
-            Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml")
+            );
 
-            // Get current stage
-            Stage stage = (Stage) ((javafx.scene.Node) actionEvent.getSource()).getScene().getWindow();
+            Parent newRoot = loader.load();
 
-            // Set new scene
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Registration");
-            stage.show();
+            // Get the existing scene instead of making a new one
+            Scene currentScene = ((javafx.scene.Node) actionEvent.getSource()).getScene();
+
+            currentScene.setRoot(newRoot);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.setTitle("Login");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
