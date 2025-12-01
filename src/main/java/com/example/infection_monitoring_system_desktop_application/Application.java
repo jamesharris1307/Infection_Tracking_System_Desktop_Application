@@ -16,6 +16,8 @@ public class Application extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        LanguageManager.applySavedLanguage();
+
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"),
                 LanguageManager.getBundle() // <-- pass the bundle here

@@ -25,9 +25,9 @@
                   <ToggleButton mnemonicParsing="false" onAction="#toggleLanguage" />
                </children>
             </HBox>
-                <TextField fx:id="usernameTextField" maxWidth="Infinity" prefHeight="30.0" promptText="Email" />
-                <PasswordField fx:id="passwordField" maxWidth="Infinity" prefHeight="30.0" promptText="Password" />
-                <Button maxWidth="Infinity" onAction="#login" prefHeight="40.0" text="Submit">
+                <TextField fx:id="usernameTextField" maxWidth="Infinity" prefHeight="30.0" promptText="%email" />
+                <PasswordField fx:id="passwordField" maxWidth="Infinity" prefHeight="30.0" promptText="%password" />
+                <Button maxWidth="Infinity" onAction="#login" prefHeight="40.0" text="%submit">
                     <font>
                         <Font name="System Bold" />
                     </font>
