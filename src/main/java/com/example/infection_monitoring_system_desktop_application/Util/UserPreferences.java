@@ -19,7 +19,6 @@ public class UserPreferences {
         return Boolean.parseBoolean(props.getProperty("darkMode", "false"));
     }
 
-    // ---------- LANGUAGE ----------
     public static void saveLanguage(String languageCode) {
         Properties props = loadProperties();
         props.setProperty("language", languageCode);
@@ -28,17 +27,14 @@ public class UserPreferences {
 
     public static String loadLanguage() {
         Properties props = loadProperties();
-        // Default = English
         return props.getProperty("language", "en");
     }
 
-    // ---------- HELPERS ----------
     private static Properties loadProperties() {
         Properties props = new Properties();
         try (InputStream in = new FileInputStream(FILE)) {
             props.load(in);
         } catch (IOException ignored) {
-            // file does not yet exist → return empty properties
         }
         return props;
     }
@@ -46,8 +42,9 @@ public class UserPreferences {
     private static void storeProperties(Properties props) {
         try (OutputStream out = new FileOutputStream(FILE)) {
             props.store(out, "User Preferences");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            java.util.logging.Logger.getLogger(SceneManager.class.getName())
+                    .log(java.util.logging.Level.SEVERE, "Failed to save user preferences", e);
         }
     }
 }

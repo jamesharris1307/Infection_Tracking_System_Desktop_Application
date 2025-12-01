@@ -1,11 +1,5 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
-import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -18,49 +12,37 @@ public class LanguageManager {
         return bundle;
     }
 
+    /** Set language and save preference */
     public static void setLanguage(Locale locale) {
         bundle = ResourceBundle.getBundle("i18n.messages", locale);
         UserPreferences.saveLanguage(locale.getLanguage());
     }
 
-    public static void setLanguageENG() {
+    public static void setEnglish() {
         setLanguage(Locale.ENGLISH);
     }
 
-    public static void setLanguageCY() {
+    public static void setWelsh() {
         setLanguage(new Locale("cy"));
     }
 
+    /** Load the saved language on startup */
     public static void applySavedLanguage() {
         String code = UserPreferences.loadLanguage();
-
-        if (code.equals("cy")) {
-            setLanguageCY();
+        if ("cy".equals(code)) {
+            setWelsh();
         } else {
-            setLanguageENG();
+            setEnglish();
         }
     }
 
-    public static void toggleLanguage(Node sourceNode, String fxmlPath) {
-
+    /** Toggle language for the next refresh */
+    public static void toggleLanguage() {
         String current = bundle.getLocale().getLanguage();
-        String next = current.equals("en") ? "cy" : "en";
-
-        setLanguage(Locale.forLanguageTag(next));
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    LanguageManager.class.getResource(fxmlPath),
-                    bundle
-            );
-
-            Parent root = loader.load();
-
-            Scene scene = sourceNode.getScene();
-            scene.setRoot(root);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if ("en".equals(current)) {
+            setWelsh();
+        } else {
+            setEnglish();
         }
     }
 }

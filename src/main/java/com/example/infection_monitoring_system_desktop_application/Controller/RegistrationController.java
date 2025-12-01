@@ -1,23 +1,18 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import javafx.event.ActionEvent;
+import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class RegistrationController {
 
-    public ComboBox roleComboBox;
+    @FXML private ComboBox<String> roleComboBox;
+
     @FXML private VBox page1;
     @FXML private VBox page2;
     @FXML private VBox page3;
@@ -42,14 +37,10 @@ public class RegistrationController {
     private void initialize() {
         showPage(currentPage);
 
-        // Page 1 Next
+        // Page navigation
         next1Button.setOnAction(e -> goToPage(2));
-
-        // Page 2 Back / Next
         back2Button.setOnAction(e -> goToPage(1));
         next2Button.setOnAction(e -> goToPage(3));
-
-        // Page 3 Back / Submit
         back3Button.setOnAction(e -> goToPage(2));
         submitButton.setOnAction(e -> handleSubmit());
     }
@@ -64,7 +55,6 @@ public class RegistrationController {
         page2.setVisible(pageNumber == 2);
         page3.setVisible(pageNumber == 3);
 
-        // Update step indicator colors
         updateStepIndicator(pageNumber);
     }
 
@@ -84,30 +74,11 @@ public class RegistrationController {
     }
 
     private void handleSubmit() {
-        // TODO: \Need to Handle the what happens after user Submits in this method
         System.out.println("Form submitted!");
     }
 
     @FXML
-    private void viewLogin(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml")
-            );
-
-            Parent newRoot = loader.load();
-
-            // Get the existing scene instead of making a new one
-            Scene currentScene = ((javafx.scene.Node) actionEvent.getSource()).getScene();
-
-            currentScene.setRoot(newRoot);
-
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.setTitle("Login");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void viewLogin() {
+        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
     }
-
 }
