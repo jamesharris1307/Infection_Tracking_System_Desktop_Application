@@ -1,6 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Util.IconLoader;
+import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ThemeManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,8 +28,30 @@ public class LoginController {
 
     @FXML
     private void toggleLanguage(ActionEvent actionEvent) {
-        System.out.println("Toggle clicked!");
+        // Toggle between English and Welsh
+        if (LanguageManager.getBundle().getLocale().getLanguage().equals("en")) {
+            LanguageManager.setLanguage(new java.util.Locale("cy"));
+        } else {
+            LanguageManager.setLanguage(java.util.Locale.ENGLISH);
+        }
+
+        try {
+            // Reload the current FXML with the new ResourceBundle
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"),
+                    LanguageManager.getBundle() // Pass the updated bundle
+            );
+            Parent newRoot = loader.load();
+
+            // Replace current scene root
+            Scene currentScene = ((Node) actionEvent.getSource()).getScene();
+            currentScene.setRoot(newRoot);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     private void viewRegistration(ActionEvent actionEvent) {
