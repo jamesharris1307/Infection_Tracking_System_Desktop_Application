@@ -12,7 +12,6 @@ public class LanguageManager {
         return bundle;
     }
 
-    /** Set language and save preference */
     public static void setLanguage(Locale locale) {
         bundle = ResourceBundle.getBundle("i18n.messages", locale);
         UserPreferences.saveLanguage(locale.getLanguage());
@@ -26,7 +25,6 @@ public class LanguageManager {
         setLanguage(new Locale("cy"));
     }
 
-    /** Load the saved language on startup */
     public static void applySavedLanguage() {
         String code = UserPreferences.loadLanguage();
         if ("cy".equals(code)) {
@@ -36,7 +34,6 @@ public class LanguageManager {
         }
     }
 
-    /** Toggle language for the next refresh */
     public static void toggleLanguage() {
         String current = bundle.getLocale().getLanguage();
         if ("en".equals(current)) {

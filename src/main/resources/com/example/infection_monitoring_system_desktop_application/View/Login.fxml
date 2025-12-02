@@ -27,11 +27,7 @@
             </HBox>
                 <TextField fx:id="usernameTextField" maxWidth="Infinity" prefHeight="30.0" promptText="%email" />
                 <PasswordField fx:id="passwordField" maxWidth="Infinity" prefHeight="30.0" promptText="%password" />
-                <Button maxWidth="Infinity" onAction="#login" prefHeight="40.0" text="%submit">
-                    <font>
-                        <Font name="System Bold" />
-                    </font>
-                </Button>
+                <Button maxWidth="Infinity" onAction="#login" prefHeight="40.0" text="%submit"> </Button>
                 <Hyperlink alignment="CENTER" maxWidth="Infinity" onAction="#viewRegistration" text="%register-here" textFill="#6e6e6e" />
             </VBox>
         </StackPane>

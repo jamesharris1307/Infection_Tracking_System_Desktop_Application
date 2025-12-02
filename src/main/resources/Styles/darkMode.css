@@ -11,11 +11,13 @@
 .button {
     -fx-background-color: #601F9E;
     -fx-text-fill: #FFFFFF;
+    -fx-font-weight: 900;
 }
 
 .toggle-button {
     -fx-background-color: #1E1E1E;
 }
+
 .active-page-indicator {
     -fx-fill: #601F9E;
 }
@@ -31,4 +33,3 @@
 .inactive-page-indicator-label {
     -fx-text-fill: #A1A1A1;
 }
-

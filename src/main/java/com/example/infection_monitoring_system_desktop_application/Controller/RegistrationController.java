@@ -76,7 +76,6 @@ public class RegistrationController {
         }
     }
 
-
     private void handleSubmit() {
         System.out.println("Form submitted!");
     }

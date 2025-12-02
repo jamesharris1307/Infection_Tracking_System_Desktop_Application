@@ -10,11 +10,12 @@
 
 .button {
     -fx-background-color: #96BCB4;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: 900;
 }
 
 .toggle-button {
-    -fx-background-color: #f2f2f2;
+    -fx-background-color: #000000;
 }
 
 .active-page-indicator {
