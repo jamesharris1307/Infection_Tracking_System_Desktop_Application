@@ -6,7 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class RegistrationController {
@@ -37,7 +36,6 @@ public class RegistrationController {
     private void initialize() {
         showPage(currentPage);
 
-        // Page navigation
         next1Button.setOnAction(e -> goToPage(2));
         back2Button.setOnAction(e -> goToPage(1));
         next2Button.setOnAction(e -> goToPage(3));
@@ -59,19 +57,25 @@ public class RegistrationController {
     }
 
     private void updateStepIndicator(int page) {
-        Color active = Color.web("#96bcb4");
-        Color inactive = Color.web("#f1f9ff");
-        Color textActive = Color.WHITE;
-        Color textInactive = Color.web("#a1a1a1");
-
-        step1Circle.setFill(page >= 1 ? active : inactive);
-        step2Circle.setFill(page >= 2 ? active : inactive);
-        step3Circle.setFill(page >= 3 ? active : inactive);
-
-        step1Label.setTextFill(page >= 1 ? textActive : textInactive);
-        step2Label.setTextFill(page >= 2 ? textActive : textInactive);
-        step3Label.setTextFill(page >= 3 ? textActive : textInactive);
+        updateStep(step1Circle, step1Label, page == 1);
+        updateStep(step2Circle, step2Label, page == 2);
+        updateStep(step3Circle, step3Label, page == 3);
     }
+
+
+    private void updateStep(Circle circle, Label label, boolean active) {
+        circle.getStyleClass().removeAll("active-page-indicator", "inactive-page-indicator");
+        label.getStyleClass().removeAll("active-page-indicator-label", "inactive-page-indicator-label");
+
+        if (active) {
+            circle.getStyleClass().add("active-page-indicator");
+            label.getStyleClass().add("active-page-indicator-label");
+        } else {
+            circle.getStyleClass().add("inactive-page-indicator");
+            label.getStyleClass().add("inactive-page-indicator-label");
+        }
+    }
+
 
     private void handleSubmit() {
         System.out.println("Form submitted!");

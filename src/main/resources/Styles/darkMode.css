@@ -16,3 +16,19 @@
 .toggle-button {
     -fx-background-color: #1E1E1E;
 }
+.active-page-indicator {
+    -fx-fill: #601F9E;
+}
+
+.inactive-page-indicator {
+    -fx-fill: #1E1E1E;
+}
+
+.active-page-indicator-label {
+    -fx-text-fill: #FFFFFF;
+}
+
+.inactive-page-indicator-label {
+    -fx-text-fill: #A1A1A1;
+}
+
