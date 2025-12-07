@@ -14,6 +14,8 @@ module com.example.infection_monitoring_system_desktop_application {
     requires javafx.base;
     requires javafx.graphics;
     requires java.logging;
+    requires java.sql;
+    requires mysql.connector.j;
 
     opens com.example.infection_monitoring_system_desktop_application to javafx.fxml;
     opens com.example.infection_monitoring_system_desktop_application.Controller to javafx.fxml;

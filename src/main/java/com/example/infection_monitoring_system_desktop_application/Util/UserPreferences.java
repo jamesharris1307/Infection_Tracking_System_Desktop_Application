@@ -7,7 +7,6 @@ public class UserPreferences {
 
     private static final String FILE = "userprefs.properties";
 
-    // ---------- DARK MODE ----------
     public static void saveDarkMode(boolean darkMode) {
         Properties props = loadProperties();
         props.setProperty("darkMode", Boolean.toString(darkMode));
