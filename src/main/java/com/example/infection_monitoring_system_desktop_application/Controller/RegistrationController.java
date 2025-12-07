@@ -5,12 +5,14 @@ import com.example.infection_monitoring_system_desktop_application.Model.Healthc
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 
 public class RegistrationController {
 
@@ -49,15 +51,24 @@ public class RegistrationController {
 
     @FXML
     private void initialize() {
-        roleComboBox.getItems().addAll("General Public", "Healthcare Professional", "Administrator");
-
         showPage(currentPage);
+        populateRoleComboBox();
 
         next1Button.setOnAction(e -> goToPage(2));
         back2Button.setOnAction(e -> goToPage(1));
         next2Button.setOnAction(e -> goToPage(3));
         back3Button.setOnAction(e -> goToPage(2));
         submitButton.setOnAction(e -> handleSubmit());
+    }
+
+    private void populateRoleComboBox() {
+        ResourceBundle bundle = LanguageManager.getBundle();
+        roleComboBox.getItems().clear();
+        roleComboBox.getItems().addAll(
+                bundle.getString("general-public"),
+                bundle.getString("healthcare-professional"),
+                bundle.getString("administrator")
+        );
     }
 
     private void goToPage(int pageNumber) {
@@ -104,6 +115,14 @@ public class RegistrationController {
             String county = countyField.getText().trim();
             String postcode = postcodeField.getText().trim();
             String roleSelection = roleComboBox.getValue();
+
+            if (roleSelection != null) {
+                switch (roleSelection) {
+                    case "Y Cyhoedd Cyffredinol" -> roleSelection = "General Public";
+                    case "Gweithiwr Gofal Iechyd" -> roleSelection = "Healthcare Professional";
+                    case "Gweinyddwr" -> roleSelection = "Administrator";
+                }
+            }
 
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
                     !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
