@@ -125,28 +125,10 @@ public class RegistrationController {
             }
 
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
-                    !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
+                    !password.equals(confirmPassword) || firstName.isEmpty() ||
+                    lastName.isEmpty() || roleSelection == null) {
                 showAlert("Error", "Please fill in all required fields and ensure passwords match.");
                 return;
-            }
-
-            User.Role roleEnum;
-            User.AccountStatus accountStatusEnum;
-
-            switch (roleSelection) {
-                case "General Public" -> {
-                    roleEnum = User.Role.GeneralPublic;
-                    accountStatusEnum = User.AccountStatus.Active;
-                }
-                case "Healthcare Professional" -> {
-                    roleEnum = User.Role.HealthcareProfessional;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                case "Administrator" -> {
-                    roleEnum = User.Role.Administrator;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                default -> throw new IllegalArgumentException("Invalid role selected");
             }
 
             User newUser;
@@ -171,11 +153,17 @@ public class RegistrationController {
             }
 
             UserDAO userDAO = new UserDAO();
-            userDAO.addUser(newUser);
-
-
-            showAlert("Success", "User registered successfully!");
-            clearForm();
+            userDAO.addUserAsync(
+                    newUser,
+                    () -> {
+                        showAlert("Success", "User registered successfully!");
+                        clearForm();
+                    },
+                    (error) -> {
+                        error.printStackTrace();
+                        showAlert("Error", "An error occurred while registering the user.");
+                    }
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
