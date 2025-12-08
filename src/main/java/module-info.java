@@ -20,4 +20,6 @@ module com.example.infection_monitoring_system_desktop_application {
     opens com.example.infection_monitoring_system_desktop_application to javafx.fxml;
     opens com.example.infection_monitoring_system_desktop_application.Controller to javafx.fxml;
     exports com.example.infection_monitoring_system_desktop_application;
+    exports com.example.infection_monitoring_system_desktop_application.Model;
+    opens com.example.infection_monitoring_system_desktop_application.Model to javafx.fxml;
 }
