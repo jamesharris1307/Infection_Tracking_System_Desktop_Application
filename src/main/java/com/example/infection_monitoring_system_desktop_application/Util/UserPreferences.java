@@ -5,7 +5,11 @@ import java.util.Properties;
 
 public class UserPreferences {
 
-    private static final String FILE = "userprefs.properties";
+    private static String FILE = "userprefs.properties";
+
+    static void setFile(String filePath) {
+        FILE = filePath;
+    }
 
     public static void saveDarkMode(boolean darkMode) {
         Properties props = loadProperties();
