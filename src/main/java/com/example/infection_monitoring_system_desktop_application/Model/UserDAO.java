@@ -2,6 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDAO {
@@ -26,11 +27,77 @@ public class UserDAO {
             pstmt.setString(10, user.getPostcode());
             pstmt.setString(11, user.getAccountStatus().name());
             pstmt.setString(12, user.getRole().name());
-
             pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE Email = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String roleStr = rs.getString("Role");
+                User.Role role = User.Role.valueOf(roleStr);
+
+                switch (role) {
+                    case GeneralPublic:
+                        return new GeneralPublicUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                    case HealthcareProfessional:
+                        return new HealthcareProfessionalUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                    case Administrator:
+                        return new AdministratorUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                    default:
+                        throw new IllegalStateException("Unknown role: " + roleStr);
+                }
+            }
+            return null;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 }
