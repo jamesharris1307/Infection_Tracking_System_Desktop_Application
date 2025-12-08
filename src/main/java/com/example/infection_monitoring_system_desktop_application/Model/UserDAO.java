@@ -33,15 +33,13 @@ public class UserDAO {
         }
     }
 
-    public User loginUser(String email, String password) {
-        String sql = "SELECT * FROM Users WHERE Email = ? AND Password = ?";
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE Email = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setString(1, email);
-            pstmt.setString(2, password);
-
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -94,9 +92,9 @@ public class UserDAO {
                     default:
                         throw new IllegalStateException("Unknown role: " + roleStr);
                 }
-            } else {
-                return null;
             }
+            return null;
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -32,7 +33,7 @@ class UserDAOTest {
 
         GeneralPublicUser user = new GeneralPublicUser(
                 "test@example.com",
-                "password123",
+                PasswordUtils.hashPassword("password123"),
                 "John",
                 "Doe",
                 LocalDate.of(1990, 1, 1),
@@ -72,12 +73,14 @@ class UserDAOTest {
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
 
+        String hashedPassword = PasswordUtils.hashPassword("password123");
+
         when(mockConn.prepareStatement(anyString())).thenReturn(mockStmt);
         when(mockStmt.executeQuery()).thenReturn(mockRs);
 
         when(mockRs.next()).thenReturn(true);
         when(mockRs.getString("Email")).thenReturn("test@example.com");
-        when(mockRs.getString("Password")).thenReturn("password123");
+        when(mockRs.getString("Password")).thenReturn(hashedPassword);
         when(mockRs.getString("FirstName")).thenReturn("John");
         when(mockRs.getString("LastName")).thenReturn("Doe");
         when(mockRs.getDate("DateOfBirth")).thenReturn(java.sql.Date.valueOf("1990-01-01"));
@@ -92,16 +95,47 @@ class UserDAOTest {
         try (MockedStatic<DatabaseConnection> mockedStatic = Mockito.mockStatic(DatabaseConnection.class)) {
             mockedStatic.when(DatabaseConnection::getConnection).thenReturn(mockConn);
 
-            User user = userDAO.loginUser("test@example.com", "password123");
+            User user = userDAO.getUserByEmail("test@example.com");
 
             assertNotNull(user);
             assertEquals("John", user.getFirstName());
             assertEquals(User.Role.GeneralPublic, user.getRole());
+            assertTrue(PasswordUtils.checkPassword("password123", user.getPassword()));
         }
     }
 
     @Test
     void loginUser_failWrongPassword() throws Exception {
-        // TODO Implement Incorrect Password Validation Tests
+        Connection mockConn = mock(Connection.class);
+        PreparedStatement mockStmt = mock(PreparedStatement.class);
+        ResultSet mockRs = mock(ResultSet.class);
+
+        String hashedPassword = PasswordUtils.hashPassword("password123");
+
+        when(mockConn.prepareStatement(anyString())).thenReturn(mockStmt);
+        when(mockStmt.executeQuery()).thenReturn(mockRs);
+
+        when(mockRs.next()).thenReturn(true);
+        when(mockRs.getString("Email")).thenReturn("test@example.com");
+        when(mockRs.getString("Password")).thenReturn(hashedPassword);
+        when(mockRs.getString("Role")).thenReturn("GeneralPublic");
+        when(mockRs.getString("FirstName")).thenReturn("John");
+        when(mockRs.getString("LastName")).thenReturn("Doe");
+        when(mockRs.getDate("DateOfBirth")).thenReturn(java.sql.Date.valueOf("1990-01-01"));
+        when(mockRs.getString("AddressLine1")).thenReturn("123 Main St");
+        when(mockRs.getString("AddressLine2")).thenReturn("");
+        when(mockRs.getString("TownCity")).thenReturn("City");
+        when(mockRs.getString("County")).thenReturn("County");
+        when(mockRs.getString("Postcode")).thenReturn("POST123");
+        when(mockRs.getString("AccountStatus")).thenReturn("Active");
+
+        try (MockedStatic<DatabaseConnection> mockedStatic = Mockito.mockStatic(DatabaseConnection.class)) {
+            mockedStatic.when(DatabaseConnection::getConnection).thenReturn(mockConn);
+
+            User user = userDAO.getUserByEmail("test@example.com");
+
+            assertNotNull(user);
+            assertFalse(PasswordUtils.checkPassword("wrongpassword", user.getPassword()));
+        }
     }
 }

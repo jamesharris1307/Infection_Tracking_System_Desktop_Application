@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 
 public class RegistrationController {
 
@@ -130,6 +131,8 @@ public class RegistrationController {
                 return;
             }
 
+            String hashedPassword = PasswordUtils.hashPassword(password);
+
             User.Role roleEnum;
             User.AccountStatus accountStatusEnum;
 
@@ -153,17 +156,17 @@ public class RegistrationController {
 
             switch (roleSelection) {
                 case "General Public" -> newUser = new GeneralPublicUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Active
                 );
                 case "Healthcare Professional" -> newUser = new HealthcareProfessionalUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Disabled
                 );
                 case "Administrator" -> newUser = new AdministratorUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Disabled
                 );
@@ -172,7 +175,6 @@ public class RegistrationController {
 
             UserDAO userDAO = new UserDAO();
             userDAO.addUser(newUser);
-
 
             showAlert("Success", "User registered successfully!");
             clearForm();

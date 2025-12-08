@@ -2,6 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ThemeManager;
 import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
@@ -30,14 +31,16 @@ public class LoginController {
             return;
         }
 
-        User user = userDAO.loginUser(email, password);
-
-        if (user == null) {
+        User user = userDAO.getUserByEmail(email);
+        if (user == null || !PasswordUtils.checkPassword(password, user.getPassword())) {
             showError("Invalid email or password.");
-        } else {
-            SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Dashboard.fxml");
+            return;
         }
+
+        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Dashboard.fxml");
     }
+
+
 
     @FXML
     private void toggleTheme() {
