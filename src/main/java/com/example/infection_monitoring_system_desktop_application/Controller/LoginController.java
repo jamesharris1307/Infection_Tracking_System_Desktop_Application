@@ -9,7 +9,7 @@ public class LoginController {
 
     @FXML
     private void login() {
-        // your login logic here
+
     }
 
     @FXML
