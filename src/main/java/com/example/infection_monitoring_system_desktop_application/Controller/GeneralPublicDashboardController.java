@@ -1,13 +1,22 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import com.example.infection_monitoring_system_desktop_application.Util.*;
+
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class GeneralPublicDashboardController {
 
@@ -22,31 +31,17 @@ public class GeneralPublicDashboardController {
 
     @FXML private Button logoutBtn;
     @FXML private Button settingsBtn;
-
     @FXML private Button updateMedicalHistoryButton;
     @FXML private Button submitReportButton;
     @FXML private Button viewSubmissionsButton;
 
     @FXML private Button backButton;
-    @FXML private DatePicker symptomStartDate;
     @FXML private Button submitReportDetailsButton;
 
     @FXML private Button btnBackUpdateHistory;
     @FXML private Button submitUpdateMedicalHistoryButton;
 
     @FXML private Button btnBackEditDetails;
-    @FXML private TextField fieldFirstName;
-    @FXML private TextField fieldLastName;
-    @FXML private TextField fieldEmail;
-    @FXML private DatePicker fieldDob;
-    @FXML private TextField fieldAddress1;
-    @FXML private TextField fieldAddress2;
-    @FXML private TextField fieldCity;
-    @FXML private TextField fieldCounty;
-    @FXML private TextField fieldPostcode;
-    @FXML private TextField fieldRole;
-    @FXML private TextField fieldPassword;
-    @FXML private TextField fieldConfirmPassword;
     @FXML private Button btnSubmitEditDetails;
     @FXML private Button btnDeleteAccount;
 
@@ -60,13 +55,45 @@ public class GeneralPublicDashboardController {
     @FXML private Label lblVaccStatus;
     @FXML private Label lblExistingConditions;
 
+    @FXML private TextField fieldFirstName;
+    @FXML private TextField fieldLastName;
+    @FXML private TextField fieldEmail;
+    @FXML private DatePicker fieldDob;
+    @FXML private TextField fieldAddress1;
+    @FXML private TextField fieldAddress2;
+    @FXML private TextField fieldCity;
+    @FXML private TextField fieldCounty;
+    @FXML private TextField fieldPostcode;
+    @FXML private TextField fieldPassword;
+    @FXML private TextField fieldConfirmPassword;
+
+    @FXML private RadioButton feverSymptomCheck;
+    @FXML private RadioButton coughSymptomCheck;
+    @FXML private RadioButton headacheSymptomCheck;
+    @FXML private RadioButton fatigueSymptomCheck;
+    @FXML private RadioButton shortnessOfBreathCheck;
+    @FXML private RadioButton lossOfSmellCheck;
+
+    @FXML private RadioButton MildSeverityCheck;
+    @FXML private RadioButton ModerateSeverityCheck;
+    @FXML private RadioButton SevereSeverityCheck;
+
+    @FXML private RadioButton YesWorsenedSymptomCheck;
+    @FXML private RadioButton NoWorsenedSymptomCheck;
+
+    private ToggleGroup severityGroup = new ToggleGroup();
+    private ToggleGroup worsenedGroup = new ToggleGroup();
+
+    @FXML private DatePicker symptomsStartDate;
+    @FXML private CheckBox exposureCheck;
+
+    private final CaseDAO caseDAO = new CaseDAO();
 
     @FXML
     private void initialize() {
         updateMedicalHistoryButton.setOnAction(e -> showUpdateHistory());
         submitReportButton.setOnAction(e -> showSubmitReport());
         btnDeleteAccount.setOnAction(e -> handleDeleteAccount());
-        //viewSubmissionsButton.setOnAction(e -> showEditDetails());
 
         backButton.setOnAction(e -> showHome());
         btnBackUpdateHistory.setOnAction(e -> showHome());
@@ -78,6 +105,13 @@ public class GeneralPublicDashboardController {
         btnViewSubmissions1.setOnAction(e -> handleEditProfileFromSettings());
 
         logoutBtn.setOnAction(e -> handleLogout());
+
+        MildSeverityCheck.setToggleGroup(severityGroup);
+        ModerateSeverityCheck.setToggleGroup(severityGroup);
+        SevereSeverityCheck.setToggleGroup(severityGroup);
+
+        YesWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
+        NoWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
 
         showHome();
 
@@ -148,18 +182,44 @@ public class GeneralPublicDashboardController {
     @FXML
     private void handleSubmitReport() {
         try {
+            User currentUser = SessionManager.getInstance().getCurrentUser();
+            if (currentUser == null || currentUser.getUserId() <= 0) {
+                AlertUtils.showError("Error", "No valid user logged in.");
+                return;
+            }
+            int userId = currentUser.getUserId();
+
+            LocalDateTime dateReported = LocalDateTime.now();
+            LocalDateTime symptomsBegan = symptomsStartDate.getValue() != null
+                    ? symptomsStartDate.getValue().atStartOfDay()
+                    : null;
+
+            List<String> symptomsList = new ArrayList<>();
+            if (feverSymptomCheck.isSelected()) symptomsList.add("Fever");
+            if (coughSymptomCheck.isSelected()) symptomsList.add("Cough");
+            if (headacheSymptomCheck.isSelected()) symptomsList.add("Headache");
+            if (fatigueSymptomCheck.isSelected()) symptomsList.add("Fatigue");
+            if (shortnessOfBreathCheck.isSelected()) symptomsList.add("ShortnessOfBreath");
+            if (lossOfSmellCheck.isSelected()) symptomsList.add("LossOfSmell");
+
+            Set<String> symptomsSet = new HashSet<>(symptomsList);
+
+            String severity = severityGroup.getSelectedToggle() != null
+                    ? ((RadioButton) severityGroup.getSelectedToggle()).getText()
+                    : null;
+
+            boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
+
+            Case c = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
+
+            CaseDAO caseDAO = new CaseDAO();
+            caseDAO.addCase(c);
+
+            AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void handleUpdateMedicalHistory() {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            AlertUtils.showError("Error", "Failed to submit case report.");
         }
     }
 
@@ -183,13 +243,15 @@ public class GeneralPublicDashboardController {
                 return;
             }
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || dob == null ||
-                    address1.isEmpty() || address2.isEmpty() || city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
+                    dob == null || address1.isEmpty() || city.isEmpty() ||
+                    county.isEmpty() || postcode.isEmpty()) {
                 AlertUtils.showError("Error", "Please fill in all required fields.");
                 return;
             }
 
-            String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
+            String hashedPassword =
+                    password.isEmpty() ? null : PasswordUtils.hashPassword(password);
 
             User currentUser = SessionManager.getInstance().getCurrentUser();
             String originalEmail = currentUser.getEmail();
@@ -203,6 +265,7 @@ public class GeneralPublicDashboardController {
             currentUser.setTownCity(city);
             currentUser.setCounty(county);
             currentUser.setPostcode(postcode);
+
             if (hashedPassword != null) {
                 currentUser.setPassword(hashedPassword);
             }
@@ -210,31 +273,33 @@ public class GeneralPublicDashboardController {
             UserDAO userDAO = new UserDAO();
             userDAO.updateUser(currentUser, originalEmail);
 
-            AlertUtils.showInfo("Success", "Profile updated successfully!");
+            AlertUtils.showInfo("Success", "Profile updated successfully.");
 
         } catch (Exception e) {
             e.printStackTrace();
-            AlertUtils.showError("Error", "An error occurred while updating your profile.");
+            AlertUtils.showError("Error", "Failed to update profile.");
         }
     }
 
     @FXML
     private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
-        String email = currentUser.getEmail();
-
         UserDAO userDAO = new UserDAO();
-        userDAO.deleteUser(email);
 
+        userDAO.deleteUser(currentUser.getEmail());
         SessionManager.getInstance().clearSession();
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
 
-        AlertUtils.showInfo("Account Deleted", "Your account has been deleted successfully.");
+        SceneManager.switchScene(
+                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+        );
+
+        AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
     }
-
 
     private void handleLogout() {
         SessionManager.getInstance().clearSession();
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+        SceneManager.switchScene(
+                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+        );
     }
 }

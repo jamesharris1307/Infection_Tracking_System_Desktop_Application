@@ -43,12 +43,14 @@ public class UserDAO {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
+                int userId = rs.getInt("UserID");
                 String roleStr = rs.getString("Role");
                 User.Role role = User.Role.valueOf(roleStr);
 
+                User user;
                 switch (role) {
                     case GeneralPublic:
-                        return new GeneralPublicUser(
+                        user = new GeneralPublicUser(
                                 rs.getString("Email"),
                                 rs.getString("Password"),
                                 rs.getString("FirstName"),
@@ -61,8 +63,9 @@ public class UserDAO {
                                 rs.getString("Postcode"),
                                 User.AccountStatus.valueOf(rs.getString("AccountStatus"))
                         );
+                        break;
                     case HealthcareProfessional:
-                        return new HealthcareProfessionalUser(
+                        user = new HealthcareProfessionalUser(
                                 rs.getString("Email"),
                                 rs.getString("Password"),
                                 rs.getString("FirstName"),
@@ -75,8 +78,9 @@ public class UserDAO {
                                 rs.getString("Postcode"),
                                 User.AccountStatus.valueOf(rs.getString("AccountStatus"))
                         );
+                        break;
                     case Administrator:
-                        return new AdministratorUser(
+                        user = new AdministratorUser(
                                 rs.getString("Email"),
                                 rs.getString("Password"),
                                 rs.getString("FirstName"),
@@ -89,16 +93,19 @@ public class UserDAO {
                                 rs.getString("Postcode"),
                                 User.AccountStatus.valueOf(rs.getString("AccountStatus"))
                         );
+                        break;
                     default:
                         throw new IllegalStateException("Unknown role: " + roleStr);
                 }
-            }
-            return null;
 
+                user.setUserId(userId); // <-- this ensures the ID is available later
+                return user;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
+        return null;
     }
 
     public void updateUser(User user, String originalEmail) {
