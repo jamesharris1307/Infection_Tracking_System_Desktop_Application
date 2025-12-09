@@ -2,10 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
-import com.example.infection_monitoring_system_desktop_application.Util.ThemeManager;
-import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Util.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -27,20 +24,18 @@ public class LoginController {
         String password = passwordField.getText().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showError("Please enter both email and password.");
+            AlertUtils.showError("Error","Please enter both email and password.");
             return;
         }
 
         User user = userDAO.getUserByEmail(email);
         if (user == null || !PasswordUtils.checkPassword(password, user.getPassword())) {
-            showError("Invalid email or password.");
+            AlertUtils.showError("Error","Invalid email or password.");
             return;
         }
-
+        SessionManager.getInstance().setCurrentUser(user);
         SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
     }
-
-
 
     @FXML
     private void toggleTheme() {
@@ -59,13 +54,5 @@ public class LoginController {
         SceneManager.switchScene(
                 "/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"
         );
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Login Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

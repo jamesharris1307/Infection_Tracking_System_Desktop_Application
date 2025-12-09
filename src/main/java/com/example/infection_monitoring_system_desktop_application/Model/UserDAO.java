@@ -100,4 +100,53 @@ public class UserDAO {
             return null;
         }
     }
+
+    public void updateUser(User user, String originalEmail) {
+        String sql = "UPDATE Users SET " +
+                "FirstName = ?, " +
+                "LastName = ?, " +
+                "Email = ?, " +
+                "Password = ?, " +
+                "DateOfBirth = ?, " +
+                "AddressLine1 = ?, " +
+                "AddressLine2 = ?, " +
+                "TownCity = ?, " +
+                "County = ?, " +
+                "Postcode = ? " +
+                "WHERE Email = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, user.getFirstName());
+            pstmt.setString(2, user.getLastName());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getPassword());
+            pstmt.setObject(5, user.getDateOfBirth());
+            pstmt.setString(6, user.getAddressLine1());
+            pstmt.setString(7, user.getAddressLine2());
+            pstmt.setString(8, user.getTownCity());
+            pstmt.setString(9, user.getCounty());
+            pstmt.setString(10, user.getPostcode());
+            pstmt.setString(11, originalEmail);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser(String email) {
+        String sql = "DELETE FROM Users WHERE Email = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, email);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
