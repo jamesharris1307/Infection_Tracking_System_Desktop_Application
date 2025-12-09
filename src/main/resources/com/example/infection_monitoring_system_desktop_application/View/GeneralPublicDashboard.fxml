@@ -15,7 +15,7 @@
 <StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
 
     <AnchorPane fx:id="rootContent" style="-fx-font-size: 12px;">
-        <HBox style="-fx-background-color: #F5F5F5;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <!-- LEFT PANEL -->
             <VBox alignment="TOP_CENTER" prefHeight="561.0" prefWidth="250.0" spacing="15" styleClass="sidePanel">
@@ -38,7 +38,7 @@
             <StackPane fx:id="centerPages" styleClass="root" HBox.hgrow="ALWAYS">
 
                 <!-- HOME PAGE -->
-                <VBox fx:id="pageHome" alignment="CENTER" maxWidth="500" spacing="20" styleClass="root">
+                <VBox fx:id="pageHome" alignment="CENTER" maxWidth="500" spacing="20" styleClass="root" visible="false">
                     <padding>
                         <Insets bottom="25" left="25" right="25" top="25" />
                     </padding>
@@ -107,7 +107,7 @@
 
                 <!-- UPDATE MEDICAL HISTORY -->
                 <ScrollPane fx:id="updateMedicalHistoryPage" fitToHeight="true" fitToWidth="true" styleClass="root" visible="false">
-                    <VBox alignment="TOP_CENTER" spacing="20">
+                    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
                         <padding>
                             <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
@@ -153,8 +153,8 @@
                 </ScrollPane>
 
                 <!-- EDIT DETAILS PAGE -->
-                <ScrollPane fx:id="editDetailsPage" fitToHeight="true" fitToWidth="true" styleClass="root" visible="false">
-                    <VBox alignment="TOP_CENTER" spacing="20">
+                <ScrollPane fx:id="editDetailsPage" fitToHeight="true" fitToWidth="true" styleClass="root">
+                    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
                         <padding>
                             <Insets bottom="20" left="20" right="20" top="20" />
                         </padding>
@@ -212,11 +212,6 @@
                             </HBox>
 
                             <HBox alignment="CENTER" spacing="20">
-                                <Label text="Role" />
-                                <TextField fx:id="fieldRole" />
-                            </HBox>
-
-                            <HBox alignment="CENTER" spacing="20">
                                 <Label text="Password" />
                                 <TextField fx:id="fieldPassword" />
                             </HBox>
@@ -225,8 +220,9 @@
                                 <Label text="Confirm Password" />
                                 <TextField fx:id="fieldConfirmPassword" />
                             </HBox>
+                     <Button fx:id="btnSubmitEditDetails1" maxWidth="200" onAction="#handleEditDetailsSubmit" text="Submit" />
 
-                            <Button fx:id="btnSubmitEditDetails" maxWidth="200" text="Submit" />
+                            <Button fx:id="btnDeleteAccount" maxWidth="200" onAction="#handleDeleteAccount" text="Delete" />
                         </VBox>
                     </VBox>
                 </ScrollPane>
