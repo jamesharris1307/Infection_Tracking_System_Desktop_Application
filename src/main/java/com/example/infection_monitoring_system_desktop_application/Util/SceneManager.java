@@ -26,7 +26,7 @@ public class SceneManager {
 
             Scene scene = new Scene(root);
 
-            ThemeManager.applySavedTheme(scene);
+            ThemeManager.getInstance().applySavedTheme(scene);
 
             mainStage.setScene(scene);
             mainStage.show();

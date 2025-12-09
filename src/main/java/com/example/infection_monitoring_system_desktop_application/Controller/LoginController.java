@@ -37,14 +37,14 @@ public class LoginController {
             return;
         }
 
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Dashboard.fxml");
+        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
     }
 
 
 
     @FXML
     private void toggleTheme() {
-        ThemeManager.toggleTheme();
+        ThemeManager.getInstance().toggleTheme();
         SceneManager.refreshCurrentScene();
     }
 
