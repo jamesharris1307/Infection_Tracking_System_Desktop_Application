@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.EditDetailsController">
+
+    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
+
+        <Button fx:id="backButton" text="Back"/>
+
+        <VBox spacing="12">
+            <HBox spacing="20"><Label text="First Name"/><TextField fx:id="fieldFirstName"/></HBox>
+            <HBox spacing="20"><Label text="Last Name"/><TextField fx:id="fieldLastName"/></HBox>
+            <HBox spacing="20"><Label text="Email"/><TextField fx:id="fieldEmail"/></HBox>
+            <HBox spacing="20"><Label text="Date of Birth"/><DatePicker fx:id="fieldDob"/></HBox>
+            <HBox spacing="20"><Label text="Address Line 1"/><TextField fx:id="fieldAddress1"/></HBox>
+            <HBox spacing="20"><Label text="Address Line 2"/><TextField fx:id="fieldAddress2"/></HBox>
+            <HBox spacing="20"><Label text="Town / City"/><TextField fx:id="fieldCity"/></HBox>
+            <HBox spacing="20"><Label text="County"/><TextField fx:id="fieldCounty"/></HBox>
+            <HBox spacing="20"><Label text="Postcode"/><TextField fx:id="fieldPostcode"/></HBox>
+            <HBox spacing="20"><Label text="Password"/><TextField fx:id="fieldPassword"/></HBox>
+            <HBox spacing="20"><Label text="Confirm Password"/><TextField fx:id="fieldConfirmPassword"/></HBox>
+
+            <Button fx:id="submitEditDetailsButton" text="Submit" onAction="#handleEditDetailsSubmit"/>
+            <Button fx:id="deleteAccountButton" text="Delete" onAction="#handleDeleteAccount"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

@@ -12,9 +12,10 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) {
-        LanguageManager.applySavedLanguage(); // Load user-saved language
+        LanguageManager.applySavedLanguage();
         SceneManager.init(stage);
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+        stage.setFullScreen(true);
+        stage.setFullScreenExitKeyCombination(javafx.scene.input.KeyCombination.NO_MATCH);
+        SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
     }
-
 }

@@ -1,6 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
 import javafx.scene.control.Alert;
+import javafx.stage.Modality;
+import javafx.stage.Window;
 
 public class AlertUtils {
 
@@ -24,6 +26,13 @@ public class AlertUtils {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+
+        Window owner = SceneManager.getMainStage();
+        if (owner != null) {
+            alert.initOwner(owner);
+            alert.initModality(Modality.WINDOW_MODAL);
+        }
+
         alert.showAndWait();
     }
 }

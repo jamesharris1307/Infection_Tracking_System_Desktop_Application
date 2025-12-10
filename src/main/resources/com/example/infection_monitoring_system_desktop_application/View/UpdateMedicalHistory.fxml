@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.UpdateMedicalHistoryController"
+            fitToWidth="true" fitToHeight="true"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1">
+
+    <fx:define>
+        <ToggleGroup fx:id="longTermConditionsGroup"/>
+        <ToggleGroup fx:id="longTermMedicationsGroup"/>
+        <ToggleGroup fx:id="upToDateVaccinationsGroup"/>
+        <ToggleGroup fx:id="allergiesGroup"/>
+    </fx:define>
+
+    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
+
+        <HBox>
+            <Button fx:id="backButton" text="Back"/>
+        </HBox>
+
+        <VBox spacing="10">
+            <Label text="Existing Long-Term Medical Conditions?" />
+            <HBox spacing="20">
+                <RadioButton fx:id="longTermConditionsYes" toggleGroup="$longTermConditionsGroup" text="Yes"/>
+                <RadioButton fx:id="longTermConditionsNo" toggleGroup="$longTermConditionsGroup" text="No"/>
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Long-Term Medications?" />
+            <HBox spacing="20">
+                <RadioButton fx:id="longTermMedicationsYes" toggleGroup="$longTermMedicationsGroup" text="Yes"/>
+                <RadioButton fx:id="longTermMedicationsNo" toggleGroup="$longTermMedicationsGroup" text="No"/>
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Vaccinations Up to Date?" />
+            <HBox spacing="20">
+                <RadioButton fx:id="upToDateVaccinationsYes" toggleGroup="$upToDateVaccinationsGroup" text="Yes"/>
+                <RadioButton fx:id="upToDateVaccinationsNo" toggleGroup="$upToDateVaccinationsGroup" text="No"/>
+            </HBox>
+        </VBox>
+
+        <VBox spacing="10">
+            <Label text="Any known allergies?" />
+            <HBox spacing="20">
+                <RadioButton fx:id="allergiesYes" toggleGroup="$allergiesGroup" text="Yes"/>
+                <RadioButton fx:id="allergiesNo" toggleGroup="$allergiesGroup" text="No"/>
+            </HBox>
+        </VBox>
+
+        <Button fx:id="submitUpdateMedicalHistoryButton" onAction="#handleUpdateMedicalHistory" text="Submit"/>
+
+    </VBox>
+</ScrollPane>
+

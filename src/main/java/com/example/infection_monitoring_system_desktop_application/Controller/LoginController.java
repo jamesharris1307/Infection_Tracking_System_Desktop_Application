@@ -4,7 +4,6 @@ import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Util.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -34,24 +33,24 @@ public class LoginController {
             return;
         }
         SessionManager.getInstance().setCurrentUser(user);
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
+        SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
     }
 
     @FXML
     private void toggleTheme() {
         ThemeManager.getInstance().toggleTheme();
-        SceneManager.refreshCurrentScene();
+        SceneManager.refreshCurrentRoot();
     }
 
     @FXML
     private void toggleLanguage() {
         LanguageManager.toggleLanguage();
-        SceneManager.refreshCurrentScene();
+        SceneManager.refreshCurrentRoot();
     }
 
     @FXML
     private void viewRegistration() {
-        SceneManager.switchScene(
+        SceneManager.switchRoot(
                 "/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"
         );
     }

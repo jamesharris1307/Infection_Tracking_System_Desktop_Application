@@ -204,6 +204,6 @@ public class RegistrationController {
 
     @FXML
     private void viewLogin() {
-        SceneManager.switchScene("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+        SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
     }
 }

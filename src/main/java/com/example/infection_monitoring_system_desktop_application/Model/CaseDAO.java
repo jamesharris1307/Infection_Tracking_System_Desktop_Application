@@ -33,7 +33,7 @@ public class CaseDAO {
 
             pstmt.setInt(1, newCase.getUserID());
             pstmt.setTimestamp(2, Timestamp.valueOf(newCase.getDateReported()));
-            pstmt.setTimestamp(3, newCase.getSymptomsBegan() != null ? Timestamp.valueOf(newCase.getSymptomsBegan()) : null);
+            pstmt.setObject(3, newCase.getSymptomsBegan() != null ? newCase.getSymptomsBegan() : null);
             pstmt.setString(4, String.join(",", newCase.getSymptoms()));
             pstmt.setString(5, newCase.getSeverity());
             pstmt.setBoolean(6, newCase.isConfirmedExposure());
