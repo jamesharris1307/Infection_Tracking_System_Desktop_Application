@@ -33,16 +33,16 @@ public class DatabaseConnection {
         );
     }
 
-    public static void main(String[] args) {
-        try (Connection conn = getConnection()) {
-            if (conn != null) {
-                System.out.println("Connection successful!");
-            } else {
-                System.out.println("Failed to connect!");
-            }
-        } catch (SQLException e) {
-            System.out.println("Connection failed!");
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        try (Connection conn = getConnection()) {
+//            if (conn != null) {
+//                System.out.println("Connection successful!");
+//            } else {
+//                System.out.println("Failed to connect!");
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("Connection failed!");
+//            e.printStackTrace();
+//        }
+//    }
 }
