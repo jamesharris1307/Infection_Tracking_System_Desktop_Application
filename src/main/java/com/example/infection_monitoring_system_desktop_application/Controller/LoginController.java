@@ -32,9 +32,25 @@ public class LoginController {
             AlertUtils.showError("Error","Invalid email or password.");
             return;
         }
+
         SessionManager.getInstance().setCurrentUser(user);
-        SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
+
+        User.Role role = user.getRole();
+
+        if (role == User.Role.Administrator) {
+            SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/AdministratorDashboard.fxml");
+        }
+        else if (role == User.Role.HealthcareProfessional) {
+            SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/HealthcareProfessionalDashboard.fxml");
+        }
+        else if (role == User.Role.GeneralPublic) {
+            SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
+        }
+        else {
+            AlertUtils.showError("Error","Unknown user role.");
+        }
     }
+
 
     @FXML
     private void toggleTheme() {
