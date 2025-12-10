@@ -1,9 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Util.*;
 
 import javafx.fxml.FXML;
@@ -80,6 +77,27 @@ public class GeneralPublicDashboardController {
 
     @FXML private RadioButton YesWorsenedSymptomCheck;
     @FXML private RadioButton NoWorsenedSymptomCheck;
+
+    @FXML private RadioButton longTermConditionsYes;
+    @FXML private RadioButton longTermConditionsNo;
+
+    @FXML private RadioButton longTermMedicationsYes;
+    @FXML private RadioButton longTermMedicationsNo;
+
+    @FXML private RadioButton upToDateVaccinationsYes;
+    @FXML private RadioButton upToDateVaccinationsNo;
+
+    @FXML private RadioButton allergiesYes;
+    @FXML private RadioButton allergiesNo;
+
+    @FXML
+    private ToggleGroup longTermConditionsGroup = new ToggleGroup();
+    @FXML
+    private ToggleGroup longTermMedicationsGroup = new ToggleGroup();
+    @FXML
+    private ToggleGroup upToDateVaccinationsGroup = new ToggleGroup();
+    @FXML
+    private ToggleGroup allergiesGroup = new ToggleGroup();
 
     private ToggleGroup severityGroup = new ToggleGroup();
     private ToggleGroup worsenedGroup = new ToggleGroup();
@@ -210,16 +228,51 @@ public class GeneralPublicDashboardController {
 
             boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
 
-            Case c = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
+            Case newCase = new Case(
+                    userId,
+                    dateReported,
+                    symptomsBegan,
+                    symptomsSet,
+                    severity,
+                    confirmedWorsened
+            );
 
-            CaseDAO caseDAO = new CaseDAO();
-            caseDAO.addCase(c);
+            caseDAO.addCase(newCase);
 
             AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
 
         } catch (Exception e) {
             e.printStackTrace();
             AlertUtils.showError("Error", "Failed to submit case report.");
+        }
+    }
+
+
+    @FXML
+    private void handleUpdateMedicalHistory() {
+        try {
+            boolean hasConditions = longTermConditionsYes.isSelected();
+            boolean hasMedications = longTermMedicationsYes.isSelected();
+            boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
+            boolean hasAllergies = allergiesYes.isSelected();
+            LocalDateTime lastUpdated = LocalDateTime.now();
+
+            User currentUser = SessionManager.getInstance().getCurrentUser();
+            int userId = currentUser.getUserId();
+
+            MedicalHistory medicalHistory = new MedicalHistory(
+                    userId,
+                    hasConditions,
+                    hasMedications,
+                    vaccinationsUpToDate,
+                    hasAllergies,
+                    lastUpdated
+            );
+
+            MedicalHistoryDAO medicalHistoryDAO = new MedicalHistoryDAO();
+            medicalHistoryDAO.addMedicalHistory(medicalHistory);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

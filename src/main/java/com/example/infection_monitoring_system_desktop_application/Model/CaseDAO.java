@@ -13,12 +13,12 @@ public class CaseDAO {
             "Mild", "Moderate", "Severe"
     );
 
-    public void addCase(Case c) throws SQLException {
-        if (!ALLOWED_SEVERITY.contains(c.getSeverity())) {
-            throw new IllegalArgumentException("Invalid severity: " + c.getSeverity());
+    public void addCase(Case newCase) {
+        if (!ALLOWED_SEVERITY.contains(newCase.getSeverity())) {
+            throw new IllegalArgumentException("Invalid severity: " + newCase.getSeverity());
         }
 
-        for (String symptom : c.getSymptoms()) {
+        for (String symptom : newCase.getSymptoms()) {
             if (!ALLOWED_SYMPTOMS.contains(symptom)) {
                 throw new IllegalArgumentException("Invalid symptom: " + symptom);
             }
@@ -31,13 +31,15 @@ public class CaseDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, c.getUserID());
-            pstmt.setTimestamp(2, Timestamp.valueOf(c.getDateReported()));
-            pstmt.setTimestamp(3, c.getSymptomsBegan() != null ? Timestamp.valueOf(c.getSymptomsBegan()) : null);
-            pstmt.setString(4, String.join(",", c.getSymptoms()));
-            pstmt.setString(5, c.getSeverity());
-            pstmt.setBoolean(6, c.isConfirmedExposure());
+            pstmt.setInt(1, newCase.getUserID());
+            pstmt.setTimestamp(2, Timestamp.valueOf(newCase.getDateReported()));
+            pstmt.setTimestamp(3, newCase.getSymptomsBegan() != null ? Timestamp.valueOf(newCase.getSymptomsBegan()) : null);
+            pstmt.setString(4, String.join(",", newCase.getSymptoms()));
+            pstmt.setString(5, newCase.getSeverity());
+            pstmt.setBoolean(6, newCase.isConfirmedExposure());
+
             pstmt.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
