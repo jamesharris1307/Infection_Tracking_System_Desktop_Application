@@ -45,6 +45,19 @@ public class CaseDAO {
         }
     }
 
+    public void deleteCasesByUser(int userID) {
+        String sql = "DELETE FROM cases WHERE UserID = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userID);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 //    public Case getCaseByCaseID(int CaseID){
 //        String sql = "SELECT * FROM Cases WHERE CaseID = ?";
 //        try (Connection conn = DatabaseConnection.getConnection();

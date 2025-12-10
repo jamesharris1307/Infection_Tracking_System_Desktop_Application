@@ -11,28 +11,47 @@ import javafx.scene.control.ToggleGroup;
 
 import java.time.LocalDateTime;
 
-public class UpdateMedicalHistoryController{
+public class UpdateMedicalHistoryController {
 
     private GeneralPublicDashboardController parentController;
 
-    @FXML private ToggleGroup longTermConditionsGroup;
-    @FXML private ToggleGroup longTermMedicationsGroup;
-    @FXML private ToggleGroup upToDateVaccinationsGroup;
-    @FXML private ToggleGroup allergiesGroup;
-
     @FXML private RadioButton longTermConditionsYes;
+    @FXML private RadioButton longTermConditionsNo;
+
     @FXML private RadioButton longTermMedicationsYes;
+    @FXML private RadioButton longTermMedicationsNo;
+
     @FXML private RadioButton upToDateVaccinationsYes;
+    @FXML private RadioButton upToDateVaccinationsNo;
+
     @FXML private RadioButton allergiesYes;
+    @FXML private RadioButton allergiesNo;
 
     @FXML private Button backButton;
+
+    private final ToggleGroup longTermConditionsGroup = new ToggleGroup();
+    private final ToggleGroup longTermMedicationsGroup = new ToggleGroup();
+    private final ToggleGroup upToDateVaccinationsGroup = new ToggleGroup();
+    private final ToggleGroup allergiesGroup = new ToggleGroup();
 
     public void setParentController(GeneralPublicDashboardController parent) {
         this.parentController = parent;
     }
 
     @FXML
-    private void initialize() {}
+    private void initialize() {
+        longTermConditionsYes.setToggleGroup(longTermConditionsGroup);
+        longTermConditionsNo.setToggleGroup(longTermConditionsGroup);
+
+        longTermMedicationsYes.setToggleGroup(longTermMedicationsGroup);
+        longTermMedicationsNo.setToggleGroup(longTermMedicationsGroup);
+
+        upToDateVaccinationsYes.setToggleGroup(upToDateVaccinationsGroup);
+        upToDateVaccinationsNo.setToggleGroup(upToDateVaccinationsGroup);
+
+        allergiesYes.setToggleGroup(allergiesGroup);
+        allergiesNo.setToggleGroup(allergiesGroup);
+    }
 
     @FXML
     private void handleUpdateMedicalHistory() {
@@ -41,6 +60,7 @@ public class UpdateMedicalHistoryController{
             boolean hasMedications = longTermMedicationsYes.isSelected();
             boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
             boolean hasAllergies = allergiesYes.isSelected();
+
             LocalDateTime lastUpdated = LocalDateTime.now();
 
             User currentUser = SessionManager.getInstance().getCurrentUser();

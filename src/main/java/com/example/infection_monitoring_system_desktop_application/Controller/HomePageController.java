@@ -22,10 +22,6 @@ public class HomePageController {
             if (parentController != null) {
                 parentController.showSubmitReportPage();
             }
-
-            if (parentController != null) {
-                parentController.showEditDetailsPage();
-            }
         });
 
         updateMedicalHistoryButton.setOnAction(e -> {

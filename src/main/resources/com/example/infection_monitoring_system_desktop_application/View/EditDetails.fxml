@@ -11,26 +11,36 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.EditDetailsController">
 
-    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
+    <VBox alignment="TOP_CENTER" style="-fx-padding: 30 20 30 20;" styleClass="root" spacing="0">
 
-        <Button fx:id="backButton" text="Back"/>
+        <!-- Centering wrapper -->
+        <HBox alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+            <VBox alignment="TOP_CENTER" maxWidth="600" spacing="20">
 
-        <VBox spacing="12">
-            <HBox spacing="20"><Label text="First Name"/><TextField fx:id="fieldFirstName"/></HBox>
-            <HBox spacing="20"><Label text="Last Name"/><TextField fx:id="fieldLastName"/></HBox>
-            <HBox spacing="20"><Label text="Email"/><TextField fx:id="fieldEmail"/></HBox>
-            <HBox spacing="20"><Label text="Date of Birth"/><DatePicker fx:id="fieldDob"/></HBox>
-            <HBox spacing="20"><Label text="Address Line 1"/><TextField fx:id="fieldAddress1"/></HBox>
-            <HBox spacing="20"><Label text="Address Line 2"/><TextField fx:id="fieldAddress2"/></HBox>
-            <HBox spacing="20"><Label text="Town / City"/><TextField fx:id="fieldCity"/></HBox>
-            <HBox spacing="20"><Label text="County"/><TextField fx:id="fieldCounty"/></HBox>
-            <HBox spacing="20"><Label text="Postcode"/><TextField fx:id="fieldPostcode"/></HBox>
-            <HBox spacing="20"><Label text="Password"/><TextField fx:id="fieldPassword"/></HBox>
-            <HBox spacing="20"><Label text="Confirm Password"/><TextField fx:id="fieldConfirmPassword"/></HBox>
+                <!-- Back Button -->
+                <HBox alignment="TOP_LEFT" prefHeight="44.0" prefWidth="600.0">
+                    <Button fx:id="backButton" text="Back" />
+                </HBox>
 
-            <Button fx:id="submitEditDetailsButton" text="Submit" onAction="#handleEditDetailsSubmit"/>
-            <Button fx:id="deleteAccountButton" text="Delete" onAction="#handleDeleteAccount"/>
-        </VBox>
+                <!-- Form Fields -->
+                <VBox alignment="CENTER" spacing="12">
+                    <HBox alignment="CENTER" spacing="20"><Label text="First Name"/><TextField fx:id="fieldFirstName"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Last Name"/><TextField fx:id="fieldLastName"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Email"/><TextField fx:id="fieldEmail"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Date of Birth"/><DatePicker fx:id="fieldDob"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Address Line 1"/><TextField fx:id="fieldAddress1"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Address Line 2"/><TextField fx:id="fieldAddress2"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Town / City"/><TextField fx:id="fieldCity"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="County"/><TextField fx:id="fieldCounty"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Postcode"/><TextField fx:id="fieldPostcode"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Password"/><TextField fx:id="fieldPassword"/></HBox>
+                    <HBox alignment="CENTER" spacing="20"><Label text="Confirm Password"/><TextField fx:id="fieldConfirmPassword"/></HBox>
 
+                    <Button fx:id="submitEditDetailsButton" text="Submit" onAction="#handleEditDetailsSubmit"/>
+                    <Button fx:id="deleteAccountButton" text="Delete" onAction="#handleDeleteAccount"/>
+                </VBox>
+
+            </VBox>
+        </HBox>
     </VBox>
 </ScrollPane>

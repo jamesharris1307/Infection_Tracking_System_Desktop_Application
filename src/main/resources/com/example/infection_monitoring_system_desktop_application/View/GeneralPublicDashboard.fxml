@@ -29,8 +29,18 @@
                 <Label fx:id="labelEmail" text="Label"/>
             </VBox>
 
-            <!-- CENTER CONTAINER (EMPTY) -->
-            <StackPane fx:id="centerPages" HBox.hgrow="ALWAYS"/>
+            <!-- CENTER CONTAINER -->
+            <StackPane fx:id="centerPages" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
+                <VBox fx:id="initialContent"
+                      alignment="TOP_CENTER"
+                      spacing="20"
+                      maxWidth="600" prefWidth="600"
+                      style="-fx-padding: 30 20 30 20;">
+                    <!-- Loaded ScrollPane content will go here -->
+                </VBox>
+            </StackPane>
+
+
 
             <!-- RIGHT PANEL -->
             <VBox prefWidth="250" spacing="15" styleClass="sidePanel">
