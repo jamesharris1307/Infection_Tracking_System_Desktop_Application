@@ -34,4 +34,18 @@
     -fx-text-fill: #A1A1A1;
 }
 
+.sidePanel {
+    -fx-background-color: #96BCB4;
+}
 
+.NoBackground {
+    -fx-background-color: rgba(0, 0, 0, 0);
+}
+
+.panelBackground {
+    -fx-background-color: #FFFFFF;
+}
+
+.label {
+    -fx-text-fill: #000000;
+}

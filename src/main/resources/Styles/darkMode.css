@@ -33,3 +33,19 @@
 .inactive-page-indicator-label {
     -fx-text-fill: #A1A1A1;
 }
+
+.sidePanel {
+    -fx-background-color: #1E1E1E;
+}
+
+.NoBackground {
+    -fx-background-color: rgba(0, 0, 0, 0);
+}
+
+.panelBackground {
+    -fx-background-color: #313131;
+}
+
+.label {
+    -fx-text-fill: #FFFFFF;
+}
