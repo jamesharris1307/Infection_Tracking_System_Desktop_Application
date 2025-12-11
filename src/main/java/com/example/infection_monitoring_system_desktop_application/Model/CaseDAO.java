@@ -42,7 +42,11 @@ public class CaseDAO {
 
     public List<Case> getAllCases() {
         List<Case> list = new ArrayList<>();
-        String sql = "SELECT * FROM Cases";
+        String sql = """
+        SELECT c.*, u.FirstName, u.LastName, u.Email, u.Role, u.DateOfBirth
+        FROM Cases c
+        JOIN Users u ON c.UserID = u.UserID
+        """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -51,14 +55,27 @@ public class CaseDAO {
             while (rs.next()) {
                 int caseID = rs.getInt("CaseID");
                 int userID = rs.getInt("UserID");
+
                 LocalDateTime dateReported = rs.getTimestamp("DateReported").toLocalDateTime();
-                LocalDateTime symptomsBegan = rs.getTimestamp("SymptomsBegan").toLocalDateTime();
+
+                Timestamp ts = rs.getTimestamp("SymptomsBegan");
+                LocalDateTime symptomsBegan = ts != null ? ts.toLocalDateTime() : null;
+
                 Set<String> symptoms = new HashSet<>(Arrays.asList(rs.getString("Symptoms").split(",")));
+
                 String severity = rs.getString("Severity");
                 boolean confirmedExposure = rs.getBoolean("ConfirmedExposure");
 
                 Case c = new Case(userID, dateReported, symptomsBegan, symptoms, severity, confirmedExposure);
                 c.setCaseID(caseID);
+
+                User user = new GeneralPublicUser();
+                user.setUserId(userID);
+                user.setFirstName(rs.getString("FirstName"));
+                user.setLastName(rs.getString("LastName"));
+
+                c.setUser(user);
+
                 list.add(c);
             }
         } catch (SQLException e) {

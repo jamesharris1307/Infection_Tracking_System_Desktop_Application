@@ -1,5 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -98,7 +101,7 @@ public class UserDAO {
                         throw new IllegalStateException("Unknown role: " + roleStr);
                 }
 
-                user.setUserId(userId); // <-- this ensures the ID is available later
+                user.setUserId(userId);
                 return user;
             }
         } catch (SQLException e) {
@@ -141,6 +144,81 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public ObservableList<User> getAllUsers() {
+        ObservableList<User> userList = FXCollections.observableArrayList();
+        String sql = "SELECT * FROM Users";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int userId = rs.getInt("UserID");
+                String roleStr = rs.getString("Role");
+                User.Role role = User.Role.valueOf(roleStr);
+
+                User user;
+                switch (role) {
+                    case GeneralPublic:
+                        user = new GeneralPublicUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                        break;
+                    case HealthcareProfessional:
+                        user = new HealthcareProfessionalUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                        break;
+                    case Administrator:
+                        user = new AdministratorUser(
+                                rs.getString("Email"),
+                                rs.getString("Password"),
+                                rs.getString("FirstName"),
+                                rs.getString("LastName"),
+                                rs.getDate("DateOfBirth").toLocalDate(),
+                                rs.getString("AddressLine1"),
+                                rs.getString("AddressLine2"),
+                                rs.getString("TownCity"),
+                                rs.getString("County"),
+                                rs.getString("Postcode"),
+                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
+                        );
+                        break;
+                    default:
+                        throw new IllegalStateException("Unknown role: " + roleStr);
+                }
+
+                user.setUserId(userId);
+                userList.add(user);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userList;
     }
 
     public void deleteUser(String email) {

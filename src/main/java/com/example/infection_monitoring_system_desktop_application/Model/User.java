@@ -78,4 +78,6 @@ public abstract class User {
     public void setAccountStatus(AccountStatus accountStatus) { this.accountStatus = accountStatus; }
 
     public abstract Role getRole();
+
+    public User() {}
 }

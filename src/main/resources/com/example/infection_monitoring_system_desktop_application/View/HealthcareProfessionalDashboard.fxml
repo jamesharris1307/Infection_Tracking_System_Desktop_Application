@@ -27,7 +27,8 @@
             <columns>
                 <TableColumn fx:id="colCaseId" text="CaseID" prefWidth="80"/>
                 <TableColumn fx:id="colUserId" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colName" text="Name" prefWidth="140"/>
+                <TableColumn fx:id="colFirstName" text="First Name" prefWidth="140"/>
+                <TableColumn fx:id="colLastName" text="Last Name" prefWidth="140"/>
                 <TableColumn fx:id="colDateReported" text="Date Reported" prefWidth="120"/>
                 <TableColumn fx:id="colSymptoms" text="Symptoms" prefWidth="160"/>
                 <TableColumn fx:id="colSymptomsBegan" text="Symptoms Began" prefWidth="120"/>

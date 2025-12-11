@@ -22,6 +22,10 @@ public class Case {
         this.confirmedExposure = confirmedExposure;
     }
 
+    private User user;
+    public void setUser(User user) { this.user = user; }
+    public User getUser() { return user; }
+
     public int getCaseID() { return caseID; }
     public void setCaseID(int caseID) { this.caseID = caseID; }
 
