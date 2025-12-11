@@ -3,6 +3,8 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,19 +17,28 @@ public class UpdateMedicalHistoryController {
 
     private GeneralPublicDashboardController parentController;
 
-    @FXML private RadioButton longTermConditionsYes;
-    @FXML private RadioButton longTermConditionsNo;
+    @FXML
+    private RadioButton longTermConditionsYes;
+    @FXML
+    private RadioButton longTermConditionsNo;
 
-    @FXML private RadioButton longTermMedicationsYes;
-    @FXML private RadioButton longTermMedicationsNo;
+    @FXML
+    private RadioButton longTermMedicationsYes;
+    @FXML
+    private RadioButton longTermMedicationsNo;
 
-    @FXML private RadioButton upToDateVaccinationsYes;
-    @FXML private RadioButton upToDateVaccinationsNo;
+    @FXML
+    private RadioButton upToDateVaccinationsYes;
+    @FXML
+    private RadioButton upToDateVaccinationsNo;
 
-    @FXML private RadioButton allergiesYes;
-    @FXML private RadioButton allergiesNo;
+    @FXML
+    private RadioButton allergiesYes;
+    @FXML
+    private RadioButton allergiesNo;
 
-    @FXML private Button backButton;
+    @FXML
+    private Button backButton;
 
     private final ToggleGroup longTermConditionsGroup = new ToggleGroup();
     private final ToggleGroup longTermMedicationsGroup = new ToggleGroup();
@@ -60,26 +71,39 @@ public class UpdateMedicalHistoryController {
             boolean hasMedications = longTermMedicationsYes.isSelected();
             boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
             boolean hasAllergies = allergiesYes.isSelected();
-
             LocalDateTime lastUpdated = LocalDateTime.now();
 
-            User currentUser = SessionManager.getInstance().getCurrentUser();
-            int userId = currentUser.getUserId();
-
+            int userId = SessionManager.getInstance().getCurrentUser().getUserId();
             MedicalHistory medicalHistory = new MedicalHistory(
-                    userId,
-                    hasConditions,
-                    hasMedications,
-                    vaccinationsUpToDate,
-                    hasAllergies,
-                    lastUpdated
+                    userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated
             );
 
-            MedicalHistoryDAO medicalHistoryDAO = new MedicalHistoryDAO();
-            medicalHistoryDAO.addMedicalHistory(medicalHistory);
+            MedicalHistoryService service = new MedicalHistoryService();
 
+            service.getMedicalHistoryByUserIdAsync(userId)
+                    .thenCompose(existing -> {
+                        if (existing == null) {
+                            return service.addMedicalHistoryAsync(medicalHistory);
+                        } else {
+                            return service.updateMedicalHistoryAsync(medicalHistory);
+                        }
+                    })
+                    .thenRun(() -> {
+                        javafx.application.Platform.runLater(() -> {
+                            AlertUtils.showInfo("Success", "Medical history updated successfully.");
+                        });
+                    })
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        javafx.application.Platform.runLater(() -> {
+                            // Show error alert
+                            AlertUtils.showError("Error", "Failed to update medical history.");
+                        });
+                        return null;
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

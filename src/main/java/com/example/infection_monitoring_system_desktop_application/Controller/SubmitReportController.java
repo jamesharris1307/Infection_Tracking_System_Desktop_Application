@@ -1,10 +1,11 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.SessionManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -44,6 +45,8 @@ public class SubmitReportController {
 
     @FXML private Button backButton;
 
+    private final CaseService caseService = new CaseService();
+
     public void setParentController(GeneralPublicDashboardController parent) {
         this.parentController = parent;
     }
@@ -66,22 +69,20 @@ public class SubmitReportController {
                 AlertUtils.showError("Error", "No valid user logged in.");
                 return;
             }
-            int userId = currentUser.getUserId();
 
+            int userId = currentUser.getUserId();
             LocalDateTime dateReported = LocalDateTime.now();
             LocalDateTime symptomsBegan = symptomsStartDate.getValue() != null
                     ? symptomsStartDate.getValue().atStartOfDay()
                     : null;
 
-            List<String> symptomsList = new ArrayList<>();
-            if (feverSymptomCheck.isSelected()) symptomsList.add("Fever");
-            if (coughSymptomCheck.isSelected()) symptomsList.add("Cough");
-            if (headacheSymptomCheck.isSelected()) symptomsList.add("Headache");
-            if (fatigueSymptomCheck.isSelected()) symptomsList.add("Fatigue");
-            if (shortnessOfBreathCheck.isSelected()) symptomsList.add("ShortnessOfBreath");
-            if (lossOfSmellCheck.isSelected()) symptomsList.add("LossOfSmell");
-
-            Set<String> symptomsSet = new HashSet<>(symptomsList);
+            Set<String> symptomsSet = new HashSet<>();
+            if (feverSymptomCheck.isSelected()) symptomsSet.add("Fever");
+            if (coughSymptomCheck.isSelected()) symptomsSet.add("Cough");
+            if (headacheSymptomCheck.isSelected()) symptomsSet.add("Headache");
+            if (fatigueSymptomCheck.isSelected()) symptomsSet.add("Fatigue");
+            if (shortnessOfBreathCheck.isSelected()) symptomsSet.add("ShortnessOfBreath");
+            if (lossOfSmellCheck.isSelected()) symptomsSet.add("LossOfSmell");
 
             String severity = severityGroup.getSelectedToggle() != null
                     ? ((RadioButton) severityGroup.getSelectedToggle()).getText()
@@ -89,19 +90,19 @@ public class SubmitReportController {
 
             boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
 
-            Case newCase = new Case(
-                    userId,
-                    dateReported,
-                    symptomsBegan,
-                    symptomsSet,
-                    severity,
-                    confirmedWorsened
-            );
+            Case newCase = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
 
-            CaseDAO caseDAO = new CaseDAO();
-            caseDAO.addCase(newCase);
-
-            AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
+            caseService.addCaseAsync(newCase)
+                    .thenRun(() -> Platform.runLater(() ->
+                            AlertUtils.showInfo("Submitted", "Your case report has been submitted.")
+                    ))
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        Platform.runLater(() ->
+                                AlertUtils.showError("Error", "Failed to submit case report.")
+                        );
+                        return null;
+                    });
 
         } catch (Exception e) {
             e.printStackTrace();

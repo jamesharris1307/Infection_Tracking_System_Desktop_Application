@@ -84,10 +84,11 @@ public class UserDAO {
 
     public void updateUser(User user, String originalEmail) {
         String sql = "UPDATE Users SET " +
-                "FirstName = ?, " + "LastName = ?, " + "Email = ?, " +
-                "Password = ?, " + "DateOfBirth = ?, " + "AddressLine1 = ?, " +
-                "AddressLine2 = ?, " + "TownCity = ?, " + "County = ?, " +
-                "Postcode = ? " + "WHERE Email = ?";
+                "FirstName = ?, LastName = ?, Email = ?, " +
+                "Password = ?, DateOfBirth = ?, AddressLine1 = ?, " +
+                "AddressLine2 = ?, TownCity = ?, County = ?, " +
+                "Postcode = ?, AccountStatus = ? " +
+                "WHERE Email = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -102,15 +103,15 @@ public class UserDAO {
             pstmt.setString(8, user.getTownCity());
             pstmt.setString(9, user.getCounty());
             pstmt.setString(10, user.getPostcode());
-            pstmt.setString(11, originalEmail);
+            pstmt.setString(11, user.getAccountStatus().name());
+            pstmt.setString(12, originalEmail);
 
             pstmt.executeUpdate();
-        }
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public ObservableList<User> getAllUsers() {
         ObservableList<User> userList = FXCollections.observableArrayList();

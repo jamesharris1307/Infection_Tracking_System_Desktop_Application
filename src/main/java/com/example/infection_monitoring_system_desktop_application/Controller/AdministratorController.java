@@ -1,7 +1,9 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,7 +34,7 @@ public class AdministratorController {
     private TableColumn<User, Void> colDeleteAction;
 
     private ObservableList<User> userList = FXCollections.observableArrayList();
-    private UserDAO userDAO = new UserDAO();
+    private final UserService userService = new UserService();
 
     @FXML
     public void initialize() {
@@ -51,8 +53,16 @@ public class AdministratorController {
     }
 
     private void loadUsers() {
-        userList = userDAO.getAllUsers();
-        casesTable.setItems(userList);
+        userService.getAllUsersAsync()
+                .thenAccept(users -> Platform.runLater(() -> {
+                    userList.setAll(users);
+                    casesTable.setItems(userList);
+                }))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to load users."));
+                    return null;
+                });
     }
 
     private void addButtonToTable(TableColumn<User, Void> column, String buttonText, java.util.function.Consumer<User> action) {
@@ -79,18 +89,26 @@ public class AdministratorController {
     }
 
     private void handleToggleUserStatus(User user) {
-        if (user.getAccountStatus() == User.AccountStatus.Active) {
-            user.setAccountStatus(User.AccountStatus.Disabled);
-        } else {
-            user.setAccountStatus(User.AccountStatus.Active);
-        }
-        userDAO.updateUser(user, user.getEmail());
-        casesTable.refresh();
+        user.setAccountStatus(user.getAccountStatus() == User.AccountStatus.Active
+                ? User.AccountStatus.Disabled
+                : User.AccountStatus.Active);
+
+        userService.updateUserAsync(user, user.getEmail())
+                .thenRun(() -> Platform.runLater(casesTable::refresh))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to update user."));
+                    return null;
+                });
     }
 
     private void handleDeleteUser(User user) {
-        userDAO.deleteUser(user.getEmail());
-        userList.remove(user);
+        userService.deleteUserAsync(user.getEmail())
+                .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to delete user."));
+                    return null;
+                });
     }
 }
-

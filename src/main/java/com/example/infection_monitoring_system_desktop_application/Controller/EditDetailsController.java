@@ -3,6 +3,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
@@ -114,18 +115,22 @@ public class EditDetailsController {
     @FXML
     private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser == null) return;
 
-        CaseDAO caseDAO = new CaseDAO();
-        caseDAO.deleteCasesByUser(currentUser.getUserId());
+        UserService userService = new UserService();
 
-        UserDAO userDAO = new UserDAO();
-        userDAO.deleteUser(currentUser.getEmail());
-
-        SessionManager.getInstance().clearSession();
-        SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
-
-        AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
+        userService.deleteUserAsync(currentUser.getEmail())
+                .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                    SessionManager.getInstance().clearSession();
+                    SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+                    AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
+                }))
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    javafx.application.Platform.runLater(() ->
+                            AlertUtils.showError("Error", "Failed to delete account.")
+                    );
+                    return null;
+                });
     }
-
-
 }

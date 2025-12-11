@@ -5,6 +5,7 @@ import com.example.infection_monitoring_system_desktop_application.Model.Healthc
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
@@ -154,31 +155,39 @@ public class RegistrationController {
             }
 
             User newUser;
-
-            switch (roleSelection) {
-                case "General Public" -> newUser = new GeneralPublicUser(
+            switch (roleEnum) {
+                case GeneralPublic -> newUser = new GeneralPublicUser(
                         email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
-                        User.AccountStatus.Active
+                        accountStatusEnum
                 );
-                case "Healthcare Professional" -> newUser = new HealthcareProfessionalUser(
+                case HealthcareProfessional -> newUser = new HealthcareProfessionalUser(
                         email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
-                        User.AccountStatus.Disabled
+                        accountStatusEnum
                 );
-                case "Administrator" -> newUser = new AdministratorUser(
+                case Administrator -> newUser = new AdministratorUser(
                         email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
-                        User.AccountStatus.Disabled
+                        accountStatusEnum
                 );
                 default -> throw new IllegalArgumentException("Invalid role selected");
             }
 
-            UserDAO userDAO = new UserDAO();
-            userDAO.addUser(newUser);
+            UserService userService = new UserService();
 
-            AlertUtils.showInfo("Success", "User registered successfully!");
-            clearForm();
+            userService.addUserAsync(newUser)
+                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                        AlertUtils.showInfo("Success", "User registered successfully!");
+                        clearForm();
+                    }))
+                    .exceptionally(ex -> {
+                        ex.printStackTrace();
+                        javafx.application.Platform.runLater(() ->
+                                AlertUtils.showError("Error", "An error occurred while registering the user.")
+                        );
+                        return null;
+                    });
 
         } catch (Exception e) {
             e.printStackTrace();
