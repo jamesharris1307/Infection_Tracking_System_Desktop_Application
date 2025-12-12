@@ -15,10 +15,8 @@ public class ExceptionHandler {
     private ExceptionHandler() {}
 
     public static void handle(Throwable e, String contextMessage) {
-        // Log full exception details
         LOGGER.log(Level.SEVERE, contextMessage, e);
 
-        // Display user-friendly message on JavaFX thread
         Platform.runLater(() -> {
             if (e instanceof UserNotFoundException || e instanceof InvalidCredentialsException) {
                 AlertUtils.showError("Login Failed", e.getMessage());

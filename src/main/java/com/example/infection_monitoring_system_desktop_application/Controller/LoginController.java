@@ -35,6 +35,7 @@ public class LoginController {
 
         userService.getUserByEmailAsync(email)
                 .thenAcceptAsync(user -> {
+
                     try {
                         if (user == null) throw new UserNotFoundException("User not found for email: " + email);
                         if (!PasswordUtils.checkPassword(password, user.getPassword()))

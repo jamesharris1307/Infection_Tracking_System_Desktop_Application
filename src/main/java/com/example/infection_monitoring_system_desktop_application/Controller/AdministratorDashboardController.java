@@ -10,7 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class AdministratorController {
+public class AdministratorDashboardController {
 
     @FXML
     private TableView<User> casesTable;
@@ -33,6 +33,11 @@ public class AdministratorController {
     private TableColumn<User, Void> colDisableEnableAction;
     @FXML
     private TableColumn<User, Void> colDeleteAction;
+    @FXML
+    private ComboBox<String> cmbFilter;
+    @FXML
+    private TableView<User> userTable;
+
 
     private final ObservableList<User> userList = FXCollections.observableArrayList();
     private final UserService userService = new UserService();
@@ -50,6 +55,9 @@ public class AdministratorController {
             addButtonToTable(colEditAction, "Edit", this::handleEditUser);
             addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
             addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
+
+            cmbFilter.getItems().addAll("All", "Active", "Disabled");
+            cmbFilter.getSelectionModel().select("All");
 
             loadUsers();
         } catch (Exception e) {
@@ -128,4 +136,30 @@ public class AdministratorController {
             ExceptionHandler.handle(e, "Error deleting user");
         }
     }
+
+    private void filterByStatus(User.AccountStatus status) {
+        userService.getUsersByStatusAsync(status)
+                .thenAccept(filtered -> Platform.runLater(() -> {
+                    userList.setAll(filtered);
+                    casesTable.setItems(userList);
+                }))
+                .exceptionally(ex -> {
+                    ExceptionHandler.handle(ex.getCause() != null ? ex.getCause() : ex, "Failed to filter users");
+                    return null;
+                });
+    }
+
+    @FXML
+    private void onFilterClicked() {
+        String selection = cmbFilter.getValue();
+
+        if (selection.equals("All")) {
+            loadUsers();
+        } else if (selection.equals("Active")) {
+            filterByStatus(User.AccountStatus.Active);
+        } else if (selection.equals("Disabled")) {
+            filterByStatus(User.AccountStatus.Disabled);
+        }
+    }
 }
+

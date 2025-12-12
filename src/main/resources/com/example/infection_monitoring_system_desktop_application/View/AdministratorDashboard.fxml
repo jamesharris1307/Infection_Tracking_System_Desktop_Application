@@ -6,18 +6,17 @@
 <?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorController">
+            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorDashboardController">
 
     <top>
         <HBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <Button fx:id="btnFilter" text="Filter"/>
-            <Button fx:id="btnSearch" text="Search"/>
-            <Button fx:id="btnSort" text="Sort"/>
-        </HBox>
 
+            <ComboBox fx:id="cmbFilter" promptText="Filter By"/>
+            <Button fx:id="btnApplyFilter" text="Apply Filter" onAction="#onFilterClicked"/>
+        </HBox>
     </top>
 
     <center>

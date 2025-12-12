@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -176,7 +177,6 @@ public class UserDAO {
                     default:
                         throw new IllegalStateException("Unknown role: " + roleStr);
                 }
-
                 user.setUserId(userId);
                 userList.add(user);
             }
@@ -200,4 +200,5 @@ public class UserDAO {
             throw new DAOException("Failed to delete user: " + email, e);
         }
     }
+
 }
