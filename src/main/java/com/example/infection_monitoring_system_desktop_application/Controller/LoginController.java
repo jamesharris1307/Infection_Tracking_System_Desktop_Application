@@ -1,5 +1,9 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.*;

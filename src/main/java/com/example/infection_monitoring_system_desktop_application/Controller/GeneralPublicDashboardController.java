@@ -1,7 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
-import com.example.infection_monitoring_system_desktop_application.Util.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;

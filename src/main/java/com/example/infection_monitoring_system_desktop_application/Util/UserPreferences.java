@@ -1,5 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+
 import java.io.*;
 import java.util.Properties;
 

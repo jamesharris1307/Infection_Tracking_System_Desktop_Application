@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

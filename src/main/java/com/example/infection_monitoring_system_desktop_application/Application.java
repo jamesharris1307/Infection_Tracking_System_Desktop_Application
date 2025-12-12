@@ -1,7 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application;
 
-import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {

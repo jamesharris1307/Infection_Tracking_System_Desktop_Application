@@ -4,11 +4,10 @@ import com.example.infection_monitoring_system_desktop_application.Model.General
 import com.example.infection_monitoring_system_desktop_application.Model.HealthcareProfessionalUser;
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;

@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;

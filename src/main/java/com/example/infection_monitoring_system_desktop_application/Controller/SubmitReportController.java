@@ -4,7 +4,7 @@ import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,9 +14,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class SubmitReportController {

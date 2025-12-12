@@ -1,8 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
-import com.example.infection_monitoring_system_desktop_application.Util.ThemeManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 

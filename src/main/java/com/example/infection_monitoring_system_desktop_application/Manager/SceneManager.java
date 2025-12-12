@@ -1,4 +1,4 @@
-package com.example.infection_monitoring_system_desktop_application.Util;
+package com.example.infection_monitoring_system_desktop_application.Manager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
