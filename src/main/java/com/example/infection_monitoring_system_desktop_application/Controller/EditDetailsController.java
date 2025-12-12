@@ -79,9 +79,15 @@ public class EditDetailsController {
             currentUser.setPostcode(postcode);
 
             if (hashedPassword != null) currentUser.setPassword(hashedPassword);
+
             UserDAO userDAO = new UserDAO();
             userDAO.updateUser(currentUser, originalEmail);
+
             AlertUtils.showInfo("Success", "Profile updated successfully.");
+            clearForm();
+            if (parentController != null) {
+                parentController.showHomePage();
+            }
         } catch (Exception e) {
             AlertUtils.showError("Unexpected Error", "An unexpected error occurred while updating your profile.");
         }
@@ -106,5 +112,19 @@ public class EditDetailsController {
                     );
                     return null;
                 });
+    }
+
+    private void clearForm() {
+        fieldFirstName.clear();
+        fieldLastName.clear();
+        fieldEmail.clear();
+        fieldDob.setValue(null);
+        fieldAddress1.clear();
+        fieldAddress2.clear();
+        fieldCity.clear();
+        fieldCounty.clear();
+        fieldPostcode.clear();
+        fieldPassword.clear();
+        fieldConfirmPassword.clear();
     }
 }

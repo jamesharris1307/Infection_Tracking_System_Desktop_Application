@@ -22,8 +22,8 @@
                 </padding>
             <HBox alignment="CENTER" layoutX="50.0" layoutY="147.0" prefHeight="50.0" prefWidth="200.0" spacing="25.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" onAction="#toggleTheme" />
-                  <ToggleButton mnemonicParsing="false" onAction="#toggleLanguage" />
+                  <ToggleButton text="Change Theme" mnemonicParsing="false" onAction="#toggleTheme" />
+                  <ToggleButton text="Change Language" mnemonicParsing="false" onAction="#toggleLanguage" />
                </children>
             </HBox>
                 <TextField fx:id="usernameTextField" maxWidth="Infinity" prefHeight="30.0" promptText="%email" />

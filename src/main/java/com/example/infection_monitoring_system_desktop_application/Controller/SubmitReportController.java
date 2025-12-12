@@ -17,28 +17,45 @@ import java.util.Set;
 public class SubmitReportController {
     private GeneralPublicDashboardController parentController;
 
-    @FXML private RadioButton feverSymptomCheck;
-    @FXML private RadioButton coughSymptomCheck;
-    @FXML private RadioButton headacheSymptomCheck;
-    @FXML private RadioButton fatigueSymptomCheck;
-    @FXML private RadioButton shortnessOfBreathCheck;
-    @FXML private RadioButton lossOfSmellCheck;
-    @FXML private RadioButton MildSeverityCheck;
-    @FXML private RadioButton ModerateSeverityCheck;
-    @FXML private RadioButton SevereSeverityCheck;
-    @FXML private RadioButton YesWorsenedSymptomCheck;
-    @FXML private RadioButton NoWorsenedSymptomCheck;
-    @FXML private DatePicker symptomsStartDate;
-    @FXML private CheckBox exposureCheck;
-    @FXML private Button backButton;
+    @FXML
+    private RadioButton feverSymptomCheck;
+    @FXML
+    private RadioButton coughSymptomCheck;
+    @FXML
+    private RadioButton headacheSymptomCheck;
+    @FXML
+    private RadioButton fatigueSymptomCheck;
+    @FXML
+    private RadioButton shortnessOfBreathCheck;
+    @FXML
+    private RadioButton lossOfSmellCheck;
+    @FXML
+    private RadioButton MildSeverityCheck;
+    @FXML
+    private RadioButton ModerateSeverityCheck;
+    @FXML
+    private RadioButton SevereSeverityCheck;
+    @FXML
+    private RadioButton YesWorsenedSymptomCheck;
+    @FXML
+    private RadioButton NoWorsenedSymptomCheck;
+    @FXML
+    private DatePicker symptomsStartDate;
+    @FXML
+    private CheckBox exposureCheck;
+    @FXML
+    private Button backButton;
 
     private final ToggleGroup severityGroup = new ToggleGroup();
     private final ToggleGroup worsenedGroup = new ToggleGroup();
     private final CaseService caseService = new CaseService();
 
-    public void setParentController(GeneralPublicDashboardController parent) {this.parentController = parent;}
+    public void setParentController(GeneralPublicDashboardController parent) {
+        this.parentController = parent;
+    }
 
-    @FXML private void initialize() {
+    @FXML
+    private void initialize() {
         try {
             MildSeverityCheck.setToggleGroup(severityGroup);
             ModerateSeverityCheck.setToggleGroup(severityGroup);
@@ -85,9 +102,13 @@ public class SubmitReportController {
             Case newCase = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
 
             caseService.addCaseAsync(newCase)
-                    .thenRun(() -> Platform.runLater(() ->
-                            AlertUtils.showInfo("Submitted", "Your case report has been submitted.")
-                    ))
+                    .thenRun(() -> Platform.runLater(() -> {
+                        AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
+                        clearForm();
+                        if (parentController != null) {
+                            parentController.showHomePage();
+                        }
+                    }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
                         ExceptionHandler.handle(cause, "Failed to submit case report asynchronously");
@@ -96,5 +117,18 @@ public class SubmitReportController {
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error submitting case report");
         }
+    }
+
+    private void clearForm() {
+        feverSymptomCheck.setSelected(false);
+        coughSymptomCheck.setSelected(false);
+        headacheSymptomCheck.setSelected(false);
+        fatigueSymptomCheck.setSelected(false);
+        shortnessOfBreathCheck.setSelected(false);
+        lossOfSmellCheck.setSelected(false);
+
+        severityGroup.selectToggle(null);
+        worsenedGroup.selectToggle(null);
+        symptomsStartDate.setValue(null);
     }
 }

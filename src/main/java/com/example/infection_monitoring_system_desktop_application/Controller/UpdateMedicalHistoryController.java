@@ -65,9 +65,13 @@ public class UpdateMedicalHistoryController {
                             return service.updateMedicalHistoryAsync(medicalHistory);
                         }
                     })
-                    .thenRun(() -> javafx.application.Platform.runLater(() ->
-                            AlertUtils.showInfo("Success", "Medical history updated successfully.")
-                    ))
+                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                        AlertUtils.showInfo("Success", "Medical history updated successfully.");
+                        clearForm();
+                        if (parentController != null) {
+                            parentController.showHomePage();
+                        }
+                    }))
                     .exceptionally(ex -> {
                         javafx.application.Platform.runLater(() ->
                                 AlertUtils.showError("Unexpected Error", "Failed to update medical history.")
@@ -79,5 +83,12 @@ public class UpdateMedicalHistoryController {
                     AlertUtils.showError("Unexpected Error", "An unexpected error occurred.")
             );
         }
+    }
+
+    private void clearForm() {
+        longTermConditionsGroup.selectToggle(null);
+        longTermMedicationsGroup.selectToggle(null);
+        upToDateVaccinationsGroup.selectToggle(null);
+        allergiesGroup.selectToggle(null);
     }
 }
