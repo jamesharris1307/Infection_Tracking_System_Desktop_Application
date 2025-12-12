@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class UserPreferencesTest {
     }
 
     @Test
-    void saveAndLoadDarkMode() {
+    void saveAndLoadDarkMode() throws PreferencesException {
         assertFalse(UserPreferences.loadDarkMode());
         UserPreferences.saveDarkMode(true);
         assertTrue(UserPreferences.loadDarkMode());
@@ -37,7 +38,7 @@ class UserPreferencesTest {
     }
 
     @Test
-    void saveAndLoadLanguage() {
+    void saveAndLoadLanguage() throws PreferencesException {
         assertEquals("en", UserPreferences.loadLanguage());
         UserPreferences.saveLanguage("cy");
         assertEquals("cy", UserPreferences.loadLanguage());

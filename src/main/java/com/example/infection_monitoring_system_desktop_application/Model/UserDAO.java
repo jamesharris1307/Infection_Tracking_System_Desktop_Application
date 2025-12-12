@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -32,17 +33,17 @@ public class UserDAO {
             pstmt.setString(12, user.getRole().name());
 
             pstmt.executeUpdate();
-        }
-
-        catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DAOException("Failed to add user: " + user.getEmail(), e);
         }
     }
 
     public User getUserByEmail(String email) {
         String sql = "SELECT * FROM Users WHERE Email = ?";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) { pstmt.setString(1, email); ResultSet rs = pstmt.executeQuery();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
                 int userId = rs.getInt("UserID");
@@ -73,13 +74,13 @@ public class UserDAO {
                     default:
                         throw new IllegalStateException("Unknown role: " + roleStr);
                 }
-                user.setUserId(userId); return user;
+                user.setUserId(userId);
+                return user;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
             return null;
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get user by email: " + email, e);
         }
-        return null;
     }
 
     public void updateUser(User user, String originalEmail) {
@@ -108,10 +109,9 @@ public class UserDAO {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to update user: " + originalEmail, e);
         }
     }
-
 
     public ObservableList<User> getAllUsers() {
         ObservableList<User> userList = FXCollections.observableArrayList();
@@ -182,7 +182,7 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to get all users", e);
         }
 
         return userList;
@@ -197,7 +197,7 @@ public class UserDAO {
             pstmt.setString(1, email);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to delete user: " + email, e);
         }
     }
 }

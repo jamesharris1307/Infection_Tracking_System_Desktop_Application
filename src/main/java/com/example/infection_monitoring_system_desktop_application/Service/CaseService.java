@@ -3,7 +3,6 @@ package com.example.infection_monitoring_system_desktop_application.Service;
 import com.example.infection_monitoring_system_desktop_application.Manager.ConcurrencyManager;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
-import javafx.collections.ObservableList;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

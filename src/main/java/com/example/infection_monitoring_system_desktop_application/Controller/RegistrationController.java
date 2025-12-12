@@ -8,6 +8,11 @@ import com.example.infection_monitoring_system_desktop_application.Service.UserS
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.IllegalUserRoleException;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.ValidationException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -118,18 +123,15 @@ public class RegistrationController {
             String postcode = postcodeField.getText().trim();
             String roleSelection = roleComboBox.getValue();
 
-            if (roleSelection != null) {
-                switch (roleSelection) {
-                    case "Y Cyhoedd Cyffredinol" -> roleSelection = "General Public";
-                    case "Gweithiwr Gofal Iechyd" -> roleSelection = "Healthcare Professional";
-                    case "Gweinyddwr" -> roleSelection = "Administrator";
-                }
-            }
-
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
                     !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
-                AlertUtils.showError("Error", "Please fill in all required fields and ensure passwords match.");
-                return;
+                throw ExceptionFactory.validationError("Please fill in all required fields and ensure passwords match.");
+            }
+
+            switch (roleSelection) {
+                case "Y Cyhoedd Cyffredinol" -> roleSelection = "General Public";
+                case "Gweithiwr Gofal Iechyd" -> roleSelection = "Healthcare Professional";
+                case "Gweinyddwr" -> roleSelection = "Administrator";
             }
 
             String hashedPassword = PasswordUtils.hashPassword(password);
@@ -138,59 +140,36 @@ public class RegistrationController {
             User.AccountStatus accountStatusEnum;
 
             switch (roleSelection) {
-                case "General Public" -> {
-                    roleEnum = User.Role.GeneralPublic;
-                    accountStatusEnum = User.AccountStatus.Active;
-                }
-                case "Healthcare Professional" -> {
-                    roleEnum = User.Role.HealthcareProfessional;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                case "Administrator" -> {
-                    roleEnum = User.Role.Administrator;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                default -> throw new IllegalArgumentException("Invalid role selected");
+                case "General Public" -> { roleEnum = User.Role.GeneralPublic; accountStatusEnum = User.AccountStatus.Active; }
+                case "Healthcare Professional" -> { roleEnum = User.Role.HealthcareProfessional; accountStatusEnum = User.AccountStatus.Disabled; }
+                case "Administrator" -> { roleEnum = User.Role.Administrator; accountStatusEnum = User.AccountStatus.Disabled; }
+                default -> throw new IllegalUserRoleException("Invalid role selected");
             }
 
-            User newUser;
-            switch (roleEnum) {
-                case GeneralPublic -> newUser = new GeneralPublicUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                case HealthcareProfessional -> newUser = new HealthcareProfessionalUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                case Administrator -> newUser = new AdministratorUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                default -> throw new IllegalArgumentException("Invalid role selected");
-            }
+            User newUser = switch (roleEnum) {
+                case GeneralPublic -> new GeneralPublicUser(email, hashedPassword, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, accountStatusEnum);
+                case HealthcareProfessional -> new HealthcareProfessionalUser(email, hashedPassword, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, accountStatusEnum);
+                case Administrator -> new AdministratorUser(email, hashedPassword, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, accountStatusEnum);
+            };
 
             UserService userService = new UserService();
 
             userService.addUserAsync(newUser)
-                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                    .thenRun(() -> Platform.runLater(() -> {
                         AlertUtils.showInfo("Success", "User registered successfully!");
                         clearForm();
                     }))
                     .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        javafx.application.Platform.runLater(() ->
-                                AlertUtils.showError("Error", "An error occurred while registering the user.")
-                        );
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Error registering user asynchronously");
                         return null;
                     });
 
         } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtils.showError("Error", "An error occurred while registering the user.");
+            ExceptionHandler.handle(e, "Error during registration submission");
         }
     }
 

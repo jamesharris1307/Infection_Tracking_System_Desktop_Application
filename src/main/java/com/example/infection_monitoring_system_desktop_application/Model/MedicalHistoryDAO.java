@@ -1,5 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
+
 import java.sql.*;
 
 public class MedicalHistoryDAO {
@@ -19,7 +21,7 @@ public class MedicalHistoryDAO {
             pstmt.setObject(6, medicalHistory.getLastUpdated());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to add medical history for userID: " + medicalHistory.getUserID(), e);
         }
     }
 
@@ -42,7 +44,7 @@ public class MedicalHistoryDAO {
             pstmt.setInt(6, medicalHistory.getUserID());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to update medical history for userID: " + medicalHistory.getUserID(), e);
         }
     }
 
@@ -63,7 +65,7 @@ public class MedicalHistoryDAO {
                 );
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to fetch medical history for userID: " + userId, e);
         }
         return null;
     }

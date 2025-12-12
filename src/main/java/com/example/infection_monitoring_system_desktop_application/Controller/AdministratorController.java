@@ -2,7 +2,8 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,23 +34,27 @@ public class AdministratorController {
     @FXML
     private TableColumn<User, Void> colDeleteAction;
 
-    private ObservableList<User> userList = FXCollections.observableArrayList();
+    private final ObservableList<User> userList = FXCollections.observableArrayList();
     private final UserService userService = new UserService();
 
     @FXML
     public void initialize() {
-        colCaseId.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUserId()).asObject());
-        colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
-        colLastName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getLastName()));
-        colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
-        colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
-        colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
+        try {
+            colCaseId.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUserId()).asObject());
+            colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
+            colLastName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getLastName()));
+            colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
+            colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
+            colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
 
-        addButtonToTable(colEditAction, "Edit", this::handleEditUser);
-        addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
-        addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
+            addButtonToTable(colEditAction, "Edit", this::handleEditUser);
+            addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
+            addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
 
-        loadUsers();
+            loadUsers();
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "Error initializing AdministratorController");
+        }
     }
 
     private void loadUsers() {
@@ -59,8 +64,8 @@ public class AdministratorController {
                     casesTable.setItems(userList);
                 }))
                 .exceptionally(ex -> {
-                    ex.printStackTrace();
-                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to load users."));
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to load users asynchronously");
                     return null;
                 });
     }
@@ -68,11 +73,15 @@ public class AdministratorController {
     private void addButtonToTable(TableColumn<User, Void> column, String buttonText, java.util.function.Consumer<User> action) {
         column.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button(buttonText);
-
             {
                 button.setOnAction(event -> {
                     User user = getTableView().getItems().get(getIndex());
-                    action.accept(user);
+                    try {
+                        if (user == null) throw ExceptionFactory.validationError("Invalid user selected.");
+                        action.accept(user);
+                    } catch (Exception e) {
+                        ExceptionHandler.handle(e, "Error performing table action");
+                    }
                 });
             }
 
@@ -89,26 +98,34 @@ public class AdministratorController {
     }
 
     private void handleToggleUserStatus(User user) {
-        user.setAccountStatus(user.getAccountStatus() == User.AccountStatus.Active
-                ? User.AccountStatus.Disabled
-                : User.AccountStatus.Active);
+        try {
+            user.setAccountStatus(user.getAccountStatus() == User.AccountStatus.Active
+                    ? User.AccountStatus.Disabled
+                    : User.AccountStatus.Active);
 
-        userService.updateUserAsync(user, user.getEmail())
-                .thenRun(() -> Platform.runLater(casesTable::refresh))
-                .exceptionally(ex -> {
-                    ex.printStackTrace();
-                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to update user."));
-                    return null;
-                });
+            userService.updateUserAsync(user, user.getEmail())
+                    .thenRun(() -> Platform.runLater(casesTable::refresh))
+                    .exceptionally(ex -> {
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Failed to update user status");
+                        return null;
+                    });
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "Error toggling user status");
+        }
     }
 
     private void handleDeleteUser(User user) {
-        userService.deleteUserAsync(user.getEmail())
-                .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
-                .exceptionally(ex -> {
-                    ex.printStackTrace();
-                    Platform.runLater(() -> AlertUtils.showError("Error", "Failed to delete user."));
-                    return null;
-                });
+        try {
+            userService.deleteUserAsync(user.getEmail())
+                    .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
+                    .exceptionally(ex -> {
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Failed to delete user");
+                        return null;
+                    });
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "Error deleting user");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LanguageManagerTest {
 
     @BeforeEach
-    void resetLanguage() {
+    void resetLanguage() throws PreferencesException {
         LanguageManager.setEnglish();
     }
 
@@ -23,27 +24,21 @@ class LanguageManagerTest {
         assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
     }
 
-//    @Test
-//    void setLanguageToFrench() {
-//        LanguageManager.setLanguage(Locale.FRENCH);
-//        assertEquals("fr", LanguageManager.getBundle().getLocale().getLanguage());
-//    }
-
     @Test
-    void setEnglish() {
+    void setEnglish() throws PreferencesException {
         LanguageManager.setLanguage(Locale.FRENCH);
         LanguageManager.setEnglish();
         assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
     }
 
     @Test
-    void setWelsh() {
+    void setWelsh() throws PreferencesException {
         LanguageManager.setWelsh();
         assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
     }
 
     @Test
-    void applySavedLanguageEnglish() {
+    void applySavedLanguageEnglish() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             mockedPrefs.when(UserPreferences::loadLanguage).thenReturn("en");
             LanguageManager.applySavedLanguage();
@@ -52,7 +47,7 @@ class LanguageManagerTest {
     }
 
     @Test
-    void applySavedLanguageWelsh() {
+    void applySavedLanguageWelsh() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             mockedPrefs.when(UserPreferences::loadLanguage).thenReturn("cy");
             LanguageManager.applySavedLanguage();
@@ -61,7 +56,7 @@ class LanguageManagerTest {
     }
 
     @Test
-    void toggleLanguageFromEnglishToWelsh() {
+    void toggleLanguageFromEnglishToWelsh() throws PreferencesException {
         LanguageManager.setEnglish();
         assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
         LanguageManager.toggleLanguage();
@@ -69,7 +64,7 @@ class LanguageManagerTest {
     }
 
     @Test
-    void toggleLanguageFromWelshToEnglish() {
+    void toggleLanguageFromWelshToEnglish() throws PreferencesException {
         LanguageManager.setWelsh();
         assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
         LanguageManager.toggleLanguage();

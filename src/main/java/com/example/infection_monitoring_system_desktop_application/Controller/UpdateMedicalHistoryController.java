@@ -15,28 +15,19 @@ public class UpdateMedicalHistoryController {
 
     private GeneralPublicDashboardController parentController;
 
-    @FXML
-    private RadioButton longTermConditionsYes;
-    @FXML
-    private RadioButton longTermConditionsNo;
+    @FXML private RadioButton longTermConditionsYes;
+    @FXML private RadioButton longTermConditionsNo;
 
-    @FXML
-    private RadioButton longTermMedicationsYes;
-    @FXML
-    private RadioButton longTermMedicationsNo;
+    @FXML private RadioButton longTermMedicationsYes;
+    @FXML private RadioButton longTermMedicationsNo;
 
-    @FXML
-    private RadioButton upToDateVaccinationsYes;
-    @FXML
-    private RadioButton upToDateVaccinationsNo;
+    @FXML private RadioButton upToDateVaccinationsYes;
+    @FXML private RadioButton upToDateVaccinationsNo;
 
-    @FXML
-    private RadioButton allergiesYes;
-    @FXML
-    private RadioButton allergiesNo;
+    @FXML private RadioButton allergiesYes;
+    @FXML private RadioButton allergiesNo;
 
-    @FXML
-    private Button backButton;
+    @FXML private Button backButton;
 
     private final ToggleGroup longTermConditionsGroup = new ToggleGroup();
     private final ToggleGroup longTermMedicationsGroup = new ToggleGroup();
@@ -65,13 +56,18 @@ public class UpdateMedicalHistoryController {
     @FXML
     private void handleUpdateMedicalHistory() {
         try {
+            if (SessionManager.getInstance().getCurrentUser() == null) {
+                AlertUtils.showError("Error", "No user is currently logged in.");
+                return;
+            }
+
+            int userId = SessionManager.getInstance().getCurrentUser().getUserId();
             boolean hasConditions = longTermConditionsYes.isSelected();
             boolean hasMedications = longTermMedicationsYes.isSelected();
             boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
             boolean hasAllergies = allergiesYes.isSelected();
             LocalDateTime lastUpdated = LocalDateTime.now();
 
-            int userId = SessionManager.getInstance().getCurrentUser().getUserId();
             MedicalHistory medicalHistory = new MedicalHistory(
                     userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated
             );
@@ -86,22 +82,20 @@ public class UpdateMedicalHistoryController {
                             return service.updateMedicalHistoryAsync(medicalHistory);
                         }
                     })
-                    .thenRun(() -> {
-                        javafx.application.Platform.runLater(() -> {
-                            AlertUtils.showInfo("Success", "Medical history updated successfully.");
-                        });
-                    })
+                    .thenRun(() -> javafx.application.Platform.runLater(() ->
+                            AlertUtils.showInfo("Success", "Medical history updated successfully.")
+                    ))
                     .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        javafx.application.Platform.runLater(() -> {
-                            // Show error alert
-                            AlertUtils.showError("Error", "Failed to update medical history.");
-                        });
+                        javafx.application.Platform.runLater(() ->
+                                AlertUtils.showError("Unexpected Error", "Failed to update medical history.")
+                        );
                         return null;
                     });
+
         } catch (Exception e) {
-            e.printStackTrace();
+            javafx.application.Platform.runLater(() ->
+                    AlertUtils.showError("Unexpected Error", "An unexpected error occurred.")
+            );
         }
     }
-
 }

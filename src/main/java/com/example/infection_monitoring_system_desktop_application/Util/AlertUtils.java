@@ -14,10 +14,6 @@ public class AlertUtils {
         showAlert(Alert.AlertType.INFORMATION, title, message);
     }
 
-    public static void showWarning(String title, String message) {
-        showAlert(Alert.AlertType.WARNING, title, message);
-    }
-
     public static void showError(String title, String message) {
         showAlert(Alert.AlertType.ERROR, title, message);
     }

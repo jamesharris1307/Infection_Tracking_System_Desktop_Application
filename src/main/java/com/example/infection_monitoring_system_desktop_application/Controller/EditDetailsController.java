@@ -10,42 +10,27 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Sessi
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-
 import javafx.scene.control.Button;
+
 import java.time.LocalDate;
 
 public class EditDetailsController {
 
-    @FXML
-    private TextField fieldFirstName;
-    @FXML
-    private TextField fieldLastName;
-    @FXML
-    private TextField fieldEmail;
-    @FXML
-    private DatePicker fieldDob;
-    @FXML
-    private TextField fieldAddress1;
-    @FXML
-    private TextField fieldAddress2;
-    @FXML
-    private TextField fieldCity;
-    @FXML
-    private TextField fieldCounty;
-    @FXML
-    private TextField fieldPostcode;
-    @FXML
-    private TextField fieldPassword;
-    @FXML
-    private TextField fieldConfirmPassword;
+    @FXML private TextField fieldFirstName;
+    @FXML private TextField fieldLastName;
+    @FXML private TextField fieldEmail;
+    @FXML private DatePicker fieldDob;
+    @FXML private TextField fieldAddress1;
+    @FXML private TextField fieldAddress2;
+    @FXML private TextField fieldCity;
+    @FXML private TextField fieldCounty;
+    @FXML private TextField fieldPostcode;
+    @FXML private TextField fieldPassword;
+    @FXML private TextField fieldConfirmPassword;
 
-    @FXML
-    private Button submitEditDetailsButton;
-    @FXML
-    private Button deleteAccountButton;
-
-    @FXML
-    private Button backButton;
+    @FXML private Button submitEditDetailsButton;
+    @FXML private Button deleteAccountButton;
+    @FXML private Button backButton;
 
     private GeneralPublicDashboardController parentController;
 
@@ -80,12 +65,17 @@ public class EditDetailsController {
                 return;
             }
 
-            String hashedPassword =
-                    password.isEmpty() ? null : PasswordUtils.hashPassword(password);
+            String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
 
             User currentUser = SessionManager.getInstance().getCurrentUser();
+            if (currentUser == null) {
+                AlertUtils.showError("Error", "No user is currently logged in.");
+                return;
+            }
+
             String originalEmail = currentUser.getEmail();
 
+            // Update user details
             currentUser.setFirstName(firstName);
             currentUser.setLastName(lastName);
             currentUser.setEmail(email);
@@ -95,10 +85,7 @@ public class EditDetailsController {
             currentUser.setTownCity(city);
             currentUser.setCounty(county);
             currentUser.setPostcode(postcode);
-
-            if (hashedPassword != null) {
-                currentUser.setPassword(hashedPassword);
-            }
+            if (hashedPassword != null) currentUser.setPassword(hashedPassword);
 
             UserDAO userDAO = new UserDAO();
             userDAO.updateUser(currentUser, originalEmail);
@@ -106,18 +93,19 @@ public class EditDetailsController {
             AlertUtils.showInfo("Success", "Profile updated successfully.");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtils.showError("Error", "Failed to update profile.");
+            AlertUtils.showError("Unexpected Error", "An unexpected error occurred while updating your profile.");
         }
     }
 
     @FXML
     private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
-        if (currentUser == null) return;
+        if (currentUser == null) {
+            AlertUtils.showError("Error", "No user is currently logged in.");
+            return;
+        }
 
         UserService userService = new UserService();
-
         userService.deleteUserAsync(currentUser.getEmail())
                 .thenRun(() -> javafx.application.Platform.runLater(() -> {
                     SessionManager.getInstance().clearSession();
@@ -125,9 +113,8 @@ public class EditDetailsController {
                     AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
                 }))
                 .exceptionally(ex -> {
-                    ex.printStackTrace();
                     javafx.application.Platform.runLater(() ->
-                            AlertUtils.showError("Error", "Failed to delete account.")
+                            AlertUtils.showError("Unexpected Error", "Failed to delete account.")
                     );
                     return null;
                 });

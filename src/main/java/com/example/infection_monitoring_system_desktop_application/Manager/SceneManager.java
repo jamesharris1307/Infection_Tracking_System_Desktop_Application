@@ -1,11 +1,14 @@
 package com.example.infection_monitoring_system_desktop_application.Manager;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class SceneManager {
@@ -43,9 +46,8 @@ public class SceneManager {
                 ThemeManager.getInstance().applySavedTheme(mainScene);
             }
 
-        } catch (Exception e) {
-            java.util.logging.Logger.getLogger(SceneManager.class.getName())
-                    .log(java.util.logging.Level.SEVERE, "Failed to load FXML: " + fxmlPath, e);
+        } catch (IOException | PreferencesException e) {
+            throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -20,21 +21,35 @@ public class SettingsPageController {
     @FXML
     private void initialize() {
         editProfileButton.setOnAction(e -> {
-            if (parentController != null) {
-                parentController.showEditDetailsPage();
+            try {
+                if (parentController != null) {
+                    parentController.showEditDetailsPage();
+                } else {
+                    AlertUtils.showError("Navigation Error", "Cannot open Edit Details page. Parent controller is missing.");
+                }
+            } catch (Exception ex) {
+                AlertUtils.showError("Unexpected Error", "Failed to open Edit Details page.");
             }
         });
     }
 
     @FXML
     private void handleChangeTheme() {
-        ThemeManager.getInstance().toggleTheme();
-        SceneManager.refreshCurrentRoot();
+        try {
+            ThemeManager.getInstance().toggleTheme();
+            SceneManager.refreshCurrentRoot();
+        } catch (Exception ex) {
+            AlertUtils.showError("Unexpected Error", "Failed to apply new theme.");
+        }
     }
 
     @FXML
     private void handleChangeLanguage() {
-        LanguageManager.toggleLanguage();
-        SceneManager.refreshCurrentRoot();
+        try {
+            LanguageManager.toggleLanguage();
+            SceneManager.refreshCurrentRoot();
+        } catch (Exception ex) {
+            AlertUtils.showError("Unexpected Error", "Failed to switch language.");
+        }
     }
 }

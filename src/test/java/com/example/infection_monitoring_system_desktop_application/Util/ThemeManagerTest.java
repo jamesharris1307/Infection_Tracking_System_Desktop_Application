@@ -1,6 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -22,14 +23,14 @@ class ThemeManagerTest {
     }
 
     @BeforeEach
-    void resetTheme() {
+    void resetTheme() throws PreferencesException {
         if (ThemeManager.getInstance().isDarkMode()) {
             ThemeManager.getInstance().toggleTheme();
         } assertFalse(ThemeManager.getInstance().isDarkMode());
     }
 
     @Test
-    void toggleTheme() {
+    void toggleTheme() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             ThemeManager.getInstance().toggleTheme();
             assertTrue(ThemeManager.getInstance().isDarkMode());
@@ -38,11 +39,11 @@ class ThemeManagerTest {
     }
 
     @Test
-    void applyThemeDarkMode() {
+    void applyThemeDarkMode() throws PreferencesException {
         Scene scene = new Scene(new StackPane());
         ThemeManager.getInstance().toggleTheme();
         ThemeManager.getInstance().applyTheme(scene);
-        assertTrue(scene.getStylesheets().get(0).contains("darkMode.css"));
+        assertTrue(scene.getStylesheets().getFirst().contains("darkMode.css"));
     }
 
     @Test
@@ -50,17 +51,17 @@ class ThemeManagerTest {
         Scene scene = new Scene(new StackPane());
         assertFalse(ThemeManager.getInstance().isDarkMode());
         ThemeManager.getInstance().applyTheme(scene);
-        assertTrue(scene.getStylesheets().get(0).contains("lightMode.css"));
+        assertTrue(scene.getStylesheets().getFirst().contains("lightMode.css"));
     }
 
     @Test
-    void applySavedThemeLoadsDarkMode() {
+    void applySavedThemeLoadsDarkMode() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             mockedPrefs.when(UserPreferences::loadDarkMode).thenReturn(true);
             Scene scene = new Scene(new StackPane());
             ThemeManager.getInstance().applySavedTheme(scene);
             assertTrue(ThemeManager.getInstance().isDarkMode());
-            assertTrue(scene.getStylesheets().get(0).contains("darkMode.css"));
+            assertTrue(scene.getStylesheets().getFirst().contains("darkMode.css"));
         }
     }
 
@@ -71,12 +72,14 @@ class ThemeManagerTest {
             Scene scene = new Scene(new StackPane());
             ThemeManager.getInstance().applySavedTheme(scene);
             assertFalse(ThemeManager.getInstance().isDarkMode());
-            assertTrue(scene.getStylesheets().get(0).contains("lightMode.css"));
+            assertTrue(scene.getStylesheets().getFirst().contains("lightMode.css"));
+        } catch (PreferencesException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Test
-    void isDarkModeReflectsState() {
+    void isDarkModeReflectsState() throws PreferencesException {
         assertFalse(ThemeManager.getInstance().isDarkMode());
         ThemeManager.getInstance().toggleTheme();
         assertTrue(ThemeManager.getInstance().isDarkMode());

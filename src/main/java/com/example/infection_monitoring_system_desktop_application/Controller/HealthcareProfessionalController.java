@@ -2,6 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -10,7 +11,7 @@ import javafx.scene.control.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
 
 public class HealthcareProfessionalController {
 
@@ -34,15 +35,23 @@ public class HealthcareProfessionalController {
 
     @FXML
     public void initialize() {
+        try {
+            setupColumns();
+            loadCases();
+        } catch (Exception e) {
+            AlertUtils.showError("Unexpected Error", "Failed to initialise case table.");
+        }
+    }
 
+    private void setupColumns() {
         colCaseId.setCellValueFactory(c ->
                 new SimpleObjectProperty<>(c.getValue().getCaseID())
         );
 
         colUserId.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getUser() != null
-                        ? c.getValue().getUser().getUserId()
-                        : null)
+                new SimpleObjectProperty<>(
+                        c.getValue().getUser() != null ? c.getValue().getUser().getUserId() : null
+                )
         );
 
         colFirstName.setCellValueFactory(c ->
@@ -63,9 +72,7 @@ public class HealthcareProfessionalController {
         });
 
         colSymptoms.setCellValueFactory(c ->
-                new SimpleStringProperty(
-                        String.join(", ", c.getValue().getSymptoms())
-                )
+                new SimpleStringProperty(String.join(", ", c.getValue().getSymptoms()))
         );
 
         colSymptomsBegan.setCellValueFactory(c -> {
@@ -80,12 +87,14 @@ public class HealthcareProfessionalController {
         colExposure.setCellValueFactory(c ->
                 new SimpleObjectProperty<>(c.getValue().isConfirmedExposure())
         );
-
-        loadCases();
     }
 
     private void loadCases() {
-        allCases = caseDAO.getAllCases();
-        casesTable.setItems(FXCollections.observableArrayList(allCases));
+        try {
+            allCases = caseDAO.getAllCases();
+            casesTable.setItems(FXCollections.observableArrayList(allCases));
+        } catch (Exception e) {
+            AlertUtils.showError("Error", "Failed to load cases.");
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -51,7 +52,6 @@ public class GeneralPublicDashboardController {
                 settingsController.setParentController(this);
             }
 
-
             try {
                 var field = controller.getClass().getDeclaredField("backButton");
                 field.setAccessible(true);
@@ -60,15 +60,19 @@ public class GeneralPublicDashboardController {
                     setupBackButton(backBtn);
                 }
             } catch (NoSuchFieldException | IllegalAccessException ignored) {
+                // This is optional and non-critical, so no alert
             }
 
             centerPages.getChildren().clear();
             centerPages.getChildren().add(page);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            AlertUtils.showError("Load Error", "Failed to load page: " + fxmlPath);
+        } catch (Exception ex) {
+            AlertUtils.showError("Unexpected Error", "An unexpected error occurred.");
         }
     }
+
 
     @FXML
     public void showHomePage() {

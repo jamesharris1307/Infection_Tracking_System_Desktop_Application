@@ -1,5 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,7 +38,7 @@ public class CaseDAO {
             pstmt.setBoolean(6, newCase.isConfirmedExposure());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to add case for userID: " + newCase.getUserID(), e);
         }
     }
 
@@ -79,7 +81,7 @@ public class CaseDAO {
                 list.add(c);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to fetch all cases", e);
         }
         return list;
     }
@@ -91,7 +93,7 @@ public class CaseDAO {
             pstmt.setInt(1, userID);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to delete cases for userID: " + userID, e);
         }
     }
 }
