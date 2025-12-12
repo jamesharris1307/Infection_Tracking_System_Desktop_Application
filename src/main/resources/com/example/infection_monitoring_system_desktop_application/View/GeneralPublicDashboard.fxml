@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
+
+    <AnchorPane fx:id="rootContent" style="-fx-font-size: 12px;">
+        <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+            <!-- LEFT PANEL -->
+            <VBox alignment="TOP_CENTER" prefHeight="561.0" prefWidth="250.0" spacing="15" styleClass="sidePanel">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="160.0" spacing="20.0">
+               <children>
+                      <Button fx:id="settingsBtn" maxWidth="Infinity" styleClass="NoBackground" text="Settings" />
+      
+                            <Button fx:id="logoutBtn" maxWidth="Infinity" styleClass="NoBackground" text="Logout" />
+               </children>
+            </HBox>
+
+                <Label text="Full Name" />
+                <Label fx:id="lblUserName" text="Label" />
+            </VBox>
+
+            <!-- CENTER AREA -->
+            <StackPane fx:id="centerPages" styleClass="root" HBox.hgrow="ALWAYS">
+
+                <!-- HOME PAGE -->
+                <VBox fx:id="pageHome" alignment="CENTER" maxWidth="500" spacing="20" styleClass="root" visible="false">
+                    <padding>
+                        <Insets bottom="25" left="25" right="25" top="25" />
+                    </padding>
+
+                    <Button fx:id="updateMedicalHistoryButton" maxWidth="300" text="Update Medical History" />
+                    <Button fx:id="submitReportButton" maxWidth="300" text="Submit Report" />
+                    <Button fx:id="viewSubmissionsButton" maxWidth="300" text="View Submissions" />
+                </VBox>
+
+                <!-- REPORT FORM -->
+                <ScrollPane fx:id="submitReportPage" fitToHeight="true" fitToWidth="true" styleClass="root" visible="false">
+                    <VBox fx:id="pageReportForm" alignment="TOP_CENTER" spacing="20" styleClass="root">
+                        <padding>
+                            <Insets bottom="20" left="20" right="20" top="20" />
+                        </padding>
+
+                        <HBox>
+                            <Button fx:id="backButton" text="Back" />
+                        </HBox>
+
+                        <!-- SECTION 1 -->
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="What symptoms are you experiencing?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <VBox spacing="5">
+                                    <RadioButton fx:id="feverSymptomCheck" text="Fever" />
+                                    <RadioButton fx:id="coughSymptomCheck" text="Cough" />
+                                    <RadioButton fx:id="headacheSymptomCheck" text="Headache" />
+                                </VBox>
+                                <VBox spacing="5">
+                                    <RadioButton fx:id="fatigueSymptomCheck" text="Fatigue" />
+                                    <RadioButton fx:id="shortnessOfBreathCheck" text="Shortness of Breath" />
+                                    <RadioButton fx:id="lossOfSmellCheck" text="Loss of Smell" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- SECTION 2 -->
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="When did your symptoms begin?" />
+                            <DatePicker fx:id="symptomsStartDate" promptText="Select date" />
+                        </VBox>
+
+                        <!-- SECTION 3 -->
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Symptom severity" />
+                            <HBox alignment="CENTER" spacing="15">
+                                <RadioButton fx:id="MildSeverityCheck" text="Mild" />
+                                <RadioButton fx:id="ModerateSeverityCheck" text="Moderate" />
+                                <RadioButton fx:id="SevereSeverityCheck" text="Severe" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- SECTION 4 -->
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Have symptoms worsened?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <RadioButton fx:id="YesWorsenedSymptomCheck" text="Yes" />
+                                <RadioButton fx:id="NoWorsenedSymptomCheck" text="No" />
+                            </HBox>
+                        </VBox>
+
+                        <Button fx:id="submitReportDetailsButton" maxWidth="200" onAction="#handleSubmitReport" text="Submit" />
+                    </VBox>
+                </ScrollPane>
+
+                <!-- UPDATE MEDICAL HISTORY -->
+                <ScrollPane fx:id="updateMedicalHistoryPage" fitToHeight="true" fitToWidth="true" styleClass="root">
+                    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
+                        <padding>
+                            <Insets bottom="20" left="20" right="20" top="20" />
+                        </padding>
+
+                        <HBox>
+                            <Button fx:id="btnBackUpdateHistory" text="Back" />
+                        </HBox>
+
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Existing Long-Term Medical Conditions?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <RadioButton fx:id="longTermConditionsYes" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="longTermConditionsGroup" />
+                           </toggleGroup></RadioButton>
+                                <RadioButton fx:id="longTermConditionsNo" text="No" toggleGroup="$longTermConditionsGroup" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Long-Term Medications?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <RadioButton fx:id="longTermMedicationsYes" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="longTermMedicationsGroup" />
+                           </toggleGroup></RadioButton>
+                                <RadioButton fx:id="longTermMedicationsNo" text="No" toggleGroup="$longTermMedicationsGroup" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Vaccinations Up to Date?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <RadioButton fx:id="upToDateVaccinationsYes" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="upToDateVaccinationsGroup" />
+                           </toggleGroup></RadioButton>
+                                <RadioButton fx:id="upToDateVaccinationsNo" text="No" toggleGroup="$upToDateVaccinationsGroup" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox alignment="TOP_CENTER" spacing="10">
+                            <Label text="Any known allergies?" />
+                            <HBox alignment="CENTER" spacing="20">
+                                <RadioButton fx:id="allergiesYes" text="Yes">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="allergiesGroup" />
+                           </toggleGroup></RadioButton>
+                                <RadioButton fx:id="allergiesNo" text="No" toggleGroup="$allergiesGroup" />
+                            </HBox>
+                        </VBox>
+
+                        <Button fx:id="submitUpdateMedicalHistoryButton" maxWidth="200" onAction="#handleUpdateMedicalHistory" text="Submit" />
+                    </VBox>
+                </ScrollPane>
+
+                <!-- EDIT DETAILS PAGE -->
+                <ScrollPane fx:id="editDetailsPage" fitToHeight="true" fitToWidth="true" styleClass="root" visible="false">
+                    <VBox alignment="TOP_CENTER" spacing="20" styleClass="root">
+                        <padding>
+                            <Insets bottom="20" left="20" right="20" top="20" />
+                        </padding>
+
+                        <HBox>
+                            <Button fx:id="btnBackEditDetails" text="Back" />
+                        </HBox>
+
+                        <!-- Fields -->
+                        <VBox alignment="TOP_CENTER" spacing="12">
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="First Name" />
+                                <TextField fx:id="fieldFirstName" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Last Name" />
+                                <TextField fx:id="fieldLastName" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Email" />
+                                <TextField fx:id="fieldEmail" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Date of Birth" />
+                                <DatePicker fx:id="fieldDob" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Address Line 1" />
+                                <TextField fx:id="fieldAddress1" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Address Line 2" />
+                                <TextField fx:id="fieldAddress2" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Town / City" />
+                                <TextField fx:id="fieldCity" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="County" />
+                                <TextField fx:id="fieldCounty" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Postcode" />
+                                <TextField fx:id="fieldPostcode" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Password" />
+                                <TextField fx:id="fieldPassword" />
+                            </HBox>
+
+                            <HBox alignment="CENTER" spacing="20">
+                                <Label text="Confirm Password" />
+                                <TextField fx:id="fieldConfirmPassword" />
+                            </HBox>
+                     <Button fx:id="btnSubmitEditDetails1" maxWidth="200" onAction="#handleEditDetailsSubmit" text="Submit" />
+
+                            <Button fx:id="btnDeleteAccount" maxWidth="200" onAction="#handleDeleteAccount" text="Delete" />
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            <VBox fx:id="pageHome1" alignment="CENTER" maxWidth="500" spacing="20" styleClass="root" visible="false">
+               <padding>
+                  <Insets bottom="25" left="25" right="25" top="25" />
+               </padding>
+               <children>
+                  <Button fx:id="btnUpdateHistory1" maxWidth="300" text="Change Theme" />
+                  <Button fx:id="btnSubmitReport1" maxWidth="300" text="Change Language" />
+                  <Button fx:id="btnViewSubmissions1" maxWidth="300" text="Edit Profile" />
+               </children>
+            </VBox>
+
+            </StackPane>
+
+            <!-- RIGHT PANEL -->
+            <VBox alignment="TOP_CENTER" prefHeight="561.0" prefWidth="250.0" spacing="15" styleClass="sidePanel">
+                <padding>
+                    <Insets bottom="20" left="20" right="20" top="20" />
+                </padding>
+
+                      <VBox spacing="5" style="-fx-padding: 10;" styleClass="panelBackground">
+                    <Label style="-fx-font-weight: bold;" text="Today's Date:" />
+                    <Label fx:id="lblCurrentDate" text="00/00/0000" />
+                </VBox>
+
+                      <VBox spacing="5" style="-fx-padding: 10;" styleClass="panelBackground">
+                    <Label style="-fx-font-weight: bold;" text="Medical History:" />
+                    <Label fx:id="lblHistoryDate" text="Last Updated 00/00/0000" />
+                </VBox>
+
+                      <VBox spacing="5" style="-fx-padding: 10;" styleClass="panelBackground">
+                    <Label style="-fx-font-weight: bold;" text="Vaccination Status:" />
+                    <Label fx:id="lblVaccStatus" text="Up to Date" />
+                </VBox>
+
+                      <VBox spacing="5" style="-fx-padding: 10;" styleClass="panelBackground">
+                    <Label style="-fx-font-weight: bold;" text="Existing Conditions:" />
+                    <Label fx:id="lblExistingConditions" text="No" />
+                </VBox>
+            </VBox>
+
+        </HBox>
+    </AnchorPane>
+
+</StackPane>

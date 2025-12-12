@@ -5,6 +5,7 @@ import com.example.infection_monitoring_system_desktop_application.Model.Healthc
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 
 public class RegistrationController {
 
@@ -126,9 +128,11 @@ public class RegistrationController {
 
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
                     !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
-                showAlert("Error", "Please fill in all required fields and ensure passwords match.");
+                AlertUtils.showError("Error", "Please fill in all required fields and ensure passwords match.");
                 return;
             }
+
+            String hashedPassword = PasswordUtils.hashPassword(password);
 
             User.Role roleEnum;
             User.AccountStatus accountStatusEnum;
@@ -153,17 +157,17 @@ public class RegistrationController {
 
             switch (roleSelection) {
                 case "General Public" -> newUser = new GeneralPublicUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Active
                 );
                 case "Healthcare Professional" -> newUser = new HealthcareProfessionalUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Disabled
                 );
                 case "Administrator" -> newUser = new AdministratorUser(
-                        email, password, firstName, lastName, dob,
+                        email, hashedPassword, firstName, lastName, dob,
                         address1, address2, city, county, postcode,
                         User.AccountStatus.Disabled
                 );
@@ -173,22 +177,13 @@ public class RegistrationController {
             UserDAO userDAO = new UserDAO();
             userDAO.addUser(newUser);
 
-
-            showAlert("Success", "User registered successfully!");
+            AlertUtils.showInfo("Success", "User registered successfully!");
             clearForm();
 
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "An error occurred while registering the user.");
+            AlertUtils.showError("Error", "An error occurred while registering the user.");
         }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void clearForm() {
