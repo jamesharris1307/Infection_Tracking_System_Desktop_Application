@@ -1,22 +1,20 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-
 import java.time.LocalDateTime;
+import javafx.scene.control.*;
 import java.util.HashSet;
+import javafx.fxml.FXML;
 import java.util.Set;
 
 public class SubmitReportController {
-
     private GeneralPublicDashboardController parentController;
 
     @FXML private RadioButton feverSymptomCheck;
@@ -25,30 +23,22 @@ public class SubmitReportController {
     @FXML private RadioButton fatigueSymptomCheck;
     @FXML private RadioButton shortnessOfBreathCheck;
     @FXML private RadioButton lossOfSmellCheck;
-
     @FXML private RadioButton MildSeverityCheck;
     @FXML private RadioButton ModerateSeverityCheck;
     @FXML private RadioButton SevereSeverityCheck;
-
     @FXML private RadioButton YesWorsenedSymptomCheck;
     @FXML private RadioButton NoWorsenedSymptomCheck;
+    @FXML private DatePicker symptomsStartDate;
+    @FXML private CheckBox exposureCheck;
+    @FXML private Button backButton;
 
     private final ToggleGroup severityGroup = new ToggleGroup();
     private final ToggleGroup worsenedGroup = new ToggleGroup();
-
-    @FXML private DatePicker symptomsStartDate;
-    @FXML private CheckBox exposureCheck;
-
-    @FXML private Button backButton;
-
     private final CaseService caseService = new CaseService();
 
-    public void setParentController(GeneralPublicDashboardController parent) {
-        this.parentController = parent;
-    }
+    public void setParentController(GeneralPublicDashboardController parent) {this.parentController = parent;}
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         try {
             MildSeverityCheck.setToggleGroup(severityGroup);
             ModerateSeverityCheck.setToggleGroup(severityGroup);
@@ -61,10 +51,10 @@ public class SubmitReportController {
         }
     }
 
-    @FXML
-    private void handleSubmitReport() {
+    @FXML private void handleSubmitReport() {
         try {
             User currentUser = SessionManager.getInstance().getCurrentUser();
+
             if (currentUser == null || currentUser.getUserId() <= 0) {
                 throw ExceptionFactory.validationError("No valid user is logged in.");
             }
@@ -74,8 +64,8 @@ public class SubmitReportController {
             LocalDateTime symptomsBegan = symptomsStartDate.getValue() != null
                     ? symptomsStartDate.getValue().atStartOfDay()
                     : null;
-
             Set<String> symptomsSet = new HashSet<>();
+
             if (feverSymptomCheck.isSelected()) symptomsSet.add("Fever");
             if (coughSymptomCheck.isSelected()) symptomsSet.add("Cough");
             if (headacheSymptomCheck.isSelected()) symptomsSet.add("Headache");
@@ -92,7 +82,6 @@ public class SubmitReportController {
             }
 
             boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
-
             Case newCase = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
 
             caseService.addCaseAsync(newCase)
@@ -104,7 +93,6 @@ public class SubmitReportController {
                         ExceptionHandler.handle(cause, "Failed to submit case report asynchronously");
                         return null;
                     });
-
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error submitting case report");
         }

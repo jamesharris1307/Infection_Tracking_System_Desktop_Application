@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorDashboardController">
@@ -16,6 +16,7 @@
 
             <ComboBox fx:id="cmbFilter" promptText="Filter By"/>
             <Button fx:id="btnApplyFilter" text="Apply Filter" onAction="#onFilterClicked"/>
+            <TextField fx:id="txtSearch" onKeyReleased="#onSearchKeyTyped"/>
         </HBox>
     </top>
 

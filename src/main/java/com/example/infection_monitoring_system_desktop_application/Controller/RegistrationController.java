@@ -1,49 +1,44 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.IllegalUserRoleException;
 import com.example.infection_monitoring_system_desktop_application.Model.HealthcareProfessionalUser;
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.IllegalUserRoleException;
-import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.ValidationException;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import javafx.application.Platform;
+import javafx.scene.shape.Circle;
+import javafx.scene.layout.VBox;
+import java.util.ResourceBundle;
+import javafx.scene.control.*;
+import java.time.LocalDate;
+import javafx.fxml.FXML;
 
 public class RegistrationController {
 
     @FXML private VBox page1;
     @FXML private VBox page2;
     @FXML private VBox page3;
-
     @FXML private Circle step1Circle;
     @FXML private Circle step2Circle;
     @FXML private Circle step3Circle;
     @FXML private Label step1Label;
     @FXML private Label step2Label;
     @FXML private Label step3Label;
-
     @FXML private Button next1Button;
     @FXML private Button next2Button;
     @FXML private Button back2Button;
     @FXML private Button back3Button;
     @FXML private Button submitButton;
-
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
-
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
     @FXML private DatePicker dobPicker;
@@ -56,11 +51,9 @@ public class RegistrationController {
 
     private int currentPage = 1;
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         showPage(currentPage);
         populateRoleComboBox();
-
         next1Button.setOnAction(e -> goToPage(2));
         back2Button.setOnAction(e -> goToPage(1));
         next2Button.setOnAction(e -> goToPage(3));
@@ -135,7 +128,6 @@ public class RegistrationController {
             }
 
             String hashedPassword = PasswordUtils.hashPassword(password);
-
             User.Role roleEnum;
             User.AccountStatus accountStatusEnum;
 
@@ -156,7 +148,6 @@ public class RegistrationController {
             };
 
             UserService userService = new UserService();
-
             userService.addUserAsync(newUser)
                     .thenRun(() -> Platform.runLater(() -> {
                         AlertUtils.showInfo("Success", "User registered successfully!");
@@ -167,7 +158,6 @@ public class RegistrationController {
                         ExceptionHandler.handle(cause, "Error registering user asynchronously");
                         return null;
                     });
-
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error during registration submission");
         }
@@ -189,8 +179,7 @@ public class RegistrationController {
         goToPage(1);
     }
 
-    @FXML
-    private void viewLogin() {
+    @FXML private void viewLogin() {
         SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
     }
 }

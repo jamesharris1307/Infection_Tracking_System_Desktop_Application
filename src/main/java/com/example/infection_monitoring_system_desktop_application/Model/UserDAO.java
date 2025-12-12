@@ -1,14 +1,12 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.sql.Connection;
+import javafx.collections.FXCollections;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.ResultSet;
 
 public class UserDAO {
 
@@ -51,6 +49,7 @@ public class UserDAO {
                 String roleStr = rs.getString("Role");
                 User.Role role = User.Role.valueOf(roleStr);
                 User user;
+
                 switch (role) {
                     case GeneralPublic:
                         user = new GeneralPublicUser(rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
@@ -200,5 +199,4 @@ public class UserDAO {
             throw new DAOException("Failed to delete user: " + email, e);
         }
     }
-
 }

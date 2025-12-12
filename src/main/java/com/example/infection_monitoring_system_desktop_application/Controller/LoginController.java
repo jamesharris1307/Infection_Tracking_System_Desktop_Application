@@ -1,30 +1,26 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.*;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.*;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Util.*;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameTextField;
-
-    @FXML
-    private PasswordField passwordField;
+    @FXML private TextField usernameTextField;
+    @FXML private PasswordField passwordField;
 
     private final UserService userService = new UserService();
 
-    @FXML
-    private void login() {
+    @FXML private void login() {
         String email = usernameTextField.getText().trim();
         String password = passwordField.getText().trim();
 
@@ -35,16 +31,12 @@ public class LoginController {
 
         userService.getUserByEmailAsync(email)
                 .thenAcceptAsync(user -> {
-
                     try {
                         if (user == null) throw new UserNotFoundException("User not found for email: " + email);
                         if (!PasswordUtils.checkPassword(password, user.getPassword()))
                             throw new InvalidCredentialsException("Invalid password");
-
                         SessionManager.getInstance().setCurrentUser(user);
-
                         Platform.runLater(() -> switchDashboard(user.getRole()));
-
                     } catch (Exception e) {
                         ExceptionHandler.handle(e, "Error validating user credentials");
                     }
@@ -72,8 +64,7 @@ public class LoginController {
         }
     }
 
-    @FXML
-    private void toggleTheme() {
+    @FXML private void toggleTheme() {
         try {
             ThemeManager.getInstance().toggleTheme();
             SceneManager.refreshCurrentRoot();
@@ -82,8 +73,7 @@ public class LoginController {
         }
     }
 
-    @FXML
-    private void toggleLanguage() {
+    @FXML private void toggleLanguage() {
         try {
             LanguageManager.toggleLanguage();
             SceneManager.refreshCurrentRoot();
@@ -92,8 +82,7 @@ public class LoginController {
         }
     }
 
-    @FXML
-    private void viewRegistration() {
+    @FXML private void viewRegistration() {
         try {
             SceneManager.switchRoot(
                     "/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"

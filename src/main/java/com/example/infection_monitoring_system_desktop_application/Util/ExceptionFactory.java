@@ -4,9 +4,7 @@ import com.example.infection_monitoring_system_desktop_application.Util.Exceptio
 
 public class ExceptionFactory {
 
-    private ExceptionFactory() {
-        // Prevent instantiation
-    }
+    private ExceptionFactory() {}
 
     public static ValidationException validationError(String message) {
         return new ValidationException(message);

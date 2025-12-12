@@ -5,8 +5,8 @@ import com.example.infection_monitoring_system_desktop_application.Util.Exceptio
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.InvalidCredentialsException;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.UserNotFoundException;
 import javafx.application.Platform;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class ExceptionHandler {
 

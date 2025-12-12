@@ -2,9 +2,8 @@ package com.example.infection_monitoring_system_desktop_application.Manager;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Util.UserPreferences;
-
-import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Locale;
 
 public class LanguageManager {
 

@@ -1,30 +1,26 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import java.sql.PreparedStatement;
+import org.mockito.MockedStatic;
+import java.sql.Connection;
+import java.time.LocalDate;
+import org.mockito.Mockito;
+import java.sql.ResultSet;
 
 class UserDAOTest {
 
     private UserDAO userDAO;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeEach void setUp() {
         userDAO = new UserDAO();
     }
 
-    @Test
-    void testAddUserSuccess() throws Exception {
+    @Test void testAddUserSuccess() throws Exception {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
 
@@ -67,8 +63,7 @@ class UserDAOTest {
         }
     }
 
-    @Test
-    void testLoginUserSuccess() throws Exception {
+    @Test void testLoginUserSuccess() throws Exception {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -104,8 +99,7 @@ class UserDAOTest {
         }
     }
 
-    @Test
-    void loginUser_failWrongPassword() throws Exception {
+    @Test void loginUser_failWrongPassword() throws Exception {
         Connection mockConn = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);

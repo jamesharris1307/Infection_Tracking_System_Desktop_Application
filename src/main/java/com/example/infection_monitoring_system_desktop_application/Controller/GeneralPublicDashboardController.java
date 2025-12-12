@@ -1,29 +1,26 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.control.Button;
+import javafx.fxml.FXMLLoader;
 import java.io.IOException;
+import javafx.scene.Node;
+import javafx.fxml.FXML;
 
 public class GeneralPublicDashboardController {
 
     @FXML private StackPane rootScaler;
     @FXML private AnchorPane rootContent;
-
     @FXML private StackPane centerPages;
-
     @FXML private Button logoutButton;
     @FXML private Button settingsButton;
     @FXML private Button submitReportButton;
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
         setupButtons();
     }
@@ -37,7 +34,6 @@ public class GeneralPublicDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Node page = loader.load();
-
             Object controller = loader.getController();
 
             if (controller instanceof HomePageController homeController) {
@@ -59,43 +55,29 @@ public class GeneralPublicDashboardController {
                 if (value instanceof Button backBtn) {
                     setupBackButton(backBtn);
                 }
-            } catch (NoSuchFieldException | IllegalAccessException ignored) {
-                // This is optional and non-critical, so no alert
-            }
-
+                // TODO Bad Exception Handling Here
+            } catch (NoSuchFieldException | IllegalAccessException ignored) {}
             centerPages.getChildren().clear();
             centerPages.getChildren().add(page);
-
         } catch (IOException e) {
             AlertUtils.showError("Load Error", "Failed to load page: " + fxmlPath);
         } catch (Exception ex) {
             AlertUtils.showError("Unexpected Error", "An unexpected error occurred.");
         }
     }
-
-
-    @FXML
-    public void showHomePage() {
+    @FXML public void showHomePage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
     }
-
-    @FXML
-    public void showSubmitReportPage() {
+    @FXML public void showSubmitReportPage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/SubmitReport.fxml");
     }
-
-    @FXML
-    public void showUpdateMedicalHistoryPage() {
+    @FXML public void showUpdateMedicalHistoryPage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/UpdateMedicalHistory.fxml");
     }
-
-    @FXML
-    private void showSettingsPage() {
+    @FXML private void showSettingsPage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/SettingsPage.fxml");
     }
-
-    @FXML
-    public void showEditDetailsPage() {
+    @FXML public void showEditDetailsPage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/EditDetails.fxml");
     }
 

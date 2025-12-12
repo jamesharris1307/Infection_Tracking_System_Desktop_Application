@@ -1,18 +1,17 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import javafx.fxml.FXML;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
-
 import java.time.LocalDate;
+import javafx.fxml.FXML;
 
 public class EditDetailsController {
 
@@ -27,19 +26,14 @@ public class EditDetailsController {
     @FXML private TextField fieldPostcode;
     @FXML private TextField fieldPassword;
     @FXML private TextField fieldConfirmPassword;
-
     @FXML private Button submitEditDetailsButton;
     @FXML private Button deleteAccountButton;
     @FXML private Button backButton;
 
     private GeneralPublicDashboardController parentController;
+    public void setParentController(GeneralPublicDashboardController parent) {this.parentController = parent;}
 
-    public void setParentController(GeneralPublicDashboardController parent) {
-        this.parentController = parent;
-    }
-
-    @FXML
-    private void handleEditDetailsSubmit() {
+    @FXML private void handleEditDetailsSubmit() {
         try {
             String firstName = fieldFirstName.getText().trim();
             String lastName = fieldLastName.getText().trim();
@@ -66,16 +60,14 @@ public class EditDetailsController {
             }
 
             String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
-
             User currentUser = SessionManager.getInstance().getCurrentUser();
+
             if (currentUser == null) {
                 AlertUtils.showError("Error", "No user is currently logged in.");
                 return;
             }
 
             String originalEmail = currentUser.getEmail();
-
-            // Update user details
             currentUser.setFirstName(firstName);
             currentUser.setLastName(lastName);
             currentUser.setEmail(email);
@@ -85,28 +77,24 @@ public class EditDetailsController {
             currentUser.setTownCity(city);
             currentUser.setCounty(county);
             currentUser.setPostcode(postcode);
-            if (hashedPassword != null) currentUser.setPassword(hashedPassword);
 
+            if (hashedPassword != null) currentUser.setPassword(hashedPassword);
             UserDAO userDAO = new UserDAO();
             userDAO.updateUser(currentUser, originalEmail);
-
             AlertUtils.showInfo("Success", "Profile updated successfully.");
-
         } catch (Exception e) {
             AlertUtils.showError("Unexpected Error", "An unexpected error occurred while updating your profile.");
         }
     }
 
-    @FXML
-    private void handleDeleteAccount() {
+    @FXML private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser == null) {
             AlertUtils.showError("Error", "No user is currently logged in.");
             return;
         }
-
         UserService userService = new UserService();
-        userService.deleteUserAsync(currentUser.getEmail())
+        userService.deleteUserAsync(currentUser)
                 .thenRun(() -> javafx.application.Platform.runLater(() -> {
                     SessionManager.getInstance().clearSession();
                     SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");

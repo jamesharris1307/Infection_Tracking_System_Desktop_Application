@@ -1,49 +1,37 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
+import javafx.collections.FXCollections;
+import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.fxml.FXML;
 
 public class AdministratorDashboardController {
 
-    @FXML
-    private TableView<User> casesTable;
+    @FXML private TableColumn<User, User.AccountStatus> colAccountStatus;
+    @FXML private TableColumn<User, Void> colDisableEnableAction;
+    @FXML private TableColumn<User, Void> colDeleteAction;
+    @FXML private TableColumn<User, String> colFirstName;
+    @FXML private TableColumn<User, String> colLastName;
+    @FXML private TableColumn<User, Void> colEditAction;
+    @FXML private TableColumn<User, Integer> colCaseId;
+    @FXML private TableColumn<User, User.Role> colRole;
+    @FXML private TableColumn<User, String> colEmail;
+    @FXML private TableView<User> casesTable;
+    @FXML private ComboBox<String> cmbFilter;
+    @FXML private TableView<User> userTable;
+    @FXML private TextField txtSearch;
 
-    @FXML
-    private TableColumn<User, Integer> colCaseId;
-    @FXML
-    private TableColumn<User, String> colFirstName;
-    @FXML
-    private TableColumn<User, String> colLastName;
-    @FXML
-    private TableColumn<User, String> colEmail;
-    @FXML
-    private TableColumn<User, User.Role> colRole;
-    @FXML
-    private TableColumn<User, User.AccountStatus> colAccountStatus;
-    @FXML
-    private TableColumn<User, Void> colEditAction;
-    @FXML
-    private TableColumn<User, Void> colDisableEnableAction;
-    @FXML
-    private TableColumn<User, Void> colDeleteAction;
-    @FXML
-    private ComboBox<String> cmbFilter;
-    @FXML
-    private TableView<User> userTable;
-
-
+    private final UserIndexManager indexManager = new UserIndexManager();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
     private final UserService userService = new UserService();
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         try {
             colCaseId.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUserId()).asObject());
             colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
@@ -51,14 +39,11 @@ public class AdministratorDashboardController {
             colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
             colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
             colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
-
             addButtonToTable(colEditAction, "Edit", this::handleEditUser);
             addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
             addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
-
             cmbFilter.getItems().addAll("All", "Active", "Disabled");
             cmbFilter.getSelectionModel().select("All");
-
             loadUsers();
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error initializing AdministratorController");
@@ -70,6 +55,7 @@ public class AdministratorDashboardController {
                 .thenAccept(users -> Platform.runLater(() -> {
                     userList.setAll(users);
                     casesTable.setItems(userList);
+                    indexManager.rebuildIndexes(users);
                 }))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
@@ -92,7 +78,6 @@ public class AdministratorDashboardController {
                     }
                 });
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -125,7 +110,7 @@ public class AdministratorDashboardController {
 
     private void handleDeleteUser(User user) {
         try {
-            userService.deleteUserAsync(user.getEmail())
+            userService.deleteUserAsync(user)
                     .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
@@ -138,28 +123,27 @@ public class AdministratorDashboardController {
     }
 
     private void filterByStatus(User.AccountStatus status) {
-        userService.getUsersByStatusAsync(status)
-                .thenAccept(filtered -> Platform.runLater(() -> {
-                    userList.setAll(filtered);
-                    casesTable.setItems(userList);
-                }))
-                .exceptionally(ex -> {
-                    ExceptionHandler.handle(ex.getCause() != null ? ex.getCause() : ex, "Failed to filter users");
-                    return null;
-                });
+        Platform.runLater(() -> {
+            userList.setAll(indexManager.getByStatus(status));
+            casesTable.setItems(userList);
+        });
     }
 
-    @FXML
-    private void onFilterClicked() {
-        String selection = cmbFilter.getValue();
+    @FXML private void onSearchKeyTyped() {
+        String prefix = txtSearch.getText().trim().toLowerCase();
+        if (prefix.isEmpty()) {
+            casesTable.setItems(userList);
+        } else {
+            casesTable.setItems(FXCollections.observableArrayList(indexManager.getByNamePrefix(prefix)));
+        }
+    }
 
-        if (selection.equals("All")) {
-            loadUsers();
-        } else if (selection.equals("Active")) {
-            filterByStatus(User.AccountStatus.Active);
-        } else if (selection.equals("Disabled")) {
-            filterByStatus(User.AccountStatus.Disabled);
+    @FXML private void onFilterClicked() {
+        String selection = cmbFilter.getValue();
+        switch (selection) {
+            case "All" -> casesTable.setItems(userList);
+            case "Active" -> filterByStatus(User.AccountStatus.Active);
+            case "Disabled" -> filterByStatus(User.AccountStatus.Disabled);
         }
     }
 }
-

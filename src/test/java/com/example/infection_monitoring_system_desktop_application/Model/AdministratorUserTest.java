@@ -1,13 +1,12 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AdministratorUserTest {
 
-    @Test
-    void testUserGetter() {
+    @Test void testUserGetter() {
         LocalDate dob = LocalDate.of(2002, 2, 2);
         AdministratorUser user = new AdministratorUser(
                 "administratoruser@test.com",
@@ -36,8 +35,7 @@ class AdministratorUserTest {
         assertEquals(User.AccountStatus.Disabled, user.getAccountStatus());
     }
 
-    @Test
-    void testSetter() {
+    @Test void testSetter() {
         AdministratorUser user = new AdministratorUser(
                 "temp@email.com", "tempPass", "TempF", "TempL",
                 LocalDate.of(2001, 1, 1),

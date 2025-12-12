@@ -25,8 +25,8 @@ public class MedicalHistory {
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; }
 
-    public boolean isLongTermConiditions() { return longTermConditions; }
-    public void setLongTermConiditions(boolean longTermConiditions) { this.longTermConditions = longTermConiditions; }
+    public boolean isLongTermConditions() { return longTermConditions; }
+    public void setLongTermConditions(boolean longTermConditions) { this.longTermConditions = longTermConditions; }
 
     public boolean isLongTermMedications() { return longTermMedications; }
     public void setLongTermMedications(boolean longTermMedications) { this.longTermMedications = longTermMedications; }

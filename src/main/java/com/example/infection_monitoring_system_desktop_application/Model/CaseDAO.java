@@ -1,11 +1,9 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
-
-import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.sql.*;
 
 public class CaseDAO {
     private static final Set<String> ALLOWED_SYMPTOMS = Set.of(
@@ -84,16 +82,5 @@ public class CaseDAO {
             throw new DAOException("Failed to fetch all cases", e);
         }
         return list;
-    }
-
-    public void deleteCasesByUser(int userID) {
-        String sql = "DELETE FROM cases WHERE UserID = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, userID);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Failed to delete cases for userID: " + userID, e);
-        }
     }
 }

@@ -1,7 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
-import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.paint.Color;
 
 public class IconLoader {
 

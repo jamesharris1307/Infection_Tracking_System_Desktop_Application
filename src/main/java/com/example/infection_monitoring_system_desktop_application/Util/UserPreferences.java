@@ -1,14 +1,12 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
-
-import java.io.*;
 import java.util.Properties;
+import java.io.*;
 
 public class UserPreferences {
 
     private static String FILE = "userprefs.properties";
-
     static void setFile(String filePath) {
         FILE = filePath;
     }

@@ -1,18 +1,17 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import javafx.application.Platform;
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-
-import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.application.Platform;
 import java.time.LocalDateTime;
+import javafx.scene.control.*;
+import java.time.LocalDate;
+import javafx.fxml.FXML;
 
 public class HealthcareProfessionalController {
 
@@ -26,15 +25,13 @@ public class HealthcareProfessionalController {
     @FXML private TableColumn<Case, LocalDate> colSymptomsBegan;
     @FXML private TableColumn<Case, String> colSeverity;
     @FXML private TableColumn<Case, Boolean> colExposure;
-
     @FXML private ComboBox<String> cmbSort;
     @FXML private Button btnSort;
 
     private final CaseService caseService = new CaseService();
     private final ObservableList<Case> sortedCases = FXCollections.observableArrayList();
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         try {
             setupColumns();
             setupSortComboBox();
@@ -79,17 +76,20 @@ public class HealthcareProfessionalController {
                 });
     }
 
-    @FXML
-    private void onSortClicked() {
+    @FXML private void onSortClicked() {
         String selection = cmbSort.getValue();
-
-        if ("Oldest First".equals(selection)) {
-            FXCollections.sort(sortedCases, (a, b) -> a.getDateReported().compareTo(b.getDateReported()));
-        } else {
-            FXCollections.sort(sortedCases, (a, b) -> b.getDateReported().compareTo(a.getDateReported()));
-        }
-
-        casesTable.setItems(sortedCases);
+        caseService.getAllCasesAsync()
+                .thenAccept(cases -> Platform.runLater(() -> {
+                    if ("Oldest First".equals(selection)) {
+                        FXCollections.reverse(sortedCases);
+                    } else {
+                        sortedCases.setAll(cases);
+                    }
+                    casesTable.setItems(sortedCases);
+                }))
+                .exceptionally(ex -> {
+                    AlertUtils.showError("Error", "Failed to sort cases.");
+                    return null;
+                });
     }
-
 }

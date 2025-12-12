@@ -3,7 +3,6 @@ package com.example.infection_monitoring_system_desktop_application.Manager;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Util.UserPreferences;
 import javafx.scene.Scene;
-
 import java.util.Objects;
 
 public class ThemeManager {

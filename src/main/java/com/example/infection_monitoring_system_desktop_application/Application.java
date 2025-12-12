@@ -1,8 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
-import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {

@@ -1,7 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
-
 import java.sql.*;
 
 public class MedicalHistoryDAO {
@@ -14,7 +13,7 @@ public class MedicalHistoryDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, medicalHistory.getUserID());
-            pstmt.setBoolean(2, medicalHistory.isLongTermConiditions());
+            pstmt.setBoolean(2, medicalHistory.isLongTermConditions());
             pstmt.setBoolean(3, medicalHistory.isLongTermMedications());
             pstmt.setBoolean(4, medicalHistory.isVaccinationUpToDate());
             pstmt.setBoolean(5, medicalHistory.isAllergies());
@@ -36,7 +35,7 @@ public class MedicalHistoryDAO {
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setBoolean(1, medicalHistory.isLongTermConiditions());
+            pstmt.setBoolean(1, medicalHistory.isLongTermConditions());
             pstmt.setBoolean(2, medicalHistory.isLongTermMedications());
             pstmt.setBoolean(3, medicalHistory.isVaccinationUpToDate());
             pstmt.setBoolean(4, medicalHistory.isAllergies());
