@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="20" maxWidth="500" styleClass="root"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.SettingsPageController">
+
+    <Button fx:id="changeThemeButton" text="Change Theme" maxWidth="300" onAction="#handleChangeTheme"/>
+    <Button fx:id="changeLanguageButton" text="Change Language" maxWidth="300" onAction="#handleChangeLanguage"/>
+    <Button fx:id="editProfileButton" text="Edit Profile" maxWidth="300"/>
+
+</VBox>

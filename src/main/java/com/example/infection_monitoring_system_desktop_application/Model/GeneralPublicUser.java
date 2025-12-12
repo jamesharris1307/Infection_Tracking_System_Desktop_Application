@@ -15,4 +15,8 @@ public class GeneralPublicUser extends User {
     public Role getRole() {
         return Role.GeneralPublic;
     }
+
+    public GeneralPublicUser() {
+        super();
+    }
 }

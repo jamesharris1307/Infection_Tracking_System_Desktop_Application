@@ -1,48 +1,45 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DatabaseConnection {
+public final class DatabaseConnection {
+    private DatabaseConnection() {}
 
-    private static final Properties config = new Properties();
+    private static final Properties CONFIG = new Properties();
 
     static {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            InputStream input = DatabaseConnection.class
-                    .getClassLoader()
-                    .getResourceAsStream("Config.properties");
+        try (InputStream input = DatabaseConnection.class.getClassLoader().getResourceAsStream("Config.properties")) {
             if (input == null) {
                 throw new RuntimeException("Config.properties not found in resources folder");
             }
-            config.load(input);
-        } catch (Exception e) {
+            CONFIG.load(input);
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+        } catch (IOException e) {
             throw new RuntimeException("Failed to load database configuration", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC Driver not found", e);
         }
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                config.getProperty("db.url"),
-                config.getProperty("db.user"),
-                config.getProperty("db.password")
-        );
-    }
+        String url = CONFIG.getProperty("db.url");
+        String user = CONFIG.getProperty("db.user");
+        String password = CONFIG.getProperty("db.password");
 
-//    public static void main(String[] args) {
-//        try (Connection conn = getConnection()) {
-//            if (conn != null) {
-//                System.out.println("Connection successful!");
-//            } else {
-//                System.out.println("Failed to connect!");
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Connection failed!");
-//            e.printStackTrace();
-//        }
-//    }
+        if (url == null || user == null || password == null) {
+            throw new IllegalStateException("Database credentials not configured properly");
+        }
+
+        return DriverManager.getConnection(url, user, password);
+    }
 }
+
+
+
