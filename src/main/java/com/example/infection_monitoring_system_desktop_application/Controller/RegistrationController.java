@@ -50,6 +50,7 @@ public class RegistrationController {
     @FXML private ComboBox<String> roleComboBox;
 
     private int currentPage = 1;
+    private UserService userService;
 
     @FXML private void initialize() {
         showPage(currentPage);
@@ -147,7 +148,9 @@ public class RegistrationController {
                         address1, address2, city, county, postcode, accountStatusEnum);
             };
 
-            UserService userService = new UserService();
+            if (userService == null) {
+                userService = new UserService();
+            }
             userService.addUserAsync(newUser)
                     .thenRun(() -> Platform.runLater(() -> {
                         AlertUtils.showInfo("Success", "User registered successfully!");
@@ -181,5 +184,9 @@ public class RegistrationController {
 
     @FXML private void viewLogin() {
         SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

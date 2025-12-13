@@ -11,8 +11,16 @@ import java.util.Set;
 
 public class UserService {
 
-    private final UserDAO userDAO = new UserDAO();
+    private final UserDAO userDAO;
     private final UserIndexManager indexManager = new UserIndexManager();
+
+    public UserService() {
+        this.userDAO = new UserDAO();
+    }
+
+    public UserService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     public CompletableFuture<ObservableList<User>> getAllUsersAsync() {
         return CompletableFuture.supplyAsync(() -> {

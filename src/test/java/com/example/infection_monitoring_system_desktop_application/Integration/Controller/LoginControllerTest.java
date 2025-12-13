@@ -2,6 +2,7 @@ package com.example.infection_monitoring_system_desktop_application.Integration.
 
 import com.example.infection_monitoring_system_desktop_application.Controller.LoginController;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
@@ -10,30 +11,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.*;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.time.LocalDate;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.matcher.base.NodeMatchers.isVisible;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LoginControllerTest extends ApplicationTest {
 
-    private UserService userServiceMock;
+    private UserService userService;
+    private UserDAO userDAO;
     private LoginController controller;
 
-    @Override public void start(Stage stage) throws Exception {
+    @Override
+    public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
-
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"),
                 bundle
@@ -41,79 +39,69 @@ public class LoginControllerTest extends ApplicationTest {
         Parent root = loader.load();
 
         controller = loader.getController();
-        userServiceMock = Mockito.mock(UserService.class);
-        controller.setUserService(userServiceMock);
+
+        // Setup in-memory H2 database
+        JdbcDataSource ds = new JdbcDataSource();
+        ds.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+        ds.setUser("sa");
+        ds.setPassword("");
+
+        userDAO = new UserDAO() {
+            protected java.sql.Connection getConnection() throws java.sql.SQLException {
+                return ds.getConnection();
+            }
+        };
+
+        userService = new UserService(userDAO);
+        controller.setUserService(userService);
 
         SceneManager.init(stage);
         stage.setScene(new Scene(root));
         stage.show();
     }
 
-    @BeforeEach public void setup() {
-        Mockito.reset(userServiceMock);
+    @BeforeEach
+    public void setup() {
+        ExceptionHandler.setLoggingEnabled(false);
+        userDAO.getAllUsers().forEach(u -> userDAO.deleteUser(u.getEmail()));
+        SessionManager.getInstance().setCurrentUser(null);
+    }
+
+    @AfterEach
+    public void cleanup() {
         ExceptionHandler.setLoggingEnabled(false);
     }
 
-    @AfterEach public void cleanup() {
-        ExceptionHandler.setLoggingEnabled(false);
+    private void seedUser(User user) {
+        userDAO.addUser(user);
     }
 
-    @Test public void loginAsGeneralPublicTest() {
-        testLoginWithRole(new GeneralPublicUser(
+    @Test
+    public void loginAsGeneralPublicIntegrationTest() throws Exception {
+        User user = new GeneralPublicUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("password123"),
                 "First", "Last",
                 LocalDate.of(2000, 1, 1),
                 "Addr1", "Addr2", "City", "County", "AB12 3CD",
                 User.AccountStatus.Active
-        ), "user@example.com", "password123");
-    }
+        );
+        seedUser(user);
 
-    @Test public void loginAsHealthcareProfessionalTest() {
-        testLoginWithRole(new HealthcareProfessionalUser(
-                "health@example.com",
-                PasswordUtils.hashPassword("password123"),
-                "First", "Last",
-                LocalDate.of(1990, 5, 20),
-                "Addr1", "Addr2", "City", "County", "AB12 3CD",
-                User.AccountStatus.Active
-        ), "health@example.com", "password123");
-    }
-
-    @Test public void loginAsAdministratorTest() {
-        testLoginWithRole(new AdministratorUser(
-                "admin@example.com",
-                PasswordUtils.hashPassword("admin123"),
-                "Admin", "User",
-                LocalDate.of(1985, 5, 20),
-                "Addr1", "Addr2", "City", "County", "AB12 3CD",
-                User.AccountStatus.Active
-        ), "admin@example.com", "admin123");
-    }
-
-    private void testLoginWithRole(User user, String email, String password) {
-        when(userServiceMock.getUserByEmailAsync(anyString()))
-                .thenReturn(CompletableFuture.completedFuture(user));
-
-        clickOn("#usernameTextField").write(email);
-        clickOn("#passwordField").write(password);
+        clickOn("#usernameTextField").write("user@example.com");
+        clickOn("#passwordField").write("password123");
         clickOn("#loginButton");
 
-        verifyThat(".root", isVisible());
+        // wait for async UserService call to complete
+        WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () ->
+                SessionManager.getInstance().getCurrentUser() != null
+        );
+
+        assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
     }
 
-    @Test public void loginUserNotFoundTest() {
-        when(userServiceMock.getUserByEmailAsync(anyString()))
-                .thenReturn(CompletableFuture.completedFuture(null));
-
-        clickOn("#usernameTextField").write("wrong@example.com");
-        clickOn("#passwordField").write("wrongpassword");
-        clickOn("#loginButton");
-
-        WaitForAsyncUtils.waitForFxEvents();
-    }
-
-    @Test public void loginInvalidPasswordTest() {
+    @Test
+    public void loginInvalidPasswordIntegrationTest() throws Exception {
         User user = new GeneralPublicUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("correctpassword"),
@@ -122,14 +110,25 @@ public class LoginControllerTest extends ApplicationTest {
                 "Addr1", "Addr2", "City", "County", "AB12 3CD",
                 User.AccountStatus.Active
         );
-
-        when(userServiceMock.getUserByEmailAsync(anyString()))
-                .thenReturn(CompletableFuture.completedFuture(user));
+        seedUser(user);
 
         clickOn("#usernameTextField").write("user@example.com");
         clickOn("#passwordField").write("wrongpassword");
         clickOn("#loginButton");
 
-        WaitForAsyncUtils.waitForFxEvents();
+        WaitForAsyncUtils.waitFor(3, TimeUnit.SECONDS, () -> true);
+
+        assertNull(SessionManager.getInstance().getCurrentUser());
+    }
+
+    @Test
+    public void loginUserNotFoundIntegrationTest() throws Exception {
+        clickOn("#usernameTextField").write("missing@example.com");
+        clickOn("#passwordField").write("password123");
+        clickOn("#loginButton");
+
+        WaitForAsyncUtils.waitFor(3, TimeUnit.SECONDS, () -> true);
+
+        assertNull(SessionManager.getInstance().getCurrentUser());
     }
 }

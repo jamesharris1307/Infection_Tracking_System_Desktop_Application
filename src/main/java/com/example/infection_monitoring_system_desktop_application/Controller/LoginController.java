@@ -29,6 +29,9 @@ public class LoginController {
             return;
         }
 
+        if (userService == null) {
+            userService = new UserService();
+        }
         userService.getUserByEmailAsync(email)
                 .thenAcceptAsync(user -> {
                     try {

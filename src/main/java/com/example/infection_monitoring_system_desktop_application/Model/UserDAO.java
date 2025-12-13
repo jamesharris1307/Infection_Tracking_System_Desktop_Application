@@ -3,12 +3,20 @@ package com.example.infection_monitoring_system_desktop_application.Model;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
 public class UserDAO {
+
+    private DataSource dataSource;
+
+    public void UserDao(DataSource ds) {
+        this.dataSource = ds;
+    }
 
     public void addUser(User user) {
         String sql = "INSERT INTO Users (Email, Password, FirstName, LastName, DateOfBirth, " +
