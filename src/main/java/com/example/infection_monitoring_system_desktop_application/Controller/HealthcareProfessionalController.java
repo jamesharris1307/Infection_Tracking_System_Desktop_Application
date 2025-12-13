@@ -1,5 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
@@ -26,7 +28,7 @@ public class HealthcareProfessionalController {
     @FXML private TableColumn<Case, String> colSeverity;
     @FXML private TableColumn<Case, Boolean> colExposure;
     @FXML private ComboBox<String> cmbSort;
-    @FXML private Button btnSort;
+    @FXML private Button logoutButton;
 
     private final CaseService caseService = new CaseService();
     private final ObservableList<Case> sortedCases = FXCollections.observableArrayList();
@@ -35,6 +37,7 @@ public class HealthcareProfessionalController {
         try {
             setupColumns();
             setupSortComboBox();
+            logoutButton.setOnAction(e -> handleLogout());
             loadCases();
         } catch (Exception e) {
             AlertUtils.showError("Unexpected Error", "Failed to initialise case table.");
@@ -91,5 +94,12 @@ public class HealthcareProfessionalController {
                     AlertUtils.showError("Error", "Failed to sort cases.");
                     return null;
                 });
+    }
+
+    private void handleLogout() {
+        SessionManager.getInstance().clearSession();
+        SceneManager.switchRoot(
+                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+        );
     }
 }

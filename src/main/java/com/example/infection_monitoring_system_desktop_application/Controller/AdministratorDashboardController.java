@@ -1,6 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
@@ -24,8 +26,8 @@ public class AdministratorDashboardController {
     @FXML private TableColumn<User, String> colEmail;
     @FXML private TableView<User> casesTable;
     @FXML private ComboBox<String> cmbFilter;
-    @FXML private TableView<User> userTable;
     @FXML private TextField txtSearch;
+    @FXML private Button logoutButton;
 
     private final UserIndexManager indexManager = new UserIndexManager();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
@@ -44,10 +46,15 @@ public class AdministratorDashboardController {
             addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
             cmbFilter.getItems().addAll("All", "Active", "Disabled");
             cmbFilter.getSelectionModel().select("All");
+            logoutButton.setOnAction(e -> handleLogout());
             loadUsers();
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error initializing AdministratorController");
         }
+    }
+
+    private void setupButtons() {
+        logoutButton.setOnAction(e -> handleLogout());
     }
 
     private void loadUsers() {
@@ -145,5 +152,12 @@ public class AdministratorDashboardController {
             case "Active" -> filterByStatus(User.AccountStatus.Active);
             case "Disabled" -> filterByStatus(User.AccountStatus.Disabled);
         }
+    }
+
+    private void handleLogout() {
+        SessionManager.getInstance().clearSession();
+        SceneManager.switchRoot(
+                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+        );
     }
 }

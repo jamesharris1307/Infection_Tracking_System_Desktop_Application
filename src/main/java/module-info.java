@@ -18,6 +18,7 @@ module com.example.infection_monitoring_system_desktop_application {
     requires mysql.connector.j;
     requires jbcrypt;
 
+
     opens com.example.infection_monitoring_system_desktop_application to javafx.fxml;
     opens com.example.infection_monitoring_system_desktop_application.Controller to javafx.fxml;
     opens com.example.infection_monitoring_system_desktop_application.Model to javafx.fxml;
