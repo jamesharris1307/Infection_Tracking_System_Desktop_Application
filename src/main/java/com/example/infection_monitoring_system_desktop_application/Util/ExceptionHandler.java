@@ -11,11 +11,18 @@ import java.util.logging.Level;
 public class ExceptionHandler {
 
     private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class.getName());
+    private static boolean loggingEnabled = true; // add this flag
 
     private ExceptionHandler() {}
 
+    public static void setLoggingEnabled(boolean enabled) {
+        loggingEnabled = enabled;
+    }
+
     public static void handle(Throwable e, String contextMessage) {
-        LOGGER.log(Level.SEVERE, contextMessage, e);
+        if (loggingEnabled) {
+            LOGGER.log(Level.SEVERE, contextMessage, e);
+        }
 
         Platform.runLater(() -> {
             if (e instanceof UserNotFoundException || e instanceof InvalidCredentialsException) {

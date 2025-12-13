@@ -1,15 +1,18 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
-class AdministratorUserTest {
+class GeneralPublicUserTest {
 
-    @Test void testUserGetter() {
+    @Test void testUserCreationGetters() {
         LocalDate dob = LocalDate.of(2002, 2, 2);
-        AdministratorUser user = new AdministratorUser(
-                "administratoruser@test.com",
+        GeneralPublicUser user = new GeneralPublicUser(
+                "generalpublicuser@test.com",
                 "password123",
                 "testFname",
                 "testLname",
@@ -19,10 +22,10 @@ class AdministratorUserTest {
                 "TestTownCity",
                 "TestCounty",
                 "TE271ST",
-                User.AccountStatus.Disabled
+                User.AccountStatus.Active
         );
 
-        assertEquals("administratoruser@test.com",  user.getEmail());
+        assertEquals("generalpublicuser@test.com", user.getEmail());
         assertEquals("password123", user.getPassword());
         assertEquals("testFname", user.getFirstName());
         assertEquals("testLname", user.getLastName());
@@ -32,11 +35,11 @@ class AdministratorUserTest {
         assertEquals("TestTownCity", user.getTownCity());
         assertEquals("TestCounty", user.getCounty());
         assertEquals("TE271ST", user.getPostcode());
-        assertEquals(User.AccountStatus.Disabled, user.getAccountStatus());
+        assertEquals(User.AccountStatus.Active, user.getAccountStatus());
     }
 
     @Test void testSetter() {
-        AdministratorUser user = new AdministratorUser(
+        GeneralPublicUser user = new GeneralPublicUser(
                 "temp@email.com", "tempPass", "TempF", "TempL",
                 LocalDate.of(2001, 1, 1),
                 "TempAddressL1", "TempAddressL2", "TempTownCity", "TempCounty", "TE37 3MP",

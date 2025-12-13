@@ -1,15 +1,18 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.example.infection_monitoring_system_desktop_application.Model.HealthcareProfessionalUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
-class GeneralPublicUserTest {
+class HealthcareProfessionalUserTest {
 
-    @Test void testUserCreationGetters() {
+    @Test void testUserCreatioGetters() {
         LocalDate dob = LocalDate.of(2002, 2, 2);
-        GeneralPublicUser user = new GeneralPublicUser(
-                "generalpublicuser@test.com",
+        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
+                "healthcareprofessionaluser@test.com",
                 "password123",
                 "testFname",
                 "testLname",
@@ -19,10 +22,10 @@ class GeneralPublicUserTest {
                 "TestTownCity",
                 "TestCounty",
                 "TE271ST",
-                User.AccountStatus.Active
+                User.AccountStatus.Disabled
         );
 
-        assertEquals("generalpublicuser@test.com", user.getEmail());
+        assertEquals("healthcareprofessionaluser@test.com",  user.getEmail());
         assertEquals("password123", user.getPassword());
         assertEquals("testFname", user.getFirstName());
         assertEquals("testLname", user.getLastName());
@@ -32,15 +35,15 @@ class GeneralPublicUserTest {
         assertEquals("TestTownCity", user.getTownCity());
         assertEquals("TestCounty", user.getCounty());
         assertEquals("TE271ST", user.getPostcode());
-        assertEquals(User.AccountStatus.Active, user.getAccountStatus());
+        assertEquals(User.AccountStatus.Disabled, user.getAccountStatus());
     }
 
     @Test void testSetter() {
-        GeneralPublicUser user = new GeneralPublicUser(
+        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
                 "temp@email.com", "tempPass", "TempF", "TempL",
                 LocalDate.of(2001, 1, 1),
                 "TempAddressL1", "TempAddressL2", "TempTownCity", "TempCounty", "TE37 3MP",
-                User.AccountStatus.Disabled
+                User.AccountStatus.Active
         );
 
         user.setEmail("new@email.com");

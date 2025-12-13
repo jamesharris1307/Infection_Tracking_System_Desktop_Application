@@ -18,7 +18,7 @@ public class LoginController {
     @FXML private TextField usernameTextField;
     @FXML private PasswordField passwordField;
 
-    private final UserService userService = new UserService();
+    private UserService userService = new UserService();
 
     @FXML private void login() {
         String email = usernameTextField.getText().trim();
@@ -90,5 +90,9 @@ public class LoginController {
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error switching to registration view");
         }
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

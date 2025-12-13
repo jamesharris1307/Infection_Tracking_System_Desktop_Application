@@ -1,7 +1,9 @@
-package com.example.infection_monitoring_system_desktop_application.Util;
+package com.example.infection_monitoring_system_desktop_application.Unit.Util;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.example.infection_monitoring_system_desktop_application.Util.UserPreferences;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

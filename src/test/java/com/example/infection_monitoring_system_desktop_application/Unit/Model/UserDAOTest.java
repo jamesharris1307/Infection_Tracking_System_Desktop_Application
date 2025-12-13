@@ -1,5 +1,9 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Model.DatabaseConnection;
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;

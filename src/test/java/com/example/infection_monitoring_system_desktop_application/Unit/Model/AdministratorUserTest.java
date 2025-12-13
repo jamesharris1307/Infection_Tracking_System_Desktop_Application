@@ -1,15 +1,18 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 
-class HealthcareProfessionalUserTest {
+class AdministratorUserTest {
 
-    @Test void testUserCreatioGetters() {
+    @Test void testUserGetter() {
         LocalDate dob = LocalDate.of(2002, 2, 2);
-        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
-                "healthcareprofessionaluser@test.com",
+        AdministratorUser user = new AdministratorUser(
+                "administratoruser@test.com",
                 "password123",
                 "testFname",
                 "testLname",
@@ -22,7 +25,7 @@ class HealthcareProfessionalUserTest {
                 User.AccountStatus.Disabled
         );
 
-        assertEquals("healthcareprofessionaluser@test.com",  user.getEmail());
+        assertEquals("administratoruser@test.com",  user.getEmail());
         assertEquals("password123", user.getPassword());
         assertEquals("testFname", user.getFirstName());
         assertEquals("testLname", user.getLastName());
@@ -36,11 +39,11 @@ class HealthcareProfessionalUserTest {
     }
 
     @Test void testSetter() {
-        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
+        AdministratorUser user = new AdministratorUser(
                 "temp@email.com", "tempPass", "TempF", "TempL",
                 LocalDate.of(2001, 1, 1),
                 "TempAddressL1", "TempAddressL2", "TempTownCity", "TempCounty", "TE37 3MP",
-                User.AccountStatus.Active
+                User.AccountStatus.Disabled
         );
 
         user.setEmail("new@email.com");
