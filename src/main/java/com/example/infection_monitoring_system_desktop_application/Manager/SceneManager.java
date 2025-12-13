@@ -45,9 +45,18 @@ public class SceneManager {
                 ThemeManager.getInstance().applySavedTheme(mainScene);
             }
 
+            String title = deriveTitleFromFXML(fxmlPath);
+            mainStage.setTitle(title);
+
         } catch (IOException | PreferencesException e) {
             throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
         }
+    }
+
+    private static String deriveTitleFromFXML(String fxmlPath) {
+        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1);
+        if (fileName.endsWith(".fxml")) fileName = fileName.replace(".fxml", "");
+        return fileName + " - My Application";
     }
 
     public static void refreshCurrentRoot() {
