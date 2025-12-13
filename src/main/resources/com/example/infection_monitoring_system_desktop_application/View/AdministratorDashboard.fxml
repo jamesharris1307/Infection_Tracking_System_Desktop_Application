@@ -24,15 +24,15 @@
     <center>
         <TableView fx:id="casesTable">
             <columns>
-                <TableColumn fx:id="colCaseId" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colFirstName" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colLastName" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colEmail" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colRole" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colAccountStatus" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colEditAction" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colDisableEnableAction" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colDeleteAction" text="UserID" prefWidth="80"/>
+                <TableColumn fx:id="colCaseId" text="User ID" prefWidth="80"/>
+                <TableColumn fx:id="colFirstName" text="First Name" prefWidth="80"/>
+                <TableColumn fx:id="colLastName" text="Last Name" prefWidth="80"/>
+                <TableColumn fx:id="colEmail" text="Email" prefWidth="80"/>
+                <TableColumn fx:id="colRole" text="Role" prefWidth="80"/>
+                <TableColumn fx:id="colAccountStatus" text="Account Status" prefWidth="80"/>
+                <TableColumn fx:id="colEditAction" text="Edit" prefWidth="80"/>
+                <TableColumn fx:id="colDisableEnableAction" text="Enable/Disable" prefWidth="80"/>
+                <TableColumn fx:id="colDeleteAction" text="Delete" prefWidth="80"/>
             </columns>
         </TableView>
     </center>
