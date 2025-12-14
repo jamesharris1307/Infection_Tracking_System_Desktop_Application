@@ -5,7 +5,6 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Scene
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -31,7 +30,15 @@ public class EditDetailsController {
     @FXML private Button backButton;
 
     private GeneralPublicDashboardController parentController;
-    public void setParentController(GeneralPublicDashboardController parent) {this.parentController = parent;}
+    private UserService userService;
+
+    public void setParentController(GeneralPublicDashboardController parent) {
+        this.parentController = parent;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @FXML private void handleEditDetailsSubmit() {
         try {
@@ -59,15 +66,20 @@ public class EditDetailsController {
                 return;
             }
 
-            String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
-            User currentUser = SessionManager.getInstance().getCurrentUser();
+            if (userService == null) {
+                AlertUtils.showError("System Error", "UserService dependency not initialized.");
+                return;
+            }
 
+            User currentUser = SessionManager.getInstance().getCurrentUser();
             if (currentUser == null) {
                 AlertUtils.showError("Error", "No user is currently logged in.");
                 return;
             }
 
             String originalEmail = currentUser.getEmail();
+            String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
+
             currentUser.setFirstName(firstName);
             currentUser.setLastName(lastName);
             currentUser.setEmail(email);
@@ -80,14 +92,21 @@ public class EditDetailsController {
 
             if (hashedPassword != null) currentUser.setPassword(hashedPassword);
 
-            UserDAO userDAO = new UserDAO();
-            userDAO.updateUser(currentUser, originalEmail);
-
-            AlertUtils.showInfo("Success", "Profile updated successfully.");
-            clearForm();
-            if (parentController != null) {
-                parentController.showHomePage();
-            }
+            userService.updateUserAsync(currentUser, originalEmail)
+                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                        AlertUtils.showInfo("Success", "Profile updated successfully.");
+                        clearForm();
+                        if (parentController != null) {
+                            parentController.showHomePage();
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        javafx.application.Platform.runLater(() ->
+                                AlertUtils.showError("Update Failed", "Error: " + cause.getMessage())
+                        );
+                        return null;
+                    });
         } catch (Exception e) {
             AlertUtils.showError("Unexpected Error", "An unexpected error occurred while updating your profile.");
         }
@@ -99,7 +118,12 @@ public class EditDetailsController {
             AlertUtils.showError("Error", "No user is currently logged in.");
             return;
         }
-        UserService userService = new UserService();
+
+        if (userService == null) {
+            AlertUtils.showError("System Error", "UserService dependency not initialized.");
+            return;
+        }
+
         userService.deleteUserAsync(currentUser)
                 .thenRun(() -> javafx.application.Platform.runLater(() -> {
                     SessionManager.getInstance().clearSession();

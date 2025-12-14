@@ -11,7 +11,7 @@ import java.util.logging.Level;
 public class ExceptionHandler {
 
     private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class.getName());
-    private static boolean loggingEnabled = true; // add this flag
+    private static boolean loggingEnabled = true;
 
     private ExceptionHandler() {}
 

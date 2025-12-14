@@ -48,7 +48,12 @@ public class SubmitReportController {
 
     private final ToggleGroup severityGroup = new ToggleGroup();
     private final ToggleGroup worsenedGroup = new ToggleGroup();
-    private final CaseService caseService = new CaseService();
+
+    private CaseService caseService;
+
+    public void setCaseService(CaseService caseService) {
+        this.caseService = caseService;
+    }
 
     public void setParentController(GeneralPublicDashboardController parent) {
         this.parentController = parent;
@@ -74,6 +79,11 @@ public class SubmitReportController {
 
             if (currentUser == null || currentUser.getUserId() <= 0) {
                 throw ExceptionFactory.validationError("No valid user is logged in.");
+            }
+
+            if (caseService == null) {
+                ExceptionHandler.handle(new IllegalStateException("CaseService dependency not initialized."), "CRITICAL: CaseService is missing.");
+                return;
             }
 
             int userId = currentUser.getUserId();

@@ -1,5 +1,13 @@
 package com.example.infection_monitoring_system_desktop_application.Manager;
 
+import com.example.infection_monitoring_system_desktop_application.Controller.*;
+import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.LegacyConnectionAdapter;
+import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
+import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
 import javafx.scene.input.KeyCode;
@@ -15,6 +23,12 @@ public class SceneManager {
     private static Stage mainStage;
     private static Scene mainScene;
 
+    private static final LegacyConnectionAdapter dataSource = new LegacyConnectionAdapter();
+
+    private static final UserService userService = new UserService(new UserDAO(dataSource));
+    private static final CaseService caseService = new CaseService(new CaseDAO(dataSource));
+    private static final MedicalHistoryService medicalHistoryService = new MedicalHistoryService(new MedicalHistoryDAO(dataSource));
+
     public static void init(Stage stage) {
         mainStage = stage;
     }
@@ -27,6 +41,30 @@ public class SceneManager {
             );
             Parent root = loader.load();
             root.setUserData(fxmlPath);
+
+            Object controller = loader.getController();
+
+            if (controller instanceof LoginController) {
+                ((LoginController) controller).setUserService(userService);
+            }
+            else if (controller instanceof RegistrationController) {
+                ((RegistrationController) controller).setUserService(userService);
+            }
+            else if (controller instanceof EditDetailsController) {
+                ((EditDetailsController) controller).setUserService(userService);
+            }
+            else if (controller instanceof AdministratorDashboardController) {
+                ((AdministratorDashboardController) controller).setUserService(userService);
+            }
+            else if (controller instanceof GeneralPublicDashboardController) {
+                GeneralPublicDashboardController dashboard = (GeneralPublicDashboardController) controller;
+                dashboard.setUserService(userService);
+                dashboard.setCaseService(caseService);
+                dashboard.setMedicalHistoryService(medicalHistoryService);
+            }
+            else if (controller instanceof HealthcareProfessionalController) {
+                ((HealthcareProfessionalController) controller).setCaseService(caseService);
+            }
 
             if (mainScene == null) {
                 mainScene = new Scene(root);

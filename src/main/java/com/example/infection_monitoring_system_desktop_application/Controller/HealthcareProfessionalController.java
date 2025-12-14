@@ -30,11 +30,19 @@ public class HealthcareProfessionalController {
     @FXML private ComboBox<String> cmbSort;
     @FXML private Button logoutButton;
 
-    private final CaseService caseService = new CaseService();
+    private CaseService caseService;
     private final ObservableList<Case> sortedCases = FXCollections.observableArrayList();
+
+    public void setCaseService(CaseService caseService) {
+        this.caseService = caseService;
+    }
 
     @FXML public void initialize() {
         try {
+            if (caseService == null) {
+                throw new IllegalStateException("CaseService dependency not initialized in HealthcareProfessionalController.");
+            }
+
             setupColumns();
             setupSortComboBox();
             logoutButton.setOnAction(e -> handleLogout());

@@ -31,7 +31,11 @@ public class AdministratorDashboardController {
 
     private final UserIndexManager indexManager = new UserIndexManager();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
-    private final UserService userService = new UserService();
+    private UserService userService;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @FXML public void initialize() {
         try {
@@ -47,7 +51,13 @@ public class AdministratorDashboardController {
             cmbFilter.getItems().addAll("All", "Active", "Disabled");
             cmbFilter.getSelectionModel().select("All");
             logoutButton.setOnAction(e -> handleLogout());
-            loadUsers();
+
+            if (userService != null) {
+                loadUsers();
+            } else {
+                ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
+                        "CRITICAL: UserService is missing in Dashboard.");
+            }
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Error initializing AdministratorController");
         }

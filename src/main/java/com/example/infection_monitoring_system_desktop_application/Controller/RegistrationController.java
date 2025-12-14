@@ -149,7 +149,7 @@ public class RegistrationController {
             };
 
             if (userService == null) {
-                userService = new UserService();
+                throw new IllegalStateException("UserService has not been set/injected.");
             }
             userService.addUserAsync(newUser)
                     .thenRun(() -> Platform.runLater(() -> {

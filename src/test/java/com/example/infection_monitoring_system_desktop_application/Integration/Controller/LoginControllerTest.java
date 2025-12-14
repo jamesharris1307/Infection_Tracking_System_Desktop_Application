@@ -16,6 +16,7 @@ import org.junit.jupiter.api.*;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 
+import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,36 @@ public class LoginControllerTest extends ApplicationTest {
     private UserService userService;
     private UserDAO userDAO;
     private LoginController controller;
+    private DataSource h2DataSource;
+
+    private void createSchema() {
+        try (java.sql.Connection conn = h2DataSource.getConnection();
+             java.sql.Statement stmt = conn.createStatement()) {
+
+            stmt.execute("DROP TABLE IF EXISTS USERS");
+
+            String createTableSQL = """
+            CREATE TABLE USERS (
+                UserID INT AUTO_INCREMENT PRIMARY KEY,
+                Email VARCHAR(255) NOT NULL UNIQUE,
+                Password VARCHAR(255) NOT NULL,
+                FirstName VARCHAR(255),
+                LastName VARCHAR(255),
+                DateOfBirth DATE,
+                AddressLine1 VARCHAR(255),
+                AddressLine2 VARCHAR(255),
+                TownCity VARCHAR(255),
+                County VARCHAR(255),
+                Postcode VARCHAR(20),
+                AccountStatus VARCHAR(50),
+                Role VARCHAR(50)
+            )
+        """;
+            stmt.execute(createTableSQL);
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Failed to create USERS table schema in H2.", e);
+        }
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -40,18 +71,15 @@ public class LoginControllerTest extends ApplicationTest {
 
         controller = loader.getController();
 
-        // Setup in-memory H2 database
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
         ds.setUser("sa");
         ds.setPassword("");
+        this.h2DataSource = ds;
 
-        userDAO = new UserDAO() {
-            protected java.sql.Connection getConnection() throws java.sql.SQLException {
-                return ds.getConnection();
-            }
-        };
+        createSchema();
 
+        userDAO = new UserDAO(this.h2DataSource);
         userService = new UserService(userDAO);
         controller.setUserService(userService);
 
@@ -80,7 +108,7 @@ public class LoginControllerTest extends ApplicationTest {
     public void loginAsGeneralPublicIntegrationTest() throws Exception {
         User user = new GeneralPublicUser(
                 "user@example.com",
-                PasswordUtils.hashPassword("password123"),
+                PasswordUtils.hashPassword("password123"), // The password MUST be hashed before saving
                 "First", "Last",
                 LocalDate.of(2000, 1, 1),
                 "Addr1", "Addr2", "City", "County", "AB12 3CD",
@@ -92,7 +120,6 @@ public class LoginControllerTest extends ApplicationTest {
         clickOn("#passwordField").write("password123");
         clickOn("#loginButton");
 
-        // wait for async UserService call to complete
         WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () ->
                 SessionManager.getInstance().getCurrentUser() != null
         );

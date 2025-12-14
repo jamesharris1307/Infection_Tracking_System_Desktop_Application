@@ -4,6 +4,7 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Concu
 import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ObservableList;
 import java.util.List;
@@ -14,12 +15,49 @@ public class UserService {
     private final UserDAO userDAO;
     private final UserIndexManager indexManager = new UserIndexManager();
 
-    public UserService() {
-        this.userDAO = new UserDAO();
-    }
-
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
+    }
+
+    public CompletableFuture<User> loginAsync(String email, String plaintextPassword) {
+        return CompletableFuture.supplyAsync(() -> {
+            User user = userDAO.getUserByEmail(email);
+
+            if (user == null || user.getAccountStatus() != User.AccountStatus.Active) {
+                return null;
+            }
+
+            if (PasswordUtils.checkPassword(plaintextPassword, user.getPassword())) {
+                return user;
+            } else {
+                return null;
+            }
+        }, ConcurrencyManager.getExecutor());
+    }
+
+    public CompletableFuture<User> registerUserAsync(User newUser) {
+
+        if (newUser == null) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+
+            String hashedPassword = PasswordUtils.hashPassword(newUser.getPassword());
+            newUser.setPassword(hashedPassword);
+
+            if (newUser.getRole() == User.Role.GeneralPublic) {
+                newUser.setAccountStatus(User.AccountStatus.Active);
+            } else {
+                newUser.setAccountStatus(User.AccountStatus.Disabled);
+            }
+
+            userDAO.addUser(newUser);
+            indexManager.addToIndexes(newUser);
+
+            return newUser;
+
+        }, ConcurrencyManager.getExecutor());
     }
 
     public CompletableFuture<ObservableList<User>> getAllUsersAsync() {

@@ -9,9 +9,16 @@ import java.util.List;
 
 public class CaseService {
 
-    private final CaseDAO caseDAO = new CaseDAO();
+    private final CaseDAO caseDAO;
+
     private final CaseIndexManager indexManager = new CaseIndexManager();
 
+    public CaseService(CaseDAO caseDAO) {
+        this.caseDAO = caseDAO;
+        if (this.caseDAO == null) {
+            throw new IllegalArgumentException("CaseDAO must be provided to CaseService.");
+        }
+    }
     public CompletableFuture<Void> addCaseAsync(Case c) {
         return CompletableFuture.runAsync(() -> {
             caseDAO.addCase(c);

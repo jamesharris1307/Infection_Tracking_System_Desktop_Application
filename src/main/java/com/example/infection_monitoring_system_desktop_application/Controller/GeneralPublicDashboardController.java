@@ -2,6 +2,9 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
+import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -19,6 +22,20 @@ public class GeneralPublicDashboardController {
     @FXML private Button logoutButton;
     @FXML private Button settingsButton;
     @FXML private Button submitReportButton;
+
+    private UserService userService;
+    private CaseService caseService;
+    private MedicalHistoryService medicalHistoryService;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    public void setCaseService(CaseService caseService) {
+        this.caseService = caseService;
+    }
+    public void setMedicalHistoryService(MedicalHistoryService medicalHistoryService) {
+        this.medicalHistoryService = medicalHistoryService;
+    }
 
     @FXML private void initialize() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
@@ -40,10 +57,15 @@ public class GeneralPublicDashboardController {
                 homeController.setParentController(this);
             } else if (controller instanceof SubmitReportController submitController) {
                 submitController.setParentController(this);
+                submitController.setCaseService(this.caseService);
             } else if (controller instanceof UpdateMedicalHistoryController updateMedicalHistory) {
                 updateMedicalHistory.setParentController(this);
+                updateMedicalHistory.setMedicalHistoryService(this.medicalHistoryService);
             } else if (controller instanceof EditDetailsController editDetailsController) {
                 editDetailsController.setParentController(this);
+                if (this.userService != null) {
+                    editDetailsController.setUserService(this.userService);
+                }
             } else if (controller instanceof SettingsPageController settingsController) {
                 settingsController.setParentController(this);
             }
@@ -55,16 +77,17 @@ public class GeneralPublicDashboardController {
                 if (value instanceof Button backBtn) {
                     setupBackButton(backBtn);
                 }
-                // TODO Bad Exception Handling Here
             } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+
             centerPages.getChildren().clear();
             centerPages.getChildren().add(page);
         } catch (IOException e) {
             AlertUtils.showError("Load Error", "Failed to load page: " + fxmlPath);
         } catch (Exception ex) {
-            AlertUtils.showError("Unexpected Error", "An unexpected error occurred.");
+            AlertUtils.showError("Unexpected Error", "An unexpected error occurred: " + ex.getMessage());
         }
     }
+
     @FXML public void showHomePage() {
         loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
     }

@@ -8,7 +8,14 @@ import java.util.concurrent.CompletableFuture;
 
 public class MedicalHistoryService {
 
-    private final MedicalHistoryDAO dao = new MedicalHistoryDAO();
+    private final MedicalHistoryDAO dao;
+
+    public MedicalHistoryService(MedicalHistoryDAO dao) {
+        this.dao = dao;
+        if (this.dao == null) {
+            throw new IllegalArgumentException("MedicalHistoryDAO must be provided to MedicalHistoryService.");
+        }
+    }
 
     public CompletableFuture<Void> addMedicalHistoryAsync(MedicalHistory medicalHistory) {
         return CompletableFuture.runAsync(() -> dao.addMedicalHistory(medicalHistory),

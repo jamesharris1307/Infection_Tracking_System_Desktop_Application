@@ -18,7 +18,7 @@ public class LoginController {
     @FXML private TextField usernameTextField;
     @FXML private PasswordField passwordField;
 
-    private UserService userService = new UserService();
+    private UserService userService;
 
     @FXML private void login() {
         String email = usernameTextField.getText().trim();
@@ -30,8 +30,11 @@ public class LoginController {
         }
 
         if (userService == null) {
-            userService = new UserService();
+            ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
+                    "CRITICAL: UserService is missing in LoginController.");
+            return;
         }
+
         userService.getUserByEmailAsync(email)
                 .thenAcceptAsync(user -> {
                     try {

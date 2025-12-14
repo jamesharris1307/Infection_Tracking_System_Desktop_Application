@@ -21,10 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.util.WaitForAsyncUtils;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,6 +35,36 @@ public class RegistrationControllerTest extends ApplicationTest {
     private RegistrationController controller;
     private UserService userService;
     private UserDAO userDAO;
+    private DataSource h2DataSource;
+
+    // 🚩 NEW: Method to create the USERS table schema
+    private void createSchema() {
+        try (java.sql.Connection conn = h2DataSource.getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS USERS");
+
+            String createTableSQL = """
+                CREATE TABLE USERS (
+                    UserID INT AUTO_INCREMENT PRIMARY KEY,
+                    Email VARCHAR(255) NOT NULL UNIQUE,
+                    Password VARCHAR(255) NOT NULL,
+                    FirstName VARCHAR(255),
+                    LastName VARCHAR(255),
+                    DateOfBirth DATE,
+                    AddressLine1 VARCHAR(255),
+                    AddressLine2 VARCHAR(255),
+                    TownCity VARCHAR(255),
+                    County VARCHAR(255),
+                    Postcode VARCHAR(20),
+                    AccountStatus VARCHAR(50),
+                    Role VARCHAR(50)
+                )
+            """;
+            stmt.execute(createTableSQL);
+        } catch (java.sql.SQLException e) {
+            throw new RuntimeException("Failed to initialize USERS table schema in H2.", e);
+        }
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -45,20 +76,15 @@ public class RegistrationControllerTest extends ApplicationTest {
         Parent root = loader.load();
         controller = loader.getController();
 
-        // Setup in-memory H2 database
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
         ds.setUser("sa");
         ds.setPassword("");
+        this.h2DataSource = ds;
 
-        // Real DAO pointing to H2 DB
-        userDAO = new UserDAO() {
-            protected Connection getConnection() throws Exception {
-                return ds.getConnection();
-            }
-        };
+        createSchema();
 
-        // Real UserService using the DAO
+        userDAO = new UserDAO(this.h2DataSource);
         userService = new UserService(userDAO);
         controller.setUserService(userService);
 
@@ -70,7 +96,6 @@ public class RegistrationControllerTest extends ApplicationTest {
     @BeforeEach
     public void setup() {
         ExceptionHandler.setLoggingEnabled(false);
-        // Clear database before each test
         userDAO.getAllUsers().forEach(u -> userDAO.deleteUser(u.getEmail()));
         SessionManager.getInstance().setCurrentUser(null);
     }
@@ -112,6 +137,12 @@ public class RegistrationControllerTest extends ApplicationTest {
         User saved = userDAO.getUserByEmail(email);
         assertNotNull(saved);
         assertEquals(email, saved.getEmail());
+
+        if (clazz.equals(GeneralPublicUser.class)) {
+            assertEquals(User.AccountStatus.Active, saved.getAccountStatus(), "General Public should be Active on registration.");
+        } else {
+            assertEquals(User.AccountStatus.Disabled, saved.getAccountStatus(), "Professional users should be Disabled on registration.");
+        }
         return clazz.cast(saved);
     }
 

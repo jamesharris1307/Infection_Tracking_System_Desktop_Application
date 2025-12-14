@@ -27,6 +27,12 @@ public class UpdateMedicalHistoryController {
     private final ToggleGroup longTermMedicationsGroup = new ToggleGroup();
     private final ToggleGroup upToDateVaccinationsGroup = new ToggleGroup();
     private final ToggleGroup allergiesGroup = new ToggleGroup();
+    private MedicalHistoryService medicalHistoryService;
+
+    public void setMedicalHistoryService(MedicalHistoryService medicalHistoryService) {
+        this.medicalHistoryService = medicalHistoryService;
+    }
+
     public void setParentController(GeneralPublicDashboardController parent) {this.parentController = parent;}
 
     @FXML private void initialize() {
@@ -47,6 +53,10 @@ public class UpdateMedicalHistoryController {
                 return;
             }
 
+            if (medicalHistoryService == null) {
+                throw new IllegalStateException("MedicalHistoryService dependency not initialized.");
+            }
+
             int userId = SessionManager.getInstance().getCurrentUser().getUserId();
             boolean hasConditions = longTermConditionsYes.isSelected();
             boolean hasMedications = longTermMedicationsYes.isSelected();
@@ -55,14 +65,13 @@ public class UpdateMedicalHistoryController {
 
             LocalDateTime lastUpdated = LocalDateTime.now();
             MedicalHistory medicalHistory = new MedicalHistory(userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated);
-            MedicalHistoryService service = new MedicalHistoryService();
 
-            service.getMedicalHistoryByUserIdAsync(userId)
+            medicalHistoryService.getMedicalHistoryByUserIdAsync(userId)
                     .thenCompose(existing -> {
                         if (existing == null) {
-                            return service.addMedicalHistoryAsync(medicalHistory);
+                            return medicalHistoryService.addMedicalHistoryAsync(medicalHistory);
                         } else {
-                            return service.updateMedicalHistoryAsync(medicalHistory);
+                            return medicalHistoryService.updateMedicalHistoryAsync(medicalHistory);
                         }
                     })
                     .thenRun(() -> javafx.application.Platform.runLater(() -> {
