@@ -15,13 +15,10 @@ public class SceneManager {
     private static Stage mainStage;
     private static Scene mainScene;
 
-    // DELETED: Static Service Initialization Block (Moved to AppContext)
-
     public static void init(Stage stage) {
         mainStage = stage;
     }
 
-    // ADDED: Overloaded method to switch using a pre-loaded Parent (Handles PreferencesException)
     public static void switchRoot(Parent root) {
         try {
             if (mainScene == null) {
@@ -46,33 +43,25 @@ public class SceneManager {
             mainStage.setTitle(title);
 
         } catch (PreferencesException e) {
-            // If the theme fails to load, we wrap it in an unchecked exception
-            // to prevent propagating checked exceptions up the call stack,
-            // which is good practice for critical initialization failures.
             throw new SceneLoadException("Failed to apply saved theme or update scene root.", e);
         }
     }
 
-
-    // REVISED: switchRoot(String fxmlPath) (Handles only IOException)
     public static void switchRoot(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     SceneManager.class.getResource(fxmlPath),
-                    LanguageManager.getBundle()
+                    LanguageManager.getInstance().getBundle()
             );
 
-            // CRITICAL FIX: Integrate the Factory for dependency injection
             loader.setControllerFactory(AppContext.getInstance()::getControllerInstance);
 
             Parent root = loader.load(); // Throws IOException
             root.setUserData(fxmlPath);
 
-            // Now call the overloaded method. The exceptions thrown inside
-            // switchRoot(Parent root) are unchecked (SceneLoadException), so no catch needed here.
             switchRoot(root);
 
-        } catch (IOException e) { // <-- ONLY catching IOException (thrown by loader.load())
+        } catch (IOException e) {
             throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
         }
     }

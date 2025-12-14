@@ -63,7 +63,7 @@ public class RegistrationController {
     }
 
     private void populateRoleComboBox() {
-        ResourceBundle bundle = LanguageManager.getBundle();
+        ResourceBundle bundle = LanguageManager.getInstance().getBundle();
         roleComboBox.getItems().clear();
         roleComboBox.getItems().addAll(
                 bundle.getString("general-public"),

@@ -7,27 +7,35 @@ import java.util.Locale;
 
 public class LanguageManager {
 
-    private static ResourceBundle bundle =
+    private static final LanguageManager instance = new LanguageManager();
+
+    private ResourceBundle bundle =
             ResourceBundle.getBundle("i18n.messages", Locale.ENGLISH);
 
-    public static ResourceBundle getBundle() {
+    private LanguageManager() {}
+
+    public static LanguageManager getInstance() {
+        return instance;
+    }
+
+    public ResourceBundle getBundle() {
         return bundle;
     }
 
-    public static void setLanguage(Locale locale) throws PreferencesException {
+    public void setLanguage(Locale locale) throws PreferencesException {
         bundle = ResourceBundle.getBundle("i18n.messages", locale);
         UserPreferences.saveLanguage(locale.getLanguage());
     }
 
-    public static void setEnglish() throws PreferencesException {
+    public void setEnglish() throws PreferencesException {
         setLanguage(Locale.ENGLISH);
     }
 
-    public static void setWelsh() throws PreferencesException {
+    public void setWelsh() throws PreferencesException {
         setLanguage(new Locale("cy"));
     }
 
-    public static void applySavedLanguage() throws PreferencesException {
+    public void applySavedLanguage() throws PreferencesException {
         String code = UserPreferences.loadLanguage();
         if ("cy".equals(code)) {
             setWelsh();
@@ -36,7 +44,7 @@ public class LanguageManager {
         }
     }
 
-    public static void toggleLanguage() throws PreferencesException {
+    public void toggleLanguage() throws PreferencesException {
         String current = bundle.getLocale().getLanguage();
         if ("en".equals(current)) {
             setWelsh();

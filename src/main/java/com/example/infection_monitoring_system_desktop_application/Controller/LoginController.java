@@ -79,7 +79,7 @@ public class LoginController {
 
     @FXML private void toggleLanguage() {
         try {
-            LanguageManager.toggleLanguage();
+            LanguageManager.getInstance().toggleLanguage();
             SceneManager.refreshCurrentRoot();
         } catch (Exception e) {
             ExceptionHandler.handle(e, "Failed to toggle application language due to preferences error.");

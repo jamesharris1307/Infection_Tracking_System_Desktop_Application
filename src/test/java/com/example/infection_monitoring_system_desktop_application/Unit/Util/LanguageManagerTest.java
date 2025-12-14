@@ -14,52 +14,52 @@ import java.util.Locale;
 class LanguageManagerTest {
 
     @BeforeEach void resetLanguage() throws PreferencesException {
-        LanguageManager.setEnglish();
+        LanguageManager.getInstance().setEnglish();
     }
 
     @Test void getBundle() {
-        assertNotNull(LanguageManager.getBundle());
-        assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
+        assertNotNull(LanguageManager.getInstance().getBundle());
+        assertEquals("en", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
     }
 
     @Test void setEnglish() throws PreferencesException {
-        LanguageManager.setLanguage(Locale.FRENCH);
-        LanguageManager.setEnglish();
-        assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().setLanguage(Locale.FRENCH);
+        LanguageManager.getInstance().setEnglish();
+        assertEquals("en", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
     }
 
     @Test void setWelsh() throws PreferencesException {
-        LanguageManager.setWelsh();
-        assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().setWelsh();
+        assertEquals("cy", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
     }
 
     @Test void applySavedLanguageEnglish() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             mockedPrefs.when(UserPreferences::loadLanguage).thenReturn("en");
-            LanguageManager.applySavedLanguage();
-            assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
+            LanguageManager.getInstance().applySavedLanguage();
+            assertEquals("en", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
         }
     }
 
     @Test void applySavedLanguageWelsh() throws PreferencesException {
         try (MockedStatic<UserPreferences> mockedPrefs = Mockito.mockStatic(UserPreferences.class)) {
             mockedPrefs.when(UserPreferences::loadLanguage).thenReturn("cy");
-            LanguageManager.applySavedLanguage();
-            assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
+            LanguageManager.getInstance().applySavedLanguage();
+            assertEquals("cy", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
         }
     }
 
     @Test void toggleLanguageFromEnglishToWelsh() throws PreferencesException {
-        LanguageManager.setEnglish();
-        assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
-        LanguageManager.toggleLanguage();
-        assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().setEnglish();
+        assertEquals("en", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().toggleLanguage();
+        assertEquals("cy", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
     }
 
     @Test void toggleLanguageFromWelshToEnglish() throws PreferencesException {
-        LanguageManager.setWelsh();
-        assertEquals("cy", LanguageManager.getBundle().getLocale().getLanguage());
-        LanguageManager.toggleLanguage();
-        assertEquals("en", LanguageManager.getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().setWelsh();
+        assertEquals("cy", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
+        LanguageManager.getInstance().toggleLanguage();
+        assertEquals("en", LanguageManager.getInstance().getBundle().getLocale().getLanguage());
     }
 }

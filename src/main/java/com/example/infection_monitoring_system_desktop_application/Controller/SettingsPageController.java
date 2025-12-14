@@ -48,7 +48,7 @@ public class SettingsPageController {
 
     @FXML private void handleChangeLanguage() {
         try {
-            LanguageManager.toggleLanguage();
+            LanguageManager.getInstance().toggleLanguage();
             SceneManager.refreshCurrentRoot();
         } catch (Exception ex) {
             ExceptionHandler.handle(ex, "Failed to switch language.");

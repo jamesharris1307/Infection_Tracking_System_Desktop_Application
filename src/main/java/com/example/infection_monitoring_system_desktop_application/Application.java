@@ -18,7 +18,7 @@ public class Application extends javafx.application.Application {
     @Override public void start(Stage stage) {
         try {
             AppContext.getInstance();
-            LanguageManager.applySavedLanguage();
+            LanguageManager.getInstance().applySavedLanguage();
             SceneManager.init(stage);
             SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
 
