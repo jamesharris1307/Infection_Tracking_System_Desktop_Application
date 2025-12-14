@@ -7,10 +7,14 @@ import java.util.logging.Level;
 
 public class ExceptionHandler {
 
-    private static final Logger LOGGER = Logger.getLogger(ExceptionHandler.class.getName());
+    private static Logger LOGGER = Logger.getLogger(ExceptionHandler.class.getName());
     private static boolean loggingEnabled = true;
 
     private ExceptionHandler() {}
+
+    public static void setLogger(Logger logger) {
+        LOGGER = logger;
+    }
 
     public static void setLoggingEnabled(boolean enabled) {
         loggingEnabled = enabled;

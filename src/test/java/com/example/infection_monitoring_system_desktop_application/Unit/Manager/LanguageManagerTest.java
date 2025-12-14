@@ -1,4 +1,4 @@
-package com.example.infection_monitoring_system_desktop_application.Unit.Util;
+package com.example.infection_monitoring_system_desktop_application.Unit.Manager;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;

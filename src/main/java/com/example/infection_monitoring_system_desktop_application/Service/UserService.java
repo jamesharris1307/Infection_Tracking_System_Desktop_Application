@@ -102,23 +102,23 @@ public class UserService {
         }, ConcurrencyManager.getExecutor());
     }
 
-    public CompletableFuture<List<User>> getUsersByStatusAsync(User.AccountStatus status) {
-        return CompletableFuture.supplyAsync(() -> indexManager.getByStatus(status),
-                ConcurrencyManager.getExecutor());
-    }
-
-    public CompletableFuture<List<User>> getUsersByNamePrefixAsync(String prefix) {
-        return CompletableFuture.supplyAsync(() -> indexManager.getByNamePrefix(prefix),
-                ConcurrencyManager.getExecutor());
-    }
-
-    public CompletableFuture<Set<User>> getUsersSortedByNameAsync() {
-        return CompletableFuture.supplyAsync(indexManager::getNameSortedIndex,
-                ConcurrencyManager.getExecutor());
-    }
-
-    public CompletableFuture<User> getUserByEmailAsync(String email) {
-        return CompletableFuture.supplyAsync(() -> userDAO.getUserByEmail(email),
-                ConcurrencyManager.getExecutor());
-    }
+//    public CompletableFuture<List<User>> getUsersByStatusAsync(User.AccountStatus status) {
+//        return CompletableFuture.supplyAsync(() -> indexManager.getByStatus(status),
+//                ConcurrencyManager.getExecutor());
+//    }
+//
+//    public CompletableFuture<List<User>> getUsersByNamePrefixAsync(String prefix) {
+//        return CompletableFuture.supplyAsync(() -> indexManager.getByNamePrefix(prefix),
+//                ConcurrencyManager.getExecutor());
+//    }
+//
+//    public CompletableFuture<Set<User>> getUsersSortedByNameAsync() {
+//        return CompletableFuture.supplyAsync(indexManager::getNameSortedIndex,
+//                ConcurrencyManager.getExecutor());
+//    }
+//
+//    public CompletableFuture<User> getUserByEmailAsync(String email) {
+//        return CompletableFuture.supplyAsync(() -> userDAO.getUserByEmail(email),
+//                ConcurrencyManager.getExecutor());
+//    }
 }

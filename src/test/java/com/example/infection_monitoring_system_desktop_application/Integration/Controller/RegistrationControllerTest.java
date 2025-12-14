@@ -37,7 +37,6 @@ public class RegistrationControllerTest extends ApplicationTest {
     private UserDAO userDAO;
     private DataSource h2DataSource;
 
-    // 🚩 NEW: Method to create the USERS table schema
     private void createSchema() {
         try (java.sql.Connection conn = h2DataSource.getConnection();
              Statement stmt = conn.createStatement()) {
@@ -131,8 +130,7 @@ public class RegistrationControllerTest extends ApplicationTest {
         return "user_" + System.currentTimeMillis() + "@example.com";
     }
 
-    private <T extends User> T assertUserPersisted(Class<T> clazz, String email) throws Exception {
-        // Wait until user appears in the database
+    private <T extends User> void assertUserPersisted(Class<T> clazz, String email) throws Exception {
         WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> userDAO.getUserByEmail(email) != null);
         User saved = userDAO.getUserByEmail(email);
         assertNotNull(saved);
@@ -143,7 +141,6 @@ public class RegistrationControllerTest extends ApplicationTest {
         } else {
             assertEquals(User.AccountStatus.Disabled, saved.getAccountStatus(), "Professional users should be Disabled on registration.");
         }
-        return clazz.cast(saved);
     }
 
     @Test
