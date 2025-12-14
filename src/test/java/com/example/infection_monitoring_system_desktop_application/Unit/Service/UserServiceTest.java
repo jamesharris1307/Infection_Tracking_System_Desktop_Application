@@ -29,20 +29,4 @@ class UserServiceTest {
     @Test
     void deleteUserAsync() {
     }
-
-    @Test
-    void getUsersByStatusAsync() {
-    }
-
-    @Test
-    void getUsersByNamePrefixAsync() {
-    }
-
-    @Test
-    void getUsersSortedByNameAsync() {
-    }
-
-    @Test
-    void getUserByEmailAsync() {
-    }
 }

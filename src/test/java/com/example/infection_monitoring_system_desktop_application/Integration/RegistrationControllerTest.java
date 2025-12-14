@@ -1,4 +1,4 @@
-package com.example.infection_monitoring_system_desktop_application.Integration.Controller;
+package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
@@ -37,7 +37,7 @@ public class RegistrationControllerTest extends ApplicationTest {
     private UserDAO userDAO;
     private DataSource h2DataSource;
 
-    private void createSchema() {
+    private void createSQLSchema() {
         try (java.sql.Connection conn = h2DataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute("DROP TABLE IF EXISTS USERS");
@@ -81,7 +81,7 @@ public class RegistrationControllerTest extends ApplicationTest {
         ds.setPassword("");
         this.h2DataSource = ds;
 
-        createSchema();
+        createSQLSchema();
 
         userDAO = new UserDAO(this.h2DataSource);
         userService = new UserService(userDAO);

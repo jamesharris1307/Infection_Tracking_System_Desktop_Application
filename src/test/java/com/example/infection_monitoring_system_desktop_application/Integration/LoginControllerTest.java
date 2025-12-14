@@ -1,4 +1,4 @@
-package com.example.infection_monitoring_system_desktop_application.Integration.Controller;
+package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.LoginController;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
@@ -31,7 +31,7 @@ public class LoginControllerTest extends ApplicationTest {
     private LoginController controller;
     private DataSource h2DataSource;
 
-    private void createSchema() {
+    private void createSQLSchema() {
         try (java.sql.Connection conn = h2DataSource.getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
 
@@ -77,7 +77,7 @@ public class LoginControllerTest extends ApplicationTest {
         ds.setPassword("");
         this.h2DataSource = ds;
 
-        createSchema();
+        createSQLSchema();
 
         userDAO = new UserDAO(this.h2DataSource);
         userService = new UserService(userDAO);
@@ -108,7 +108,53 @@ public class LoginControllerTest extends ApplicationTest {
     public void loginAsGeneralPublicIntegrationTest() throws Exception {
         User user = new GeneralPublicUser(
                 "user@example.com",
-                PasswordUtils.hashPassword("password123"), // The password MUST be hashed before saving
+                PasswordUtils.hashPassword("password123"),
+                "First", "Last",
+                LocalDate.of(2000, 1, 1),
+                "Addr1", "Addr2", "City", "County", "AB12 3CD",
+                User.AccountStatus.Active
+        );
+        seedUser(user);
+
+        clickOn("#usernameTextField").write("user@example.com");
+        clickOn("#passwordField").write("password123");
+        clickOn("#loginButton");
+
+        WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () ->
+                SessionManager.getInstance().getCurrentUser() != null
+        );
+
+        assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
+    }
+
+    @Test
+    public void loginAsHealthcareProfessionalIntegrationTest() throws Exception {
+        User user = new HealthcareProfessionalUser(
+                "user@example.com",
+                PasswordUtils.hashPassword("password123"),
+                "First", "Last",
+                LocalDate.of(2000, 1, 1),
+                "Addr1", "Addr2", "City", "County", "AB12 3CD",
+                User.AccountStatus.Active
+        );
+        seedUser(user);
+
+        clickOn("#usernameTextField").write("user@example.com");
+        clickOn("#passwordField").write("password123");
+        clickOn("#loginButton");
+
+        WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () ->
+                SessionManager.getInstance().getCurrentUser() != null
+        );
+
+        assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
+    }
+
+    @Test
+    public void loginAsAdministratorIntegrationTest() throws Exception {
+        User user = new AdministratorUser(
+                "user@example.com",
+                PasswordUtils.hashPassword("password123"),
                 "First", "Last",
                 LocalDate.of(2000, 1, 1),
                 "Addr1", "Addr2", "City", "County", "AB12 3CD",
