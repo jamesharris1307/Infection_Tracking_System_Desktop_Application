@@ -1,13 +1,5 @@
 package com.example.infection_monitoring_system_desktop_application.Manager;
 
-import com.example.infection_monitoring_system_desktop_application.Controller.*;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
-import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
-import com.example.infection_monitoring_system_desktop_application.Model.LegacyConnectionAdapter;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
-import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
-import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
 import javafx.scene.input.KeyCode;
@@ -23,52 +15,18 @@ public class SceneManager {
     private static Stage mainStage;
     private static Scene mainScene;
 
-    private static final LegacyConnectionAdapter dataSource = new LegacyConnectionAdapter();
-
-    private static final UserService userService = new UserService(new UserDAO(dataSource));
-    private static final CaseService caseService = new CaseService(new CaseDAO(dataSource));
-    private static final MedicalHistoryService medicalHistoryService = new MedicalHistoryService(new MedicalHistoryDAO(dataSource));
+    // DELETED: Static Service Initialization Block (Moved to AppContext)
 
     public static void init(Stage stage) {
         mainStage = stage;
     }
 
-    public static void switchRoot(String fxmlPath) {
+    // ADDED: Overloaded method to switch using a pre-loaded Parent (Handles PreferencesException)
+    public static void switchRoot(Parent root) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    SceneManager.class.getResource(fxmlPath),
-                    LanguageManager.getBundle()
-            );
-            Parent root = loader.load();
-            root.setUserData(fxmlPath);
-
-            Object controller = loader.getController();
-
-            if (controller instanceof LoginController) {
-                ((LoginController) controller).setUserService(userService);
-            }
-            else if (controller instanceof RegistrationController) {
-                ((RegistrationController) controller).setUserService(userService);
-            }
-            else if (controller instanceof EditDetailsController) {
-                ((EditDetailsController) controller).setUserService(userService);
-            }
-            else if (controller instanceof AdministratorDashboardController) {
-                ((AdministratorDashboardController) controller).setUserService(userService);
-            }
-            else if (controller instanceof GeneralPublicDashboardController) {
-                GeneralPublicDashboardController dashboard = (GeneralPublicDashboardController) controller;
-                dashboard.setUserService(userService);
-                dashboard.setCaseService(caseService);
-                dashboard.setMedicalHistoryService(medicalHistoryService);
-            }
-            else if (controller instanceof HealthcareProfessionalController) {
-                ((HealthcareProfessionalController) controller).setCaseService(caseService);
-            }
-
             if (mainScene == null) {
                 mainScene = new Scene(root);
-                ThemeManager.getInstance().applySavedTheme(mainScene);
+                ThemeManager.getInstance().applySavedTheme(mainScene); // throws PreferencesException
 
                 mainScene.setOnKeyPressed(event -> {
                     if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
@@ -80,13 +38,41 @@ public class SceneManager {
                 mainStage.show();
             } else {
                 mainScene.setRoot(root);
-                ThemeManager.getInstance().applySavedTheme(mainScene);
+                ThemeManager.getInstance().applySavedTheme(mainScene); // throws PreferencesException
             }
 
+            String fxmlPath = (String) root.getUserData();
             String title = deriveTitleFromFXML(fxmlPath);
             mainStage.setTitle(title);
 
-        } catch (IOException | PreferencesException e) {
+        } catch (PreferencesException e) {
+            // If the theme fails to load, we wrap it in an unchecked exception
+            // to prevent propagating checked exceptions up the call stack,
+            // which is good practice for critical initialization failures.
+            throw new SceneLoadException("Failed to apply saved theme or update scene root.", e);
+        }
+    }
+
+
+    // REVISED: switchRoot(String fxmlPath) (Handles only IOException)
+    public static void switchRoot(String fxmlPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    SceneManager.class.getResource(fxmlPath),
+                    LanguageManager.getBundle()
+            );
+
+            // CRITICAL FIX: Integrate the Factory for dependency injection
+            loader.setControllerFactory(AppContext.getInstance()::getControllerInstance);
+
+            Parent root = loader.load(); // Throws IOException
+            root.setUserData(fxmlPath);
+
+            // Now call the overloaded method. The exceptions thrown inside
+            // switchRoot(Parent root) are unchecked (SceneLoadException), so no catch needed here.
+            switchRoot(root);
+
+        } catch (IOException e) { // <-- ONLY catching IOException (thrown by loader.load())
             throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
         }
     }

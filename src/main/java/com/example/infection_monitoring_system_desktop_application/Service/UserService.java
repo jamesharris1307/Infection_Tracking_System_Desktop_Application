@@ -84,8 +84,14 @@ public class UserService {
 
     public CompletableFuture<Void> updateUserAsync(User user, String originalEmail) {
         return CompletableFuture.runAsync(() -> {
+            User oldUser = userDAO.getUserByEmail(originalEmail);
             userDAO.updateUser(user, originalEmail);
-            getAllUsersAsync().thenAccept(u -> {});
+
+            if (oldUser != null) {
+                indexManager.removeFromIndexes(oldUser);
+            }
+            indexManager.addToIndexes(user);
+
         }, ConcurrencyManager.getExecutor());
     }
 

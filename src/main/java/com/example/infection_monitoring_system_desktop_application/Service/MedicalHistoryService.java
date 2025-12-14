@@ -18,6 +18,23 @@ public class MedicalHistoryService {
         }
     }
 
+    public CompletableFuture<Void> saveOrUpdateHistoryAsync(MedicalHistory medicalHistory) {
+        if (medicalHistory == null) {
+            throw ExceptionFactory.validationError("Cannot save a null medical history object.");
+        }
+
+        return CompletableFuture.runAsync(() -> {
+            MedicalHistory existingHistory = dao.getMedicalHistoryByUserId(medicalHistory.getUserID());
+
+            if (existingHistory == null) {
+                dao.addMedicalHistory(medicalHistory);
+            } else {
+                dao.updateMedicalHistory(medicalHistory);
+            }
+
+        }, ConcurrencyManager.getExecutor());
+    }
+
     public CompletableFuture<Void> addMedicalHistoryAsync(MedicalHistory medicalHistory) {
         if (medicalHistory == null) {
             throw ExceptionFactory.validationError("Cannot add a null medical history object.");

@@ -23,6 +23,17 @@ public class MedicalHistoryDAO {
 
     private final DataSource dataSource;
 
+    private MedicalHistory mapResultSetToMedicalHistory(ResultSet rs, int userId) throws SQLException {
+        return new MedicalHistory(
+                userId,
+                rs.getBoolean("longTermConditions"),
+                rs.getBoolean("longTermMedications"),
+                rs.getBoolean("vaccinationUpToDate"),
+                rs.getBoolean("allergies"),
+                rs.getTimestamp("lastUpdated").toLocalDateTime()
+        );
+    }
+
     public MedicalHistoryDAO(DataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -53,7 +64,7 @@ public class MedicalHistoryDAO {
             pstmt.setBoolean(2, medicalHistory.isLongTermMedications());
             pstmt.setBoolean(3, medicalHistory.isVaccinationUpToDate());
             pstmt.setBoolean(4, medicalHistory.isAllergies());
-            pstmt.setTimestamp(5, Timestamp.valueOf(medicalHistory.getLastUpdated())); // Use Timestamp
+            pstmt.setTimestamp(5, Timestamp.valueOf(medicalHistory.getLastUpdated()));
             pstmt.setInt(6, medicalHistory.getUserID());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -68,14 +79,7 @@ public class MedicalHistoryDAO {
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new MedicalHistory(
-                            userId,
-                            rs.getBoolean("longTermConditions"),
-                            rs.getBoolean("longTermMedications"),
-                            rs.getBoolean("vaccinationUpToDate"),
-                            rs.getBoolean("allergies"),
-                            rs.getTimestamp("lastUpdated").toLocalDateTime()
-                    );
+                    return mapResultSetToMedicalHistory(rs, userId);
                 }
             }
         } catch (SQLException e) {

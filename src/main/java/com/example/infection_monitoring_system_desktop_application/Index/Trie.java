@@ -9,7 +9,6 @@ public class Trie<T> {
     private static class TrieNode<T> {
         Map<Character, TrieNode<T>> children = new HashMap<>();
         List<T> values = new ArrayList<>();
-        boolean isEndOfWord = false;
     }
 
     public void insert(String key, T value) {
@@ -17,7 +16,6 @@ public class Trie<T> {
         for (char c : key.toCharArray()) {
             node = node.children.computeIfAbsent(c, k -> new TrieNode<>());
         }
-        node.isEndOfWord = true;
         node.values.add(value);
     }
 
@@ -28,8 +26,7 @@ public class Trie<T> {
     private boolean remove(TrieNode<T> node, String key, int index, T value) {
         if (index == key.length()) {
             node.values.remove(value);
-            if (node.values.isEmpty()) node.isEndOfWord = false;
-            return node.children.isEmpty() && !node.isEndOfWord;
+            return node.children.isEmpty() && node.values.isEmpty();
         }
         char c = key.charAt(index);
         TrieNode<T> child = node.children.get(c);
@@ -37,7 +34,7 @@ public class Trie<T> {
 
         boolean shouldDeleteChild = remove(child, key, index + 1, value);
         if (shouldDeleteChild) node.children.remove(c);
-        return node.children.isEmpty() && node.values.isEmpty() && !node.isEndOfWord;
+        return node.children.isEmpty() && node.values.isEmpty();
     }
 
     public List<T> search(String prefix) {
@@ -60,6 +57,5 @@ public class Trie<T> {
     public void clear() {
         root.children.clear();
         root.values.clear();
-        root.isEndOfWord = false;
     }
 }

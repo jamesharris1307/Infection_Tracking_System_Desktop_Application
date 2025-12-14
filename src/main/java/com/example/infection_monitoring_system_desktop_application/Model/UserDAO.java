@@ -28,6 +28,41 @@ public class UserDAO {
 
     private final DataSource dataSource;
 
+    private User mapResultSetToUser(ResultSet rs) throws SQLException {
+        int userId = rs.getInt("UserID");
+        String roleStr = rs.getString("Role");
+        User.Role role = User.Role.valueOf(roleStr);
+
+        User user;
+        String email = rs.getString("Email");
+        String password = rs.getString("Password");
+        String firstName = rs.getString("FirstName");
+        String lastName = rs.getString("LastName");
+        java.time.LocalDate dob = rs.getDate("DateOfBirth").toLocalDate();
+        String addr1 = rs.getString("AddressLine1");
+        String addr2 = rs.getString("AddressLine2");
+        String town = rs.getString("TownCity");
+        String county = rs.getString("County");
+        String postcode = rs.getString("Postcode");
+        User.AccountStatus status = User.AccountStatus.valueOf(rs.getString("AccountStatus"));
+
+        switch (role) {
+            case GeneralPublic:
+                user = new GeneralPublicUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            case HealthcareProfessional:
+                user = new HealthcareProfessionalUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            case Administrator:
+                user = new AdministratorUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            default:
+                throw new IllegalStateException("Unknown role: " + roleStr);
+        }
+        user.setUserId(userId);
+        return user;
+    }
+
     public UserDAO(DataSource ds) {
         if (ds == null) {
             throw new IllegalArgumentException("DataSource must be provided to UserDAO.");
@@ -65,37 +100,7 @@ public class UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    int userId = rs.getInt("UserID");
-                    String roleStr = rs.getString("Role");
-                    User.Role role = User.Role.valueOf(roleStr);
-                    User user;
-
-                    switch (role) {
-                        case GeneralPublic:
-                            user = new GeneralPublicUser(rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                    rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                    rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                            );
-                            break;
-                        case HealthcareProfessional:
-                            user = new HealthcareProfessionalUser(
-                                    rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                    rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                    rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                            );
-                            break;
-                        case Administrator:
-                            user = new AdministratorUser(
-                                    rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                    rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                    rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                            );
-                            break;
-                        default:
-                            throw new IllegalStateException("Unknown role: " + roleStr);
-                    }
-                    user.setUserId(userId);
-                    return user;
+                    return mapResultSetToUser(rs);
                 }
             }
             return null;
@@ -135,62 +140,7 @@ public class UserDAO {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                int userId = rs.getInt("UserID");
-                String roleStr = rs.getString("Role");
-                User.Role role = User.Role.valueOf(roleStr);
-
-                User user;
-                switch (role) {
-                    case GeneralPublic:
-                        user = new GeneralPublicUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case HealthcareProfessional:
-                        user = new HealthcareProfessionalUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case Administrator:
-                        user = new AdministratorUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown role: " + roleStr);
-                }
-                user.setUserId(userId);
-                userList.add(user);
+                userList.add(mapResultSetToUser(rs));
             }
 
         } catch (SQLException e) {

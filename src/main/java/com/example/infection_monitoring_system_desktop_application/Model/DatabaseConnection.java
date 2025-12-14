@@ -40,6 +40,3 @@ public final class DatabaseConnection {
         return DriverManager.getConnection(url, user, password);
     }
 }
-
-
-

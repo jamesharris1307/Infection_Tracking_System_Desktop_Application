@@ -58,31 +58,23 @@ public class UpdateMedicalHistoryController {
                 throw ExceptionFactory.unexpected(new IllegalStateException("MedicalHistoryService dependency not initialized."));
             }
 
-            int userId = SessionManager.getInstance().getCurrentUser().getUserId();
-            boolean hasConditions = longTermConditionsYes.isSelected();
-            boolean hasMedications = longTermMedicationsYes.isSelected();
-            boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
-            boolean hasAllergies = allergiesYes.isSelected();
-
             if (longTermConditionsGroup.getSelectedToggle() == null || longTermMedicationsGroup.getSelectedToggle() == null ||
                     upToDateVaccinationsGroup.getSelectedToggle() == null || allergiesGroup.getSelectedToggle() == null) {
                 throw ExceptionFactory.validationError("Please make a selection for all medical history fields.");
             }
 
+            int userId = SessionManager.getInstance().getCurrentUser().getUserId();
+            boolean hasConditions = longTermConditionsYes.isSelected();
+            boolean hasMedications = longTermMedicationsYes.isSelected();
+            boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
+            boolean hasAllergies = allergiesYes.isSelected();
             LocalDateTime lastUpdated = LocalDateTime.now();
+
             MedicalHistory medicalHistory = new MedicalHistory(userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated);
 
-            medicalHistoryService.getMedicalHistoryByUserIdAsync(userId)
-                    .thenCompose(existing -> {
-                        if (existing == null) {
-                            return medicalHistoryService.addMedicalHistoryAsync(medicalHistory);
-                        } else {
-                            medicalHistory.setMedicalHistoryID(existing.getMedicalHistoryID());
-                            return medicalHistoryService.updateMedicalHistoryAsync(medicalHistory);
-                        }
-                    })
+            medicalHistoryService.saveOrUpdateHistoryAsync(medicalHistory)
                     .thenRun(() -> javafx.application.Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "Medical history updated successfully.");
+                        AlertUtils.showInfo("Success", "Medical history saved successfully.");
                         clearForm();
                         if (parentController != null) {
                             parentController.showHomePage();
@@ -90,7 +82,7 @@ public class UpdateMedicalHistoryController {
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to update medical history asynchronously.");
+                        ExceptionHandler.handle(cause, "Failed to save medical history asynchronously.");
                         return null;
                     });
         } catch (Exception e) {

@@ -59,10 +59,6 @@ public class AdministratorDashboardController {
         }
     }
 
-    private void setupButtons() {
-        logoutButton.setOnAction(e -> handleLogout());
-    }
-
     private void loadUsers() {
         userService.getAllUsersAsync()
                 .thenAccept(users -> Platform.runLater(() -> {
