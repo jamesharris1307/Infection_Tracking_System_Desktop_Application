@@ -38,28 +38,24 @@ public class AdministratorDashboardController {
     }
 
     @FXML public void initialize() {
-        try {
-            colCaseId.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUserId()).asObject());
-            colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
-            colLastName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getLastName()));
-            colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
-            colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
-            colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
-            addButtonToTable(colEditAction, "Edit", this::handleEditUser);
-            addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
-            addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
-            cmbFilter.getItems().addAll("All", "Active", "Disabled");
-            cmbFilter.getSelectionModel().select("All");
-            logoutButton.setOnAction(e -> handleLogout());
+        colCaseId.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUserId()).asObject());
+        colFirstName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getFirstName()));
+        colLastName.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getLastName()));
+        colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
+        colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
+        colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
+        addButtonToTable(colEditAction, "Edit", this::handleEditUser);
+        addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
+        addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
+        cmbFilter.getItems().addAll("All", "Active", "Disabled");
+        cmbFilter.getSelectionModel().select("All");
+        logoutButton.setOnAction(e -> handleLogout());
 
-            if (userService != null) {
-                loadUsers();
-            } else {
-                ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
-                        "CRITICAL: UserService is missing in Dashboard.");
-            }
-        } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error initializing AdministratorController");
+        if (userService != null) {
+            loadUsers();
+        } else {
+            ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
+                    "CRITICAL: UserService is missing in Dashboard.");
         }
     }
 
@@ -84,14 +80,17 @@ public class AdministratorDashboardController {
     private void addButtonToTable(TableColumn<User, Void> column, String buttonText, java.util.function.Consumer<User> action) {
         column.setCellFactory(col -> new TableCell<>() {
             private final Button button = new Button(buttonText);
+
             {
                 button.setOnAction(event -> {
                     User user = getTableView().getItems().get(getIndex());
-                    try {
-                        if (user == null) throw ExceptionFactory.validationError("Invalid user selected.");
+                    if (user == null) {
+                        ExceptionHandler.handle(
+                                ExceptionFactory.validationError("Invalid user selected from table."),
+                                "Table action failed due to invalid selection."
+                        );
+                    } else {
                         action.accept(user);
-                    } catch (Exception e) {
-                        ExceptionHandler.handle(e, "Error performing table action");
                     }
                 });
             }
@@ -108,35 +107,27 @@ public class AdministratorDashboardController {
     }
 
     private void handleToggleUserStatus(User user) {
-        try {
-            user.setAccountStatus(user.getAccountStatus() == User.AccountStatus.Active
-                    ? User.AccountStatus.Disabled
-                    : User.AccountStatus.Active);
+        user.setAccountStatus(user.getAccountStatus() == User.AccountStatus.Active
+                ? User.AccountStatus.Disabled
+                : User.AccountStatus.Active);
 
-            userService.updateUserAsync(user, user.getEmail())
-                    .thenRun(() -> Platform.runLater(casesTable::refresh))
-                    .exceptionally(ex -> {
-                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to update user status");
-                        return null;
-                    });
-        } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error toggling user status");
-        }
+        userService.updateUserAsync(user, user.getEmail())
+                .thenRun(() -> Platform.runLater(casesTable::refresh))
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to update user status");
+                    return null;
+                });
     }
 
     private void handleDeleteUser(User user) {
-        try {
-            userService.deleteUserAsync(user)
-                    .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
-                    .exceptionally(ex -> {
-                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to delete user");
-                        return null;
-                    });
-        } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error deleting user");
-        }
+        userService.deleteUserAsync(user)
+                .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to delete user");
+                    return null;
+                });
     }
 
     private void filterByStatus(User.AccountStatus status) {

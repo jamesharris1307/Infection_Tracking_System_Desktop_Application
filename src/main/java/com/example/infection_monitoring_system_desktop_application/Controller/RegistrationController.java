@@ -117,9 +117,15 @@ public class RegistrationController {
             String postcode = postcodeField.getText().trim();
             String roleSelection = roleComboBox.getValue();
 
-            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
-                    !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
-                throw ExceptionFactory.validationError("Please fill in all required fields and ensure passwords match.");
+            if (email.isEmpty() || password.isEmpty() || confirmPasswordField.getText().isEmpty() ||
+                    !password.equals(confirmPasswordField.getText()) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null ||
+                    dob == null || address1.isEmpty() || city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
+
+                throw ExceptionFactory.validationError("Please fill in all fields and ensure passwords match.");
+            }
+
+            if (userService == null) {
+                throw ExceptionFactory.unexpected(new IllegalStateException("UserService has not been set/injected."));
             }
 
             switch (roleSelection) {
@@ -136,7 +142,7 @@ public class RegistrationController {
                 case "General Public" -> { roleEnum = User.Role.GeneralPublic; accountStatusEnum = User.AccountStatus.Active; }
                 case "Healthcare Professional" -> { roleEnum = User.Role.HealthcareProfessional; accountStatusEnum = User.AccountStatus.Disabled; }
                 case "Administrator" -> { roleEnum = User.Role.Administrator; accountStatusEnum = User.AccountStatus.Disabled; }
-                default -> throw new IllegalUserRoleException("Invalid role selected");
+                default -> throw ExceptionFactory.unexpected(new IllegalUserRoleException("Invalid role selected: " + roleSelection));
             }
 
             User newUser = switch (roleEnum) {
@@ -148,17 +154,15 @@ public class RegistrationController {
                         address1, address2, city, county, postcode, accountStatusEnum);
             };
 
-            if (userService == null) {
-                throw new IllegalStateException("UserService has not been set/injected.");
-            }
             userService.addUserAsync(newUser)
                     .thenRun(() -> Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "User registered successfully!");
+                        AlertUtils.showInfo("Success", "User registered successfully! Account status is set to " + newUser.getAccountStatus() + ".");
                         clearForm();
+                        viewLogin();
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Error registering user asynchronously");
+                        ExceptionHandler.handle(cause, "Error registering user asynchronously.");
                         return null;
                     });
         } catch (Exception e) {

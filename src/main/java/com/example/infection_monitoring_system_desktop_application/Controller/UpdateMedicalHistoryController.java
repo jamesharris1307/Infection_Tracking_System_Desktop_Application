@@ -3,6 +3,8 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -49,12 +51,11 @@ public class UpdateMedicalHistoryController {
     @FXML private void handleUpdateMedicalHistory() {
         try {
             if (SessionManager.getInstance().getCurrentUser() == null) {
-                AlertUtils.showError("Error", "No user is currently logged in.");
-                return;
+                throw ExceptionFactory.validationError("No user is currently logged in. Please log in again.");
             }
 
             if (medicalHistoryService == null) {
-                throw new IllegalStateException("MedicalHistoryService dependency not initialized.");
+                throw ExceptionFactory.unexpected(new IllegalStateException("MedicalHistoryService dependency not initialized."));
             }
 
             int userId = SessionManager.getInstance().getCurrentUser().getUserId();
@@ -62,6 +63,11 @@ public class UpdateMedicalHistoryController {
             boolean hasMedications = longTermMedicationsYes.isSelected();
             boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
             boolean hasAllergies = allergiesYes.isSelected();
+
+            if (longTermConditionsGroup.getSelectedToggle() == null || longTermMedicationsGroup.getSelectedToggle() == null ||
+                    upToDateVaccinationsGroup.getSelectedToggle() == null || allergiesGroup.getSelectedToggle() == null) {
+                throw ExceptionFactory.validationError("Please make a selection for all medical history fields.");
+            }
 
             LocalDateTime lastUpdated = LocalDateTime.now();
             MedicalHistory medicalHistory = new MedicalHistory(userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated);
@@ -71,6 +77,7 @@ public class UpdateMedicalHistoryController {
                         if (existing == null) {
                             return medicalHistoryService.addMedicalHistoryAsync(medicalHistory);
                         } else {
+                            medicalHistory.setMedicalHistoryID(existing.getMedicalHistoryID());
                             return medicalHistoryService.updateMedicalHistoryAsync(medicalHistory);
                         }
                     })
@@ -82,15 +89,12 @@ public class UpdateMedicalHistoryController {
                         }
                     }))
                     .exceptionally(ex -> {
-                        javafx.application.Platform.runLater(() ->
-                                AlertUtils.showError("Unexpected Error", "Failed to update medical history.")
-                        );
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Failed to update medical history asynchronously.");
                         return null;
                     });
         } catch (Exception e) {
-            javafx.application.Platform.runLater(() ->
-                    AlertUtils.showError("Unexpected Error", "An unexpected error occurred.")
-            );
+            ExceptionHandler.handle(e, "Error during medical history submission.");
         }
     }
 

@@ -18,8 +18,12 @@ public class ExceptionFactory {
         return new InvalidCredentialsException("Invalid password provided.");
     }
 
-    public static DatabaseOperationException databaseError(Throwable cause) {
-        return new DatabaseOperationException("Database operation failed.", cause);
+    public static DAOException databaseError(Throwable cause) {
+        return new DAOException("Database operation failed.", cause);
+    }
+
+    public static DataNotFoundException dataNotFound(String message) {
+        return new DataNotFoundException(message);
     }
 
     public static IllegalUserRoleException unknownRole(String role) {

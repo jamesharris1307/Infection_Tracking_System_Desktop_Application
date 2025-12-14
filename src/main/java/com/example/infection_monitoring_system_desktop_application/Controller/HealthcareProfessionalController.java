@@ -3,7 +3,8 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
-import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,18 +39,18 @@ public class HealthcareProfessionalController {
     }
 
     @FXML public void initialize() {
-        try {
-            if (caseService == null) {
-                throw new IllegalStateException("CaseService dependency not initialized in HealthcareProfessionalController.");
-            }
-
-            setupColumns();
-            setupSortComboBox();
-            logoutButton.setOnAction(e -> handleLogout());
-            loadCases();
-        } catch (Exception e) {
-            AlertUtils.showError("Unexpected Error", "Failed to initialise case table.");
+        if (caseService == null) {
+            ExceptionHandler.handle(
+                    ExceptionFactory.unexpected(new IllegalStateException("CaseService dependency not initialized.")),
+                    "CRITICAL: CaseService is missing in Healthcare Professional Controller."
+            );
+            return;
         }
+
+        setupColumns();
+        setupSortComboBox();
+        logoutButton.setOnAction(e -> handleLogout());
+        loadCases();
     }
 
     private void setupColumns() {
@@ -82,13 +83,16 @@ public class HealthcareProfessionalController {
                     casesTable.setItems(sortedCases);
                 }))
                 .exceptionally(ex -> {
-                    AlertUtils.showError("Error", "Failed to load cases.");
+                    // Use ExceptionHandler for async failure
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to load cases for Healthcare Professional view.");
                     return null;
                 });
     }
 
     @FXML private void onSortClicked() {
         String selection = cmbSort.getValue();
+
         caseService.getAllCasesAsync()
                 .thenAccept(cases -> Platform.runLater(() -> {
                     if ("Oldest First".equals(selection)) {
@@ -99,7 +103,8 @@ public class HealthcareProfessionalController {
                     casesTable.setItems(sortedCases);
                 }))
                 .exceptionally(ex -> {
-                    AlertUtils.showError("Error", "Failed to sort cases.");
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to re-sort cases.");
                     return null;
                 });
     }

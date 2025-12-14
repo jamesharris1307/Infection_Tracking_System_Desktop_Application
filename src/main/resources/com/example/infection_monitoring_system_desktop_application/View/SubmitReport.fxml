@@ -63,7 +63,7 @@
                     </HBox>
                 </VBox>
 
-                <Button fx:id="submitReportDetailsButton" onAction="#handleSubmitReport" text="Submit" />
+                <Button fx:id="submitReportButton" onAction="#handleSubmitReport" text="Submit" />
 
             </VBox>
         </HBox>

@@ -5,6 +5,8 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Scene
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
@@ -41,86 +43,92 @@ public class EditDetailsController {
     }
 
     @FXML private void handleEditDetailsSubmit() {
-        try {
-            String firstName = fieldFirstName.getText().trim();
-            String lastName = fieldLastName.getText().trim();
-            String email = fieldEmail.getText().trim();
-            LocalDate dob = fieldDob.getValue();
-            String address1 = fieldAddress1.getText().trim();
-            String address2 = fieldAddress2.getText().trim();
-            String city = fieldCity.getText().trim();
-            String county = fieldCounty.getText().trim();
-            String postcode = fieldPostcode.getText().trim();
-            String password = fieldPassword.getText();
-            String confirmPassword = fieldConfirmPassword.getText();
+        String firstName = fieldFirstName.getText().trim();
+        String lastName = fieldLastName.getText().trim();
+        String email = fieldEmail.getText().trim();
+        LocalDate dob = fieldDob.getValue();
+        String address1 = fieldAddress1.getText().trim();
+        String address2 = fieldAddress2.getText().trim();
+        String city = fieldCity.getText().trim();
+        String county = fieldCounty.getText().trim();
+        String postcode = fieldPostcode.getText().trim();
+        String password = fieldPassword.getText();
+        String confirmPassword = fieldConfirmPassword.getText();
 
-            if (!password.equals(confirmPassword)) {
-                AlertUtils.showError("Error", "Passwords do not match.");
-                return;
-            }
-
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
-                    dob == null || address1.isEmpty() || city.isEmpty() ||
-                    county.isEmpty() || postcode.isEmpty()) {
-                AlertUtils.showError("Error", "Please fill in all required fields.");
-                return;
-            }
-
-            if (userService == null) {
-                AlertUtils.showError("System Error", "UserService dependency not initialized.");
-                return;
-            }
-
-            User currentUser = SessionManager.getInstance().getCurrentUser();
-            if (currentUser == null) {
-                AlertUtils.showError("Error", "No user is currently logged in.");
-                return;
-            }
-
-            String originalEmail = currentUser.getEmail();
-            String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
-
-            currentUser.setFirstName(firstName);
-            currentUser.setLastName(lastName);
-            currentUser.setEmail(email);
-            currentUser.setDateOfBirth(dob);
-            currentUser.setAddressLine1(address1);
-            currentUser.setAddressLine2(address2);
-            currentUser.setTownCity(city);
-            currentUser.setCounty(county);
-            currentUser.setPostcode(postcode);
-
-            if (hashedPassword != null) currentUser.setPassword(hashedPassword);
-
-            userService.updateUserAsync(currentUser, originalEmail)
-                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "Profile updated successfully.");
-                        clearForm();
-                        if (parentController != null) {
-                            parentController.showHomePage();
-                        }
-                    }))
-                    .exceptionally(ex -> {
-                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        javafx.application.Platform.runLater(() ->
-                                AlertUtils.showError("Update Failed", "Error: " + cause.getMessage())
-                        );
-                        return null;
-                    });
-        } catch (Exception e) {
-            AlertUtils.showError("Unexpected Error", "An unexpected error occurred while updating your profile.");
+        if (!password.equals(confirmPassword)) {
+            ExceptionHandler.handle(ExceptionFactory.validationError("Passwords do not match."),
+                    "Profile update: Password mismatch");
+            return;
         }
+
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
+                dob == null || address1.isEmpty() || city.isEmpty() ||
+                county.isEmpty() || postcode.isEmpty()) {
+            ExceptionHandler.handle(ExceptionFactory.validationError("Please fill in all required fields."),
+                    "Profile update: Missing required fields");
+            return;
+        }
+
+        if (userService == null) {
+            ExceptionHandler.handle(ExceptionFactory.unexpected(
+                            new IllegalStateException("UserService dependency not initialized.")),
+                    "CRITICAL: UserService is missing in EditDetailsController."
+            );
+            return;
+        }
+
+        User currentUser = SessionManager.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No user in session.");
+            return;
+        }
+
+        String originalEmail = currentUser.getEmail();
+        String hashedPassword = password.isEmpty() ? null : PasswordUtils.hashPassword(password);
+
+        currentUser.setFirstName(firstName);
+        currentUser.setLastName(lastName);
+        currentUser.setEmail(email);
+        currentUser.setDateOfBirth(dob);
+        currentUser.setAddressLine1(address1);
+        currentUser.setAddressLine2(address2);
+        currentUser.setTownCity(city);
+        currentUser.setCounty(county);
+        currentUser.setPostcode(postcode);
+
+        if (hashedPassword != null) {
+            currentUser.setPassword(hashedPassword);
+        }
+
+        userService.updateUserAsync(currentUser, originalEmail)
+                .thenRun(() -> javafx.application.Platform.runLater(() -> {
+                    // SUCCESS BLOCK: Show confirmation message
+                    AlertUtils.showInfo("Success", "Profile updated successfully.");
+                    clearForm();
+                    if (parentController != null) {
+                        parentController.showHomePage();
+                    }
+                }))
+                .exceptionally(ex -> {
+                    // FAILURE BLOCK: Handle exception centrally
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Profile update failed asynchronously.");
+                    return null;
+                });
     }
 
     @FXML private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser == null) {
-            AlertUtils.showError("Error", "No user is currently logged in.");
+            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No user in session.");
             return;
         }
 
         if (userService == null) {
-            AlertUtils.showError("System Error", "UserService dependency not initialized.");
+            ExceptionHandler.handle(ExceptionFactory.unexpected(
+                            new IllegalStateException("UserService dependency not initialized.")),
+                    "CRITICAL: UserService is missing in EditDetailsController."
+            );
             return;
         }
 
@@ -131,11 +139,18 @@ public class EditDetailsController {
                     AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
                 }))
                 .exceptionally(ex -> {
-                    javafx.application.Platform.runLater(() ->
-                            AlertUtils.showError("Unexpected Error", "Failed to delete account.")
-                    );
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Account deletion failed asynchronously.");
                     return null;
                 });
+    }
+
+    @FXML private void handleBack() {
+        if (parentController != null) {
+            parentController.showHomePage();
+        } else {
+            SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
+        }
     }
 
     private void clearForm() {

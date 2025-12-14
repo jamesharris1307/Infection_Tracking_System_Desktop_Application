@@ -69,7 +69,7 @@ public class SubmitReportController {
             YesWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
             NoWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error initializing SubmitReportController");
+            ExceptionHandler.handle(e, "Error initializing case report form controls.");
         }
     }
 
@@ -78,12 +78,11 @@ public class SubmitReportController {
             User currentUser = SessionManager.getInstance().getCurrentUser();
 
             if (currentUser == null || currentUser.getUserId() <= 0) {
-                throw ExceptionFactory.validationError("No valid user is logged in.");
+                throw ExceptionFactory.validationError("No valid user is logged in. Please log in again.");
             }
 
             if (caseService == null) {
-                ExceptionHandler.handle(new IllegalStateException("CaseService dependency not initialized."), "CRITICAL: CaseService is missing.");
-                return;
+                throw ExceptionFactory.unexpected(new IllegalStateException("CaseService dependency not initialized."));
             }
 
             int userId = currentUser.getUserId();
@@ -91,8 +90,8 @@ public class SubmitReportController {
             LocalDateTime symptomsBegan = symptomsStartDate.getValue() != null
                     ? symptomsStartDate.getValue().atStartOfDay()
                     : null;
-            Set<String> symptomsSet = new HashSet<>();
 
+            Set<String> symptomsSet = new HashSet<>();
             if (feverSymptomCheck.isSelected()) symptomsSet.add("Fever");
             if (coughSymptomCheck.isSelected()) symptomsSet.add("Cough");
             if (headacheSymptomCheck.isSelected()) symptomsSet.add("Headache");
@@ -121,7 +120,7 @@ public class SubmitReportController {
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to submit case report asynchronously");
+                        ExceptionHandler.handle(cause, "Failed to submit case report asynchronously.");
                         return null;
                     });
         } catch (Exception e) {

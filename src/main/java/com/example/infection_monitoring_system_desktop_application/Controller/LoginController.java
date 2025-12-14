@@ -5,9 +5,11 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Sessi
 import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.*;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.IllegalUserRoleException;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Util.*;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
@@ -30,43 +32,39 @@ public class LoginController {
         }
 
         if (userService == null) {
-            ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
-                    "CRITICAL: UserService is missing in LoginController.");
+            ExceptionHandler.handle(
+                    ExceptionFactory.unexpected(new IllegalStateException("UserService dependency not initialized.")),
+                    "CRITICAL: UserService is missing in LoginController."
+            );
             return;
         }
 
-        userService.getUserByEmailAsync(email)
-                .thenAcceptAsync(user -> {
-                    try {
-                        if (user == null) throw new UserNotFoundException("User not found for email: " + email);
-                        if (!PasswordUtils.checkPassword(password, user.getPassword()))
-                            throw new InvalidCredentialsException("Invalid password");
-                        SessionManager.getInstance().setCurrentUser(user);
-                        Platform.runLater(() -> switchDashboard(user.getRole()));
-                    } catch (Exception e) {
-                        ExceptionHandler.handle(e, "Error validating user credentials");
-                    }
+        userService.loginAsync(email, password)
+                .thenAccept(user -> {
+                    SessionManager.getInstance().setCurrentUser(user);
+                    Platform.runLater(() -> switchDashboard(user.getRole()));
                 })
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Error fetching user asynchronously");
+                    ExceptionHandler.handle(cause, "Login attempt failed.");
                     return null;
                 });
     }
 
     private void switchDashboard(User.Role role) {
-        try {
-            switch (role) {
-                case Administrator -> SceneManager.switchRoot(
-                        "/com/example/infection_monitoring_system_desktop_application/View/AdministratorDashboard.fxml");
-                case HealthcareProfessional -> SceneManager.switchRoot(
-                        "/com/example/infection_monitoring_system_desktop_application/View/HealthcareProfessionalDashboard.fxml");
-                case GeneralPublic -> SceneManager.switchRoot(
-                        "/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
-                default -> throw new IllegalUserRoleException("Unknown user role: " + role);
+        switch (role) {
+            case Administrator -> SceneManager.switchRoot(
+                    "/com/example/infection_monitoring_system_desktop_application/View/AdministratorDashboard.fxml");
+            case HealthcareProfessional -> SceneManager.switchRoot(
+                    "/com/example/infection_monitoring_system_desktop_application/View/HealthcareProfessionalDashboard.fxml");
+            case GeneralPublic -> SceneManager.switchRoot(
+                    "/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
+            default -> {
+                ExceptionHandler.handle(
+                        ExceptionFactory.unexpected(new IllegalUserRoleException("Unknown user role: " + role)),
+                        "Invalid dashboard switch attempt."
+                );
             }
-        } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error switching dashboard for role: " + role);
         }
     }
 
@@ -75,7 +73,7 @@ public class LoginController {
             ThemeManager.getInstance().toggleTheme();
             SceneManager.refreshCurrentRoot();
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error toggling theme");
+            ExceptionHandler.handle(e, "Failed to toggle application theme due to preferences error.");
         }
     }
 
@@ -84,18 +82,14 @@ public class LoginController {
             LanguageManager.toggleLanguage();
             SceneManager.refreshCurrentRoot();
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error toggling language");
+            ExceptionHandler.handle(e, "Failed to toggle application language due to preferences error.");
         }
     }
 
     @FXML private void viewRegistration() {
-        try {
-            SceneManager.switchRoot(
-                    "/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"
-            );
-        } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error switching to registration view");
-        }
+        SceneManager.switchRoot(
+                "/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"
+        );
     }
 
     public void setUserService(UserService userService) {

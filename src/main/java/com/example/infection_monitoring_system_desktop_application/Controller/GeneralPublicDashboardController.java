@@ -5,7 +5,9 @@ import com.example.infection_monitoring_system_desktop_application.Manager.Scene
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
-import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
@@ -38,8 +40,12 @@ public class GeneralPublicDashboardController {
     }
 
     @FXML private void initialize() {
-        loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
-        setupButtons();
+        try {
+            loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
+            setupButtons();
+        } catch (SceneLoadException e) {
+            ExceptionHandler.handle(e, "CRITICAL: Failed to load initial dashboard page.");
+        }
     }
 
     private void setupButtons() {
@@ -50,6 +56,11 @@ public class GeneralPublicDashboardController {
     private void loadPage(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+            if (loader.getLocation() == null) {
+                throw new SceneLoadException("Resource not found: " + fxmlPath);
+            }
+
             Node page = loader.load();
             Object controller = loader.getController();
 
@@ -63,9 +74,7 @@ public class GeneralPublicDashboardController {
                 updateMedicalHistory.setMedicalHistoryService(this.medicalHistoryService);
             } else if (controller instanceof EditDetailsController editDetailsController) {
                 editDetailsController.setParentController(this);
-                if (this.userService != null) {
-                    editDetailsController.setUserService(this.userService);
-                }
+                editDetailsController.setUserService(this.userService);
             } else if (controller instanceof SettingsPageController settingsController) {
                 settingsController.setParentController(this);
             }
@@ -77,14 +86,18 @@ public class GeneralPublicDashboardController {
                 if (value instanceof Button backBtn) {
                     setupBackButton(backBtn);
                 }
-            } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+            } catch (NoSuchFieldException | IllegalAccessException ignored) {
+            }
 
             centerPages.getChildren().clear();
             centerPages.getChildren().add(page);
+
         } catch (IOException e) {
-            AlertUtils.showError("Load Error", "Failed to load page: " + fxmlPath);
+            throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
+        } catch (SceneLoadException e) {
+            throw e;
         } catch (Exception ex) {
-            AlertUtils.showError("Unexpected Error", "An unexpected error occurred: " + ex.getMessage());
+            throw ExceptionFactory.unexpected(ex);
         }
     }
 
@@ -111,9 +124,13 @@ public class GeneralPublicDashboardController {
     }
 
     private void handleLogout() {
-        SessionManager.getInstance().clearSession();
-        SceneManager.switchRoot(
-                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
-        );
+        try {
+            SessionManager.getInstance().clearSession();
+            SceneManager.switchRoot(
+                    "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+            );
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "CRITICAL: Failed to log out or switch to login screen.");
+        }
     }
 }

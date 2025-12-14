@@ -3,6 +3,7 @@ package com.example.infection_monitoring_system_desktop_application.Service;
 import com.example.infection_monitoring_system_desktop_application.Manager.ConcurrencyManager;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory; // Import the Factory
 
 import java.util.concurrent.CompletableFuture;
 
@@ -18,17 +19,36 @@ public class MedicalHistoryService {
     }
 
     public CompletableFuture<Void> addMedicalHistoryAsync(MedicalHistory medicalHistory) {
-        return CompletableFuture.runAsync(() -> dao.addMedicalHistory(medicalHistory),
-                ConcurrencyManager.getExecutor());
+        if (medicalHistory == null) {
+            throw ExceptionFactory.validationError("Cannot add a null medical history object.");
+        }
+
+        return CompletableFuture.runAsync(() -> {
+            dao.addMedicalHistory(medicalHistory);
+        }, ConcurrencyManager.getExecutor());
     }
 
     public CompletableFuture<Void> updateMedicalHistoryAsync(MedicalHistory medicalHistory) {
-        return CompletableFuture.runAsync(() -> dao.updateMedicalHistory(medicalHistory),
-                ConcurrencyManager.getExecutor());
+        if (medicalHistory == null) {
+            throw ExceptionFactory.validationError("Cannot update with a null medical history object.");
+        }
+
+        return CompletableFuture.runAsync(() -> {
+            dao.updateMedicalHistory(medicalHistory);
+        }, ConcurrencyManager.getExecutor());
     }
 
     public CompletableFuture<MedicalHistory> getMedicalHistoryByUserIdAsync(int userId) {
-        return CompletableFuture.supplyAsync(() -> dao.getMedicalHistoryByUserId(userId),
-                ConcurrencyManager.getExecutor());
+        return CompletableFuture.supplyAsync(() -> {
+
+            MedicalHistory history = dao.getMedicalHistoryByUserId(userId);
+
+            if (history == null) {
+                throw ExceptionFactory.dataNotFound("Medical history not found for user ID: " + userId);
+            }
+
+            return history;
+
+        }, ConcurrencyManager.getExecutor());
     }
 }

@@ -5,6 +5,7 @@ import com.example.infection_monitoring_system_desktop_application.Index.UserInd
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ObservableList;
 import java.util.List;
@@ -21,24 +22,30 @@ public class UserService {
 
     public CompletableFuture<User> loginAsync(String email, String plaintextPassword) {
         return CompletableFuture.supplyAsync(() -> {
+
             User user = userDAO.getUserByEmail(email);
 
-            if (user == null || user.getAccountStatus() != User.AccountStatus.Active) {
-                return null;
+            if (user == null) {
+                throw ExceptionFactory.userNotFound(email);
             }
 
-            if (PasswordUtils.checkPassword(plaintextPassword, user.getPassword())) {
-                return user;
-            } else {
-                return null;
+            if (user.getAccountStatus() != User.AccountStatus.Active) {
+                throw ExceptionFactory.validationError("Account is not active. Please contact support.");
             }
+
+            if (!PasswordUtils.checkPassword(plaintextPassword, user.getPassword())) {
+                throw ExceptionFactory.invalidPassword();
+            }
+
+            return user;
+
         }, ConcurrencyManager.getExecutor());
     }
 
     public CompletableFuture<User> registerUserAsync(User newUser) {
 
         if (newUser == null) {
-            return CompletableFuture.completedFuture(null);
+            throw ExceptionFactory.validationError("Cannot register a null user object.");
         }
 
         return CompletableFuture.supplyAsync(() -> {
