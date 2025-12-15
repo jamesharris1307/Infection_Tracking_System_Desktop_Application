@@ -1,16 +1,15 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Button;
 import java.time.LocalDate;
 import javafx.fxml.FXML;
 
@@ -27,9 +26,6 @@ public class EditDetailsController {
     @FXML private TextField fieldPostcode;
     @FXML private TextField fieldPassword;
     @FXML private TextField fieldConfirmPassword;
-    @FXML private Button submitEditDetailsButton;
-    @FXML private Button deleteAccountButton;
-    @FXML private Button backButton;
 
     private GeneralPublicDashboardController parentController;
     private UserService userService;
@@ -56,30 +52,30 @@ public class EditDetailsController {
         String confirmPassword = fieldConfirmPassword.getText();
 
         if (!password.equals(confirmPassword)) {
-            ExceptionHandler.handle(ExceptionFactory.validationError("Passwords do not match."),
-                    "Profile update: Password mismatch");
+            ExceptionHandler.handle(ExceptionFactory.validationError("Passwords Don't Match"),
+                    "Profile Update: Password Mismatch");
             return;
         }
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
                 dob == null || address1.isEmpty() || city.isEmpty() ||
                 county.isEmpty() || postcode.isEmpty()) {
-            ExceptionHandler.handle(ExceptionFactory.validationError("Please fill in all required fields."),
-                    "Profile update: Missing required fields");
+            ExceptionHandler.handle(ExceptionFactory.validationError("Fill in all Required Fields."),
+                    "Profile Update: Missing required fields");
             return;
         }
 
         if (userService == null) {
             ExceptionHandler.handle(ExceptionFactory.unexpected(
-                            new IllegalStateException("UserService dependency not initialized.")),
-                    "CRITICAL: UserService is missing in EditDetailsController."
+                            new IllegalStateException("UserService Not Initialised")),
+                    "CRITICAL: UserService Missing From EditDetailsController."
             );
             return;
         }
 
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser == null) {
-            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No user in session.");
+            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No User Found in Session");
             return;
         }
 
@@ -102,17 +98,15 @@ public class EditDetailsController {
 
         userService.updateUserAsync(currentUser, originalEmail)
                 .thenRun(() -> javafx.application.Platform.runLater(() -> {
-                    // SUCCESS BLOCK: Show confirmation message
-                    AlertUtils.showInfo("Success", "Profile updated successfully.");
+                    AlertUtils.showInfo("Success", "Profile Successfully Updated");
                     clearForm();
                     if (parentController != null) {
                         parentController.showHomePage();
                     }
                 }))
                 .exceptionally(ex -> {
-                    // FAILURE BLOCK: Handle exception centrally
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Profile update failed asynchronously.");
+                    ExceptionHandler.handle(cause, "Profile Update Failed Asynchronously.");
                     return null;
                 });
     }
@@ -120,14 +114,14 @@ public class EditDetailsController {
     @FXML private void handleDeleteAccount() {
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser == null) {
-            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No user in session.");
+            ExceptionHandler.handle(ExceptionFactory.userNotFound("N/A"), "CRITICAL: No User Found in Session");
             return;
         }
 
         if (userService == null) {
             ExceptionHandler.handle(ExceptionFactory.unexpected(
-                            new IllegalStateException("UserService dependency not initialized.")),
-                    "CRITICAL: UserService is missing in EditDetailsController."
+                            new IllegalStateException("UserService Not Initialized.")),
+                    "CRITICAL: UserService Missing From EditDetailsController."
             );
             return;
         }
@@ -136,21 +130,13 @@ public class EditDetailsController {
                 .thenRun(() -> javafx.application.Platform.runLater(() -> {
                     SessionManager.getInstance().clearSession();
                     SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
-                    AlertUtils.showInfo("Account Deleted", "Your account has been deleted.");
+                    AlertUtils.showInfo("Account Deleted", "Account Successfully Deleted.");
                 }))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Account deletion failed asynchronously.");
+                    ExceptionHandler.handle(cause, "Delete Account Failed Asynchronously.");
                     return null;
                 });
-    }
-
-    @FXML private void handleBack() {
-        if (parentController != null) {
-            parentController.showHomePage();
-        } else {
-            SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
-        }
     }
 
     private void clearForm() {

@@ -1,20 +1,18 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
-import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
-import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
+import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import javax.sql.DataSource;
-import java.sql.*;
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import javax.sql.DataSource;
+import org.mockito.Mock;
+import java.sql.*;
 
 class MedicalHistoryDAOTest {
 

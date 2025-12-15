@@ -57,7 +57,7 @@ public class AdministratorDashboardController {
             loadUsers();
         } else {
             ExceptionHandler.handle(new IllegalStateException("UserService Not Initialized"),
-                    "CRITICAL: UserService Not in Dashboard");
+                    "CRITICAL: UserService Missing From AdministratorController");
         }
     }
 

@@ -1,34 +1,32 @@
 package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Model.*;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
-
-import javax.sql.DataSource;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-import java.sql.Statement;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.testfx.framework.junit5.ApplicationTest;
+import javafx.scene.control.PasswordField;
+import org.testfx.util.WaitForAsyncUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
+import java.util.concurrent.TimeUnit;
+import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.Test;
+import java.util.ResourceBundle;
+import javafx.fxml.FXMLLoader;
+import javax.sql.DataSource;
+import javafx.scene.Parent;
+import java.time.LocalDate;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.sql.Statement;
 
 public class RegistrationControllerTest extends ApplicationTest {
 

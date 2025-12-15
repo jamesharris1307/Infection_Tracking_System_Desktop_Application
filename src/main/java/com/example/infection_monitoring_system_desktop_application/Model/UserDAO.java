@@ -3,7 +3,6 @@ package com.example.infection_monitoring_system_desktop_application.Model;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-
 import javax.sql.DataSource;
 import java.sql.*;
 

@@ -9,7 +9,6 @@ import com.example.infection_monitoring_system_desktop_application.Util.Exceptio
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.application.Platform;

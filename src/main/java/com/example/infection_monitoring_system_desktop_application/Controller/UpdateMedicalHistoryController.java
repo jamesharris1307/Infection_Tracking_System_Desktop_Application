@@ -2,9 +2,9 @@ package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;

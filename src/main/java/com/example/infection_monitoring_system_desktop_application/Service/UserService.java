@@ -2,10 +2,10 @@ package com.example.infection_monitoring_system_desktop_application.Service;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.ConcurrencyManager;
 import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ObservableList;
 import java.util.List;

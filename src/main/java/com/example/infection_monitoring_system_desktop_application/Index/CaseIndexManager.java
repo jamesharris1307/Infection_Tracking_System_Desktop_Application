@@ -1,10 +1,10 @@
 package com.example.infection_monitoring_system_desktop_application.Index;
 
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.List;
 
 public class CaseIndexManager {
 

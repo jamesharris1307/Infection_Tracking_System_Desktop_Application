@@ -1,14 +1,13 @@
 package com.example.infection_monitoring_system_desktop_application;
 
-import com.example.infection_monitoring_system_desktop_application.Manager.AppContext;
-import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
-import javafx.stage.Stage;
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Manager.AppContext;
 import javafx.application.Platform;
-
+import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {
     public static void main(String[] args) {

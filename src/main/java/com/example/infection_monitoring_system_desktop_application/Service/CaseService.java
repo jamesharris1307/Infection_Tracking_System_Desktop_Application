@@ -2,10 +2,9 @@ package com.example.infection_monitoring_system_desktop_application.Service;
 
 import com.example.infection_monitoring_system_desktop_application.Manager.ConcurrencyManager;
 import com.example.infection_monitoring_system_desktop_application.Index.CaseIndexManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 

@@ -2,20 +2,18 @@ package com.example.infection_monitoring_system_desktop_application.Unit.Manager
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
 import com.example.infection_monitoring_system_desktop_application.Manager.ThemeManager;
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.example.infection_monitoring_system_desktop_application.Util.UserPreferences;
+import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import javafx.scene.layout.StackPane;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import javafx.scene.Scene;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 class ThemeManagerTest {
 

@@ -1,28 +1,26 @@
 package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.LoginController;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Model.*;
-import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.util.WaitForAsyncUtils;
+import java.util.concurrent.TimeUnit;
+import org.h2.jdbcx.JdbcDataSource;
+import java.util.ResourceBundle;
+import org.junit.jupiter.api.*;
 import javafx.fxml.FXMLLoader;
+import javax.sql.DataSource;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.*;
-import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
-
-import javax.sql.DataSource;
 import java.time.LocalDate;
-import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LoginControllerTest extends ApplicationTest {
 

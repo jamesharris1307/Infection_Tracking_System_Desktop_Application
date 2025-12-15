@@ -1,10 +1,10 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -41,8 +41,8 @@ public class HealthcareProfessionalController {
     @FXML public void initialize() {
         if (caseService == null) {
             ExceptionHandler.handle(
-                    ExceptionFactory.unexpected(new IllegalStateException("CaseService dependency not initialized.")),
-                    "CRITICAL: CaseService is missing in Healthcare Professional Controller."
+                    ExceptionFactory.unexpected(new IllegalStateException("CaseService Not initialized.")),
+                    "CRITICAL: CaseService Missing From HealthcareProfessionalController."
             );
             return;
         }
@@ -83,9 +83,8 @@ public class HealthcareProfessionalController {
                     casesTable.setItems(sortedCases);
                 }))
                 .exceptionally(ex -> {
-                    // Use ExceptionHandler for async failure
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Failed to load cases for Healthcare Professional view.");
+                    ExceptionHandler.handle(cause, "Failed to Load Cases for Healthcare Professional Dashboard.");
                     return null;
                 });
     }
@@ -104,7 +103,7 @@ public class HealthcareProfessionalController {
                 }))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Failed to re-sort cases.");
+                    ExceptionHandler.handle(cause, "Failed Sort Cases.");
                     return null;
                 });
     }

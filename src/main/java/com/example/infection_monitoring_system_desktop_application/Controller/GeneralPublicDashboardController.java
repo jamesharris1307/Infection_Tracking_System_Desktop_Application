@@ -1,15 +1,14 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
+import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
 import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
-import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
-import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.SceneLoadException;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.Button;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +18,6 @@ import javafx.fxml.FXML;
 
 public class GeneralPublicDashboardController {
 
-    @FXML private StackPane rootScaler;
-    @FXML private AnchorPane rootContent;
     @FXML private StackPane centerPages;
     @FXML private Button logoutButton;
     @FXML private Button settingsButton;
@@ -45,7 +42,7 @@ public class GeneralPublicDashboardController {
             loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
             setupButtons();
         } catch (SceneLoadException e) {
-            ExceptionHandler.handle(e, "CRITICAL: Failed to load initial dashboard page.");
+            ExceptionHandler.handle(e, "CRITICAL: Failed to Load HomePage.fxml");
         }
     }
 
@@ -62,7 +59,7 @@ public class GeneralPublicDashboardController {
             );
 
             if (loader.getLocation() == null) {
-                throw new SceneLoadException("Resource not found: " + fxmlPath);
+                throw new SceneLoadException("Resource Not Found: " + fxmlPath);
             }
 
             Node page = loader.load();
@@ -97,7 +94,7 @@ public class GeneralPublicDashboardController {
             centerPages.getChildren().add(page);
 
         } catch (IOException e) {
-            throw new SceneLoadException("Failed to load FXML: " + fxmlPath, e);
+            throw new SceneLoadException("Failed To Load FXML: " + fxmlPath, e);
         } catch (SceneLoadException e) {
             throw e;
         } catch (Exception ex) {
@@ -134,7 +131,7 @@ public class GeneralPublicDashboardController {
                     "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
             );
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "CRITICAL: Failed to log out or switch to login screen.");
+            ExceptionHandler.handle(e, "CRITICAL: Logout Failure");
         }
     }
 }

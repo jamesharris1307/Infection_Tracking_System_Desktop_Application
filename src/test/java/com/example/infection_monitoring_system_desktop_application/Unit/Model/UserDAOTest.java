@@ -1,18 +1,18 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
-import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import javax.sql.DataSource;
-import java.sql.*;
 import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import org.mockito.Mock;
+import java.sql.*;
 
 class UserDAOTest {
 

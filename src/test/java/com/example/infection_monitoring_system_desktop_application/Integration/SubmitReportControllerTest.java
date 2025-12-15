@@ -1,33 +1,31 @@
 package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.SubmitReportController;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Model.*;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
+import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
-import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
-import javafx.stage.Stage;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.*;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
-
-import javax.sql.DataSource;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-import java.sql.Statement;
-import java.util.concurrent.TimeoutException;
-
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.TimeoutException;
+import org.testfx.util.WaitForAsyncUtils;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.DatePicker;
+import org.h2.jdbcx.JdbcDataSource;
+import java.util.concurrent.TimeUnit;
+import java.util.ResourceBundle;
+import org.junit.jupiter.api.*;
+import javafx.fxml.FXMLLoader;
+import javax.sql.DataSource;
+import javafx.scene.Parent;
+import java.time.LocalDate;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.sql.Statement;
 
 public class SubmitReportControllerTest extends ApplicationTest {
 
@@ -41,7 +39,6 @@ public class SubmitReportControllerTest extends ApplicationTest {
     private void createSQLSchema() {
         try (java.sql.Connection conn = h2DataSource.getConnection();
              Statement stmt = conn.createStatement()) {
-
 
             stmt.execute("DROP TABLE IF EXISTS Cases");
             stmt.execute("DROP TABLE IF EXISTS Users");

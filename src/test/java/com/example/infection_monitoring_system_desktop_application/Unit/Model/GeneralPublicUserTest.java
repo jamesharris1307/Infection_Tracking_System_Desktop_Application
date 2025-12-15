@@ -1,9 +1,8 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 

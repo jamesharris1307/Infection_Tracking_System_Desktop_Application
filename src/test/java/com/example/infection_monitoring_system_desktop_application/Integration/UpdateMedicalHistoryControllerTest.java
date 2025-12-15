@@ -1,30 +1,28 @@
 package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.UpdateMedicalHistoryController;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
-import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
-import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Service.MedicalHistoryService;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.RadioButton;
-import javafx.stage.Stage;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.*;
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.util.WaitForAsyncUtils;
-
-import javax.sql.DataSource;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-import java.sql.Statement;
-import java.util.concurrent.TimeoutException;
-
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.concurrent.TimeoutException;
+import org.testfx.util.WaitForAsyncUtils;
+import javafx.scene.control.RadioButton;
+import java.util.concurrent.TimeUnit;
+import org.h2.jdbcx.JdbcDataSource;
+import java.util.ResourceBundle;
+import org.junit.jupiter.api.*;
+import javafx.fxml.FXMLLoader;
+import javax.sql.DataSource;
+import javafx.scene.Parent;
+import java.time.LocalDate;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.sql.Statement;
 
 public class UpdateMedicalHistoryControllerTest extends ApplicationTest {
 

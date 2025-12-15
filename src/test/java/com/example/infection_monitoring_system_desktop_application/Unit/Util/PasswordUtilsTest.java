@@ -1,8 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class PasswordUtilsTest {

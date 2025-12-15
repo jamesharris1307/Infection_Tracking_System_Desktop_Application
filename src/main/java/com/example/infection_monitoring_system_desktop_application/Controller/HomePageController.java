@@ -10,7 +10,6 @@ public class HomePageController {
 
     @FXML private Button submitReportButton;
     @FXML private Button updateMedicalHistoryButton;
-    @FXML private Button viewSubmissionsButton;
 
     public void setParentController(GeneralPublicDashboardController parent) {
         this.parentController = parent;
@@ -31,8 +30,8 @@ public class HomePageController {
     private void handleNavigation(Runnable navigationAction, String pageName) {
         if (parentController == null) {
             ExceptionHandler.handle(
-                    ExceptionFactory.unexpected(new IllegalStateException("Parent controller link is missing.")),
-                    "CRITICAL: Cannot navigate to " + pageName + ". Dependency Injection failed."
+                    ExceptionFactory.unexpected(new IllegalStateException("Parent Controller Missing.")),
+                    "CRITICAL: Cannot Navigate to " + pageName + ". Dependency Injection Failed."
             );
             return;
         }
@@ -40,7 +39,7 @@ public class HomePageController {
         try {
             navigationAction.run();
         } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Failed to navigate to " + pageName + " page.");
+            ExceptionHandler.handle(ex, "Failed to Navigate to " + pageName + " Page.");
         }
     }
 }

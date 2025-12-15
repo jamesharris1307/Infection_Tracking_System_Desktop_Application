@@ -1,11 +1,11 @@
 package com.example.infection_monitoring_system_desktop_application.Model; // Adjust package as needed
 
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
 
 public class LegacyConnectionAdapter implements DataSource {
 

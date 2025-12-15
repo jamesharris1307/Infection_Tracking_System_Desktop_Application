@@ -1,24 +1,22 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
-import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
-import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import javax.sql.DataSource;
-import java.sql.*;
+import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
+import org.mockito.InjectMocks;
+import javax.sql.DataSource;
+import org.mockito.Mock;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.sql.*;
 
 class CaseDAOTest {
 
