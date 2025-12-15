@@ -9,6 +9,7 @@ import com.example.infection_monitoring_system_desktop_application.Service.UserS
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.scene.layout.StackPane;
 import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
@@ -28,6 +29,21 @@ public class AdministratorDashboardController {
     @FXML private ComboBox<String> cmbFilter;
     @FXML private TextField txtSearch;
     @FXML private Button logoutButton;
+    @FXML private StackPane editOverlay;
+
+    @FXML private TextField fieldFirstName;
+    @FXML private TextField fieldLastName;
+    @FXML private TextField fieldEmail;
+    @FXML private DatePicker fieldDob;
+    @FXML private TextField fieldAddress1;
+    @FXML private TextField fieldAddress2;
+    @FXML private TextField fieldCity;
+    @FXML private TextField fieldCounty;
+    @FXML private TextField fieldPostcode;
+    @FXML private PasswordField fieldPassword;
+    @FXML private PasswordField fieldConfirmPassword;
+
+    private User editingUser;
 
     private final UserIndexManager indexManager = new UserIndexManager();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
@@ -59,6 +75,16 @@ public class AdministratorDashboardController {
             ExceptionHandler.handle(new IllegalStateException("UserService Not Initialized"),
                     "CRITICAL: UserService Missing From AdministratorController");
         }
+    }
+
+    @FXML private void openEditOverlay() {
+        editOverlay.setManaged(true);
+        editOverlay.setVisible(true);
+    }
+
+    @FXML private void closeEditOverlay() {
+        editOverlay.setVisible(false);
+        editOverlay.setManaged(false);
     }
 
     private void loadUsers() {
@@ -100,7 +126,24 @@ public class AdministratorDashboardController {
     }
 
     private void handleEditUser(User user) {
-        System.out.println("Editing User: " + user.getUserId());
+        editingUser = user;
+        populateEditForm(user);
+        openEditOverlay();
+    }
+
+    private void populateEditForm(User user) {
+        fieldFirstName.setText(user.getFirstName());
+        fieldLastName.setText(user.getLastName());
+        fieldEmail.setText(user.getEmail());
+        fieldDob.setValue(user.getDateOfBirth());
+        fieldAddress1.setText(user.getAddressLine1());
+        fieldAddress2.setText(user.getAddressLine2());
+        fieldCity.setText(user.getTownCity());
+        fieldCounty.setText(user.getCounty());
+        fieldPostcode.setText(user.getPostcode());
+
+        fieldPassword.clear();
+        fieldConfirmPassword.clear();
     }
 
     private void handleToggleUserStatus(User user) {
@@ -150,6 +193,47 @@ public class AdministratorDashboardController {
             case "Active" -> filterByStatus(User.AccountStatus.Active);
             case "Disabled" -> filterByStatus(User.AccountStatus.Disabled);
         }
+    }
+
+    @FXML
+    private void handleEditDetailsSubmit() {
+
+        if (editingUser == null) return;
+
+        editingUser.setFirstName(fieldFirstName.getText());
+        editingUser.setLastName(fieldLastName.getText());
+        editingUser.setEmail(fieldEmail.getText());
+        editingUser.setDateOfBirth(fieldDob.getValue());
+        editingUser.setAddressLine1(fieldAddress1.getText());
+        editingUser.setAddressLine2(fieldAddress2.getText());
+        editingUser.setTownCity(fieldCity.getText());
+        editingUser.setCounty(fieldCounty.getText());
+        editingUser.setPostcode(fieldPostcode.getText());
+
+        String password = fieldPassword.getText();
+        String confirm = fieldConfirmPassword.getText();
+
+        if (!password.isEmpty()) {
+            if (!password.equals(confirm)) {
+                ExceptionHandler.handle(
+                        ExceptionFactory.validationError("Passwords do not match"),
+                        "Edit User Failed"
+                );
+                return;
+            }
+            editingUser.setPassword(password);
+        }
+
+        userService.updateUserAsync(editingUser, editingUser.getEmail())
+                .thenRun(() -> Platform.runLater(() -> {
+                    casesTable.refresh();
+                    closeEditOverlay();
+                }))
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to Update User");
+                    return null;
+                });
     }
 
     private void handleLogout() {
