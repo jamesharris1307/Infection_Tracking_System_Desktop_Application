@@ -1,10 +1,10 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
 import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
-import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.collections.ObservableList;
@@ -56,8 +56,8 @@ public class AdministratorDashboardController {
         if (userService != null) {
             loadUsers();
         } else {
-            ExceptionHandler.handle(new IllegalStateException("UserService dependency not initialized."),
-                    "CRITICAL: UserService is missing in Dashboard.");
+            ExceptionHandler.handle(new IllegalStateException("UserService Not Initialized"),
+                    "CRITICAL: UserService Not in Dashboard");
         }
     }
 
@@ -70,7 +70,7 @@ public class AdministratorDashboardController {
                 }))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Failed to load users asynchronously");
+                    ExceptionHandler.handle(cause, "Failed to Load Users Asynchronously");
                     return null;
                 });
     }
@@ -84,8 +84,8 @@ public class AdministratorDashboardController {
                     User user = getTableView().getItems().get(getIndex());
                     if (user == null) {
                         ExceptionHandler.handle(
-                                ExceptionFactory.validationError("Invalid user selected from table."),
-                                "Table action failed due to invalid selection."
+                                ExceptionFactory.validationError("Invalid User Selected From Table"),
+                                "Table Action Failed due to Invalid Selection"
                         );
                     } else {
                         action.accept(user);
@@ -101,7 +101,7 @@ public class AdministratorDashboardController {
     }
 
     private void handleEditUser(User user) {
-        System.out.println("Editing user: " + user.getUserId());
+        System.out.println("Editing User: " + user.getUserId());
     }
 
     private void handleToggleUserStatus(User user) {
@@ -113,7 +113,7 @@ public class AdministratorDashboardController {
                 .thenRun(() -> Platform.runLater(casesTable::refresh))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Failed to update user status");
+                    ExceptionHandler.handle(cause, "Failed to Update User Status");
                     return null;
                 });
     }
@@ -123,7 +123,7 @@ public class AdministratorDashboardController {
                 .thenRun(() -> Platform.runLater(() -> userList.remove(user)))
                 .exceptionally(ex -> {
                     Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                    ExceptionHandler.handle(cause, "Failed to delete user");
+                    ExceptionHandler.handle(cause, "Failed to Delete User");
                     return null;
                 });
     }
