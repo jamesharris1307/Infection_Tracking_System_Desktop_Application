@@ -11,12 +11,12 @@ public class MedicalHistoryDAO {
         VALUES (?, ?, ?, ?, ?, ?)
     """;
     private static final String UPDATE_HISTORY_SQL = """
-        UPDATE MedicalHistory SET 
-        longTermConditions = ?, 
-        longTermMedications = ?, 
-        vaccinationUpToDate = ?, 
-        allergies = ?, 
-        lastUpdated = ? 
+        UPDATE MedicalHistory SET
+        longTermConditions = ?,
+        longTermMedications = ?,
+        vaccinationUpToDate = ?,
+        allergies = ?,
+        lastUpdated = ?
         WHERE UserID = ?
     """;
     private static final String SELECT_HISTORY_BY_USER_ID_SQL = "SELECT * FROM MedicalHistory WHERE UserID = ?";
@@ -50,13 +50,13 @@ public class MedicalHistoryDAO {
             pstmt.setBoolean(5, medicalHistory.isAllergies());
             pstmt.setTimestamp(6, Timestamp.valueOf(medicalHistory.getLastUpdated()));
             pstmt.executeUpdate();
+
         } catch (SQLException e) {
             throw new DAOException("Failed to add medical history for userID: " + medicalHistory.getUserID(), e);
         }
     }
 
     public void updateMedicalHistory(MedicalHistory medicalHistory) {
-
         try (Connection conn = dataSource.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(UPDATE_HISTORY_SQL)) {
 

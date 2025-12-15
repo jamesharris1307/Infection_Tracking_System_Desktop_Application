@@ -11,10 +11,11 @@ public class MedicalHistory {
     private boolean allergies;
     private LocalDateTime lastUpdated;
 
-    public MedicalHistory(int userID, boolean longTermConiditions, boolean longTermMedications, boolean vaccinationUpToDate, boolean allergies, LocalDateTime lastUpdated) {
+    public MedicalHistory(int userID, boolean longTermConditions, boolean longTermMedications, boolean vaccinationUpToDate, boolean allergies, LocalDateTime lastUpdated) {
         this.userID = userID;
-        this.longTermConditions = longTermConiditions;
+        this.longTermConditions = longTermConditions;
         this.longTermMedications = longTermMedications;
+        this.vaccinationUpToDate = vaccinationUpToDate;
         this.allergies = allergies;
         this.lastUpdated = lastUpdated;
     }

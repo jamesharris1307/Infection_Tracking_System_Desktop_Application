@@ -35,10 +35,10 @@ public class LoginControllerTest extends ApplicationTest {
         try (java.sql.Connection conn = h2DataSource.getConnection();
              java.sql.Statement stmt = conn.createStatement()) {
 
-            stmt.execute("DROP TABLE IF EXISTS USERS");
+            stmt.execute("DROP TABLE IF EXISTS Users");
 
             String createTableSQL = """
-            CREATE TABLE USERS (
+            CREATE TABLE Users (
                 UserID INT AUTO_INCREMENT PRIMARY KEY,
                 Email VARCHAR(255) NOT NULL UNIQUE,
                 Password VARCHAR(255) NOT NULL,

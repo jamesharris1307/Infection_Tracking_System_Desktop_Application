@@ -66,11 +66,11 @@ public class UpdateMedicalHistoryController {
             int userId = SessionManager.getInstance().getCurrentUser().getUserId();
             boolean hasConditions = longTermConditionsYes.isSelected();
             boolean hasMedications = longTermMedicationsYes.isSelected();
-            boolean vaccinationsUpToDate = upToDateVaccinationsYes.isSelected();
+            boolean vaccinationUpToDate = upToDateVaccinationsYes.isSelected();
             boolean hasAllergies = allergiesYes.isSelected();
             LocalDateTime lastUpdated = LocalDateTime.now();
 
-            MedicalHistory medicalHistory = new MedicalHistory(userId, hasConditions, hasMedications, vaccinationsUpToDate, hasAllergies, lastUpdated);
+            MedicalHistory medicalHistory = new MedicalHistory(userId, hasConditions, hasMedications, vaccinationUpToDate, hasAllergies, lastUpdated);
 
             medicalHistoryService.saveOrUpdateHistoryAsync(medicalHistory)
                     .thenRun(() -> javafx.application.Platform.runLater(() -> {

@@ -34,38 +34,4 @@ public class MedicalHistoryService {
 
         }, ConcurrencyManager.getExecutor());
     }
-
-    public CompletableFuture<Void> addMedicalHistoryAsync(MedicalHistory medicalHistory) {
-        if (medicalHistory == null) {
-            throw ExceptionFactory.validationError("Cannot add a null medical history object.");
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            dao.addMedicalHistory(medicalHistory);
-        }, ConcurrencyManager.getExecutor());
-    }
-
-    public CompletableFuture<Void> updateMedicalHistoryAsync(MedicalHistory medicalHistory) {
-        if (medicalHistory == null) {
-            throw ExceptionFactory.validationError("Cannot update with a null medical history object.");
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            dao.updateMedicalHistory(medicalHistory);
-        }, ConcurrencyManager.getExecutor());
-    }
-
-    public CompletableFuture<MedicalHistory> getMedicalHistoryByUserIdAsync(int userId) {
-        return CompletableFuture.supplyAsync(() -> {
-
-            MedicalHistory history = dao.getMedicalHistoryByUserId(userId);
-
-            if (history == null) {
-                throw ExceptionFactory.dataNotFound("Medical history not found for user ID: " + userId);
-            }
-
-            return history;
-
-        }, ConcurrencyManager.getExecutor());
-    }
 }
