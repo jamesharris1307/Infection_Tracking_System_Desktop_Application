@@ -1,16 +1,17 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
+import com.example.infection_monitoring_system_desktop_application.Model.HealthcareProfessionalUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
-import static org.junit.jupiter.api.Assertions.*;
 
-class AdministratorUserTest {
+class HealthcareProfessionalUserTest {
 
-    @Test
-    void testUserGetter() {
+    @Test void testUserCreatioGetters() {
         LocalDate dob = LocalDate.of(2002, 2, 2);
-        AdministratorUser user = new AdministratorUser(
-                "administratoruser@test.com",
+        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
+                "healthcareprofessionaluser@test.com",
                 "password123",
                 "testFname",
                 "testLname",
@@ -23,7 +24,7 @@ class AdministratorUserTest {
                 User.AccountStatus.Disabled
         );
 
-        assertEquals("administratoruser@test.com",  user.getEmail());
+        assertEquals("healthcareprofessionaluser@test.com",  user.getEmail());
         assertEquals("password123", user.getPassword());
         assertEquals("testFname", user.getFirstName());
         assertEquals("testLname", user.getLastName());
@@ -36,13 +37,12 @@ class AdministratorUserTest {
         assertEquals(User.AccountStatus.Disabled, user.getAccountStatus());
     }
 
-    @Test
-    void testSetter() {
-        AdministratorUser user = new AdministratorUser(
+    @Test void testSetter() {
+        HealthcareProfessionalUser user = new HealthcareProfessionalUser(
                 "temp@email.com", "tempPass", "TempF", "TempL",
                 LocalDate.of(2001, 1, 1),
                 "TempAddressL1", "TempAddressL2", "TempTownCity", "TempCounty", "TE37 3MP",
-                User.AccountStatus.Disabled
+                User.AccountStatus.Active
         );
 
         user.setEmail("new@email.com");

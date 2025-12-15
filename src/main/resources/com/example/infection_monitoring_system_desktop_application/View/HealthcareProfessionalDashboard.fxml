@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.HealthcareProfessionalController">
 
-    <!-- Buttons in the top region -->
     <top>
         <HBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <Button fx:id="btnFilter" text="Filter"/>
-            <Button fx:id="btnSearch" text="Search"/>
-            <Button fx:id="btnSort" text="Sort"/>
-        </HBox>
 
+            <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
+            <ComboBox fx:id="cmbSort" promptText="%sort-by"/>
+            <Button fx:id="btnApplySort" text="%apply-sort" onAction="#onSortClicked"/>
+        </HBox>
     </top>
 
-    <!-- TableView in the center region -->
     <center>
         <TableView fx:id="casesTable">
             <columns>
-                <TableColumn fx:id="colCaseId" text="CaseID" prefWidth="80"/>
-                <TableColumn fx:id="colUserId" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colFirstName" text="First Name" prefWidth="140"/>
-                <TableColumn fx:id="colLastName" text="Last Name" prefWidth="140"/>
-                <TableColumn fx:id="colDateReported" text="Date Reported" prefWidth="120"/>
-                <TableColumn fx:id="colSymptoms" text="Symptoms" prefWidth="160"/>
-                <TableColumn fx:id="colSymptomsBegan" text="Symptoms Began" prefWidth="120"/>
-                <TableColumn fx:id="colSeverity" text="Severity" prefWidth="100"/>
-                <TableColumn fx:id="colExposure" text="Confirmed Exposure" prefWidth="140"/>
+                <TableColumn fx:id="colCaseId" text="%case-id" prefWidth="80"/>
+                <TableColumn fx:id="colUserId" text="%user-id" prefWidth="80"/>
+                <TableColumn fx:id="colFirstName" text="%first-name" prefWidth="140"/>
+                <TableColumn fx:id="colLastName" text="%last-name" prefWidth="140"/>
+                <TableColumn fx:id="colDateReported" text="%date-reported" prefWidth="120"/>
+                <TableColumn fx:id="colSymptoms" text="%symptoms" prefWidth="160"/>
+                <TableColumn fx:id="colSymptomsBegan" text="%symptoms-began" prefWidth="120"/>
+                <TableColumn fx:id="colSeverity" text="%severity" prefWidth="100"/>
+                <TableColumn fx:id="colExposure" text="%confirmed-exposure" prefWidth="140"/>
             </columns>
         </TableView>
     </center>
 
 </BorderPane>
-

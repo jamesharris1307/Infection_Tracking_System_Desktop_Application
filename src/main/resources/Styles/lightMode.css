@@ -5,17 +5,13 @@
 
 .text-field, .password-field {
     -fx-background-color: #F1F9FF;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #1E1E1E;
 }
 
-.button {
+.button, ToggleButton {
     -fx-background-color: #96BCB4;
     -fx-text-fill: #FFFFFF;
     -fx-font-weight: 900;
-}
-
-.toggle-button {
-    -fx-background-color: #000000;
 }
 
 .active-page-indicator {
@@ -46,6 +42,6 @@
     -fx-background-color: #FFFFFF;
 }
 
-.label {
-    -fx-text-fill: #000000;
-}
+/*.label {*/
+/*    -fx-text-fill: rgb(0, 0, 0);*/
+/*}*/

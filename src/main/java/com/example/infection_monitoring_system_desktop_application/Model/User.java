@@ -4,13 +4,8 @@ import java.time.LocalDate;
 
 public abstract class User {
 
-    public enum Role {
-        GeneralPublic, HealthcareProfessional, Administrator
-    }
-
-    public enum AccountStatus {
-        Active, Disabled
-    }
+    public enum Role {GeneralPublic, HealthcareProfessional, Administrator}
+    public enum AccountStatus {Active, Disabled}
 
     private int userId;
     private String email;

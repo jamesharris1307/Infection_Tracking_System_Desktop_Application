@@ -1,26 +1,20 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javafx.scene.control.*;
 import java.util.HashSet;
-import java.util.List;
+import javafx.fxml.FXML;
 import java.util.Set;
 
 public class SubmitReportController {
-
     private GeneralPublicDashboardController parentController;
 
     @FXML private RadioButton feverSymptomCheck;
@@ -29,45 +23,51 @@ public class SubmitReportController {
     @FXML private RadioButton fatigueSymptomCheck;
     @FXML private RadioButton shortnessOfBreathCheck;
     @FXML private RadioButton lossOfSmellCheck;
-
     @FXML private RadioButton MildSeverityCheck;
     @FXML private RadioButton ModerateSeverityCheck;
     @FXML private RadioButton SevereSeverityCheck;
-
     @FXML private RadioButton YesWorsenedSymptomCheck;
     @FXML private RadioButton NoWorsenedSymptomCheck;
-
-    private ToggleGroup severityGroup = new ToggleGroup();
-    private ToggleGroup worsenedGroup = new ToggleGroup();
-
     @FXML private DatePicker symptomsStartDate;
     @FXML private CheckBox exposureCheck;
-
     @FXML private Button backButton;
 
-    private final CaseService caseService = new CaseService();
+    private final ToggleGroup severityGroup = new ToggleGroup();
+    private final ToggleGroup worsenedGroup = new ToggleGroup();
+
+    private CaseService caseService;
+
+    public void setCaseService(CaseService caseService) {
+        this.caseService = caseService;
+    }
 
     public void setParentController(GeneralPublicDashboardController parent) {
         this.parentController = parent;
     }
 
-    @FXML
-    private void initialize() {
-        MildSeverityCheck.setToggleGroup(severityGroup);
-        ModerateSeverityCheck.setToggleGroup(severityGroup);
-        SevereSeverityCheck.setToggleGroup(severityGroup);
+    @FXML private void initialize() {
+        try {
+            MildSeverityCheck.setToggleGroup(severityGroup);
+            ModerateSeverityCheck.setToggleGroup(severityGroup);
+            SevereSeverityCheck.setToggleGroup(severityGroup);
 
-        YesWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
-        NoWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
+            YesWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
+            NoWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
+        } catch (Exception e) {
+            ExceptionHandler.handle(e, "Error initializing case report form controls.");
+        }
     }
 
-    @FXML
-    private void handleSubmitReport() {
+    @FXML private void handleSubmitReport() {
         try {
             User currentUser = SessionManager.getInstance().getCurrentUser();
+
             if (currentUser == null || currentUser.getUserId() <= 0) {
-                AlertUtils.showError("Error", "No valid user logged in.");
-                return;
+                throw ExceptionFactory.validationError("No valid user is logged in. Please log in again.");
+            }
+
+            if (caseService == null) {
+                throw ExceptionFactory.unexpected(new IllegalStateException("CaseService dependency not initialized."));
             }
 
             int userId = currentUser.getUserId();
@@ -88,25 +88,41 @@ public class SubmitReportController {
                     ? ((RadioButton) severityGroup.getSelectedToggle()).getText()
                     : null;
 
-            boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
+            if (severity == null || symptomsSet.isEmpty()) {
+                throw ExceptionFactory.validationError("Please select at least one symptom and a severity level.");
+            }
 
+            boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
             Case newCase = new Case(userId, dateReported, symptomsBegan, symptomsSet, severity, confirmedWorsened);
 
             caseService.addCaseAsync(newCase)
-                    .thenRun(() -> Platform.runLater(() ->
-                            AlertUtils.showInfo("Submitted", "Your case report has been submitted.")
-                    ))
+                    .thenRun(() -> Platform.runLater(() -> {
+                        AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
+                        clearForm();
+                        if (parentController != null) {
+                            parentController.showHomePage();
+                        }
+                    }))
                     .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        Platform.runLater(() ->
-                                AlertUtils.showError("Error", "Failed to submit case report.")
-                        );
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Failed to submit case report asynchronously.");
                         return null;
                     });
-
         } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtils.showError("Error", "Failed to submit case report.");
+            ExceptionHandler.handle(e, "Error submitting case report");
         }
+    }
+
+    private void clearForm() {
+        feverSymptomCheck.setSelected(false);
+        coughSymptomCheck.setSelected(false);
+        headacheSymptomCheck.setSelected(false);
+        fatigueSymptomCheck.setSelected(false);
+        shortnessOfBreathCheck.setSelected(false);
+        lossOfSmellCheck.setSelected(false);
+
+        severityGroup.selectToggle(null);
+        worsenedGroup.selectToggle(null);
+        symptomsStartDate.setValue(null);
     }
 }

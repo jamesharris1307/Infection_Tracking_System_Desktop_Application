@@ -1,22 +1,77 @@
 package com.example.infection_monitoring_system_desktop_application.Model;
 
-import javafx.collections.FXCollections;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.ObservableList;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javafx.collections.FXCollections;
+import javax.sql.DataSource;
+import java.sql.*;
 
 public class UserDAO {
 
-    public void addUser(User user) {
-        String sql = "INSERT INTO Users (Email, Password, FirstName, LastName, DateOfBirth, " +
-                "AddressLine1, AddressLine2, TownCity, County, Postcode, AccountStatus, Role) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_USER_SQL = """
+        INSERT INTO Users (Email, Password, FirstName, LastName, DateOfBirth, 
+        AddressLine1, AddressLine2, TownCity, County, Postcode, AccountStatus, Role) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
+    private static final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE Email = ?";
+    private static final String UPDATE_USER_SQL = """
+        UPDATE Users SET 
+        FirstName = ?, LastName = ?, Email = ?, 
+        Password = ?, DateOfBirth = ?, AddressLine1 = ?, 
+        AddressLine2 = ?, TownCity = ?, County = ?, 
+        Postcode = ?, AccountStatus = ? 
+        WHERE Email = ?
+    """;
+    private static final String SELECT_ALL_USERS_SQL = "SELECT * FROM Users";
+    private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE Email = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    private final DataSource dataSource;
+
+    private User mapResultSetToUser(ResultSet rs) throws SQLException {
+        int userId = rs.getInt("UserID");
+        String roleStr = rs.getString("Role");
+        User.Role role = User.Role.valueOf(roleStr);
+
+        User user;
+        String email = rs.getString("Email");
+        String password = rs.getString("Password");
+        String firstName = rs.getString("FirstName");
+        String lastName = rs.getString("LastName");
+        java.time.LocalDate dob = rs.getDate("DateOfBirth").toLocalDate();
+        String addr1 = rs.getString("AddressLine1");
+        String addr2 = rs.getString("AddressLine2");
+        String town = rs.getString("TownCity");
+        String county = rs.getString("County");
+        String postcode = rs.getString("Postcode");
+        User.AccountStatus status = User.AccountStatus.valueOf(rs.getString("AccountStatus"));
+
+        switch (role) {
+            case GeneralPublic:
+                user = new GeneralPublicUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            case HealthcareProfessional:
+                user = new HealthcareProfessionalUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            case Administrator:
+                user = new AdministratorUser(email, password, firstName, lastName, dob, addr1, addr2, town, county, postcode, status);
+                break;
+            default:
+                throw new IllegalStateException("Unknown role: " + roleStr);
+        }
+        user.setUserId(userId);
+        return user;
+    }
+
+    public UserDAO(DataSource ds) {
+        if (ds == null) {
+            throw new IllegalArgumentException("DataSource must be provided to UserDAO.");
+        }
+        this.dataSource = ds;
+    }
+
+    public void addUser(User user) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(INSERT_USER_SQL)) {
 
             pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getPassword());
@@ -32,66 +87,30 @@ public class UserDAO {
             pstmt.setString(12, user.getRole().name());
 
             pstmt.executeUpdate();
-        }
-
-        catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DAOException("Failed to add user: " + user.getEmail(), e);
         }
     }
 
     public User getUserByEmail(String email) {
-        String sql = "SELECT * FROM Users WHERE Email = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) { pstmt.setString(1, email); ResultSet rs = pstmt.executeQuery();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SELECT_USER_BY_EMAIL_SQL)) {
+            pstmt.setString(1, email);
 
-            if (rs.next()) {
-                int userId = rs.getInt("UserID");
-                String roleStr = rs.getString("Role");
-                User.Role role = User.Role.valueOf(roleStr);
-                User user;
-                switch (role) {
-                    case GeneralPublic:
-                        user = new GeneralPublicUser(rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case HealthcareProfessional:
-                        user = new HealthcareProfessionalUser(
-                                rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case Administrator:
-                        user = new AdministratorUser(
-                                rs.getString("Email"), rs.getString("Password"), rs.getString("FirstName"), rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(), rs.getString("AddressLine1"), rs.getString("AddressLine2"), rs.getString("TownCity"),
-                                rs.getString("County"), rs.getString("Postcode"), User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown role: " + roleStr);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToUser(rs);
                 }
-                user.setUserId(userId); return user;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
             return null;
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get user by email: " + email, e);
         }
-        return null;
     }
 
     public void updateUser(User user, String originalEmail) {
-        String sql = "UPDATE Users SET " +
-                "FirstName = ?, LastName = ?, Email = ?, " +
-                "Password = ?, DateOfBirth = ?, AddressLine1 = ?, " +
-                "AddressLine2 = ?, TownCity = ?, County = ?, " +
-                "Postcode = ?, AccountStatus = ? " +
-                "WHERE Email = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(UPDATE_USER_SQL)) {
 
             pstmt.setString(1, user.getFirstName());
             pstmt.setString(2, user.getLastName());
@@ -108,96 +127,36 @@ public class UserDAO {
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to update user: " + originalEmail, e);
         }
     }
 
-
     public ObservableList<User> getAllUsers() {
         ObservableList<User> userList = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM Users";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(SELECT_ALL_USERS_SQL);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                int userId = rs.getInt("UserID");
-                String roleStr = rs.getString("Role");
-                User.Role role = User.Role.valueOf(roleStr);
-
-                User user;
-                switch (role) {
-                    case GeneralPublic:
-                        user = new GeneralPublicUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case HealthcareProfessional:
-                        user = new HealthcareProfessionalUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    case Administrator:
-                        user = new AdministratorUser(
-                                rs.getString("Email"),
-                                rs.getString("Password"),
-                                rs.getString("FirstName"),
-                                rs.getString("LastName"),
-                                rs.getDate("DateOfBirth").toLocalDate(),
-                                rs.getString("AddressLine1"),
-                                rs.getString("AddressLine2"),
-                                rs.getString("TownCity"),
-                                rs.getString("County"),
-                                rs.getString("Postcode"),
-                                User.AccountStatus.valueOf(rs.getString("AccountStatus"))
-                        );
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown role: " + roleStr);
-                }
-
-                user.setUserId(userId);
-                userList.add(user);
+                userList.add(mapResultSetToUser(rs));
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to get all users", e);
         }
 
         return userList;
     }
 
     public void deleteUser(String email) {
-        String sql = "DELETE FROM Users WHERE Email = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(DELETE_USER_SQL)) {
 
             pstmt.setString(1, email);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DAOException("Failed to delete user: " + email, e);
         }
     }
 }

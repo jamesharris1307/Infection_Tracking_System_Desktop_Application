@@ -1,21 +1,15 @@
 package com.example.infection_monitoring_system_desktop_application.Util;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
 public class AlertUtils {
 
-    private AlertUtils() {
-    }
+    private AlertUtils() {}
 
-    public static void showInfo(String title, String message) {
-        showAlert(Alert.AlertType.INFORMATION, title, message);
-    }
-
-    public static void showWarning(String title, String message) {
-        showAlert(Alert.AlertType.WARNING, title, message);
-    }
+    public static void showInfo(String title, String message) {showAlert(Alert.AlertType.INFORMATION, title, message);}
 
     public static void showError(String title, String message) {
         showAlert(Alert.AlertType.ERROR, title, message);
@@ -28,6 +22,7 @@ public class AlertUtils {
         alert.setContentText(message);
 
         Window owner = SceneManager.getMainStage();
+
         if (owner != null) {
             alert.initOwner(owner);
             alert.initModality(Modality.WINDOW_MODAL);

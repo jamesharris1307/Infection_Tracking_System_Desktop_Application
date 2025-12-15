@@ -1,16 +1,20 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
+import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Model.Case;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-
-import java.time.LocalDate;
+import javafx.application.Platform;
 import java.time.LocalDateTime;
-import java.util.*;
+import javafx.scene.control.*;
+import java.time.LocalDate;
+import javafx.fxml.FXML;
 
 public class HealthcareProfessionalController {
 
@@ -24,68 +28,90 @@ public class HealthcareProfessionalController {
     @FXML private TableColumn<Case, LocalDate> colSymptomsBegan;
     @FXML private TableColumn<Case, String> colSeverity;
     @FXML private TableColumn<Case, Boolean> colExposure;
+    @FXML private ComboBox<String> cmbSort;
+    @FXML private Button logoutButton;
 
-    @FXML private Button btnFilter;
-    @FXML private Button btnSearch;
-    @FXML private Button btnSort;
+    private CaseService caseService;
+    private final ObservableList<Case> sortedCases = FXCollections.observableArrayList();
 
-    private final CaseDAO caseDAO = new CaseDAO();
-    private List<Case> allCases;
+    public void setCaseService(CaseService caseService) {
+        this.caseService = caseService;
+    }
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
+        if (caseService == null) {
+            ExceptionHandler.handle(
+                    ExceptionFactory.unexpected(new IllegalStateException("CaseService Not initialized.")),
+                    "CRITICAL: CaseService Missing From HealthcareProfessionalController."
+            );
+            return;
+        }
 
-        colCaseId.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getCaseID())
-        );
+        setupColumns();
+        setupSortComboBox();
+        logoutButton.setOnAction(e -> handleLogout());
+        loadCases();
+    }
 
-        colUserId.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().getUser() != null
-                        ? c.getValue().getUser().getUserId()
-                        : null)
-        );
-
-        colFirstName.setCellValueFactory(c ->
-                new SimpleStringProperty(
-                        c.getValue().getUser() != null ? c.getValue().getUser().getFirstName() : ""
-                )
-        );
-
-        colLastName.setCellValueFactory(c ->
-                new SimpleStringProperty(
-                        c.getValue().getUser() != null ? c.getValue().getUser().getLastName() : ""
-                )
-        );
-
+    private void setupColumns() {
+        colCaseId.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getCaseID()));
+        colUserId.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getUser() != null ? c.getValue().getUser().getUserId() : null));
+        colFirstName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getUser() != null ? c.getValue().getUser().getFirstName() : ""));
+        colLastName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getUser() != null ? c.getValue().getUser().getLastName() : ""));
         colDateReported.setCellValueFactory(c -> {
             LocalDateTime dt = c.getValue().getDateReported();
             return new SimpleObjectProperty<>(dt != null ? dt.toLocalDate() : null);
         });
-
-        colSymptoms.setCellValueFactory(c ->
-                new SimpleStringProperty(
-                        String.join(", ", c.getValue().getSymptoms())
-                )
-        );
-
+        colSymptoms.setCellValueFactory(c -> new SimpleStringProperty(String.join(", ", c.getValue().getSymptoms())));
         colSymptomsBegan.setCellValueFactory(c -> {
             LocalDateTime dt = c.getValue().getSymptomsBegan();
             return new SimpleObjectProperty<>(dt != null ? dt.toLocalDate() : null);
         });
+        colSeverity.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSeverity()));
+        colExposure.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().isConfirmedExposure()));
+    }
 
-        colSeverity.setCellValueFactory(c ->
-                new SimpleStringProperty(c.getValue().getSeverity())
-        );
-
-        colExposure.setCellValueFactory(c ->
-                new SimpleObjectProperty<>(c.getValue().isConfirmedExposure())
-        );
-
-        loadCases();
+    private void setupSortComboBox() {
+        cmbSort.getItems().addAll("Newest First", "Oldest First");
+        cmbSort.getSelectionModel().selectFirst();
     }
 
     private void loadCases() {
-        allCases = caseDAO.getAllCases();
-        casesTable.setItems(FXCollections.observableArrayList(allCases));
+        caseService.getAllCasesAsync()
+                .thenAccept(cases -> Platform.runLater(() -> {
+                    sortedCases.setAll(cases);
+                    casesTable.setItems(sortedCases);
+                }))
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed to Load Cases for Healthcare Professional Dashboard.");
+                    return null;
+                });
+    }
+
+    @FXML private void onSortClicked() {
+        String selection = cmbSort.getValue();
+
+        caseService.getAllCasesAsync()
+                .thenAccept(cases -> Platform.runLater(() -> {
+                    if ("Oldest First".equals(selection)) {
+                        FXCollections.reverse(sortedCases);
+                    } else {
+                        sortedCases.setAll(cases);
+                    }
+                    casesTable.setItems(sortedCases);
+                }))
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    ExceptionHandler.handle(cause, "Failed Sort Cases.");
+                    return null;
+                });
+    }
+
+    private void handleLogout() {
+        SessionManager.getInstance().clearSession();
+        SceneManager.switchRoot(
+                "/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"
+        );
     }
 }

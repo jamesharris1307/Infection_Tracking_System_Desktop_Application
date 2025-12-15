@@ -1,45 +1,43 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
-import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.IllegalUserRoleException;
 import com.example.infection_monitoring_system_desktop_application.Model.HealthcareProfessionalUser;
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
 import com.example.infection_monitoring_system_desktop_application.Model.AdministratorUser;
-import com.example.infection_monitoring_system_desktop_application.Model.User;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Util.ExceptionHandler;
+import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Util.AlertUtils;
-import com.example.infection_monitoring_system_desktop_application.Util.LanguageManager;
-import com.example.infection_monitoring_system_desktop_application.Util.SceneManager;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
+import javafx.application.Platform;
 import javafx.scene.shape.Circle;
-import java.time.LocalDate;
+import javafx.scene.layout.VBox;
 import java.util.ResourceBundle;
-import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
+import javafx.scene.control.*;
+import java.time.LocalDate;
+import javafx.fxml.FXML;
 
 public class RegistrationController {
 
     @FXML private VBox page1;
     @FXML private VBox page2;
     @FXML private VBox page3;
-
     @FXML private Circle step1Circle;
     @FXML private Circle step2Circle;
     @FXML private Circle step3Circle;
     @FXML private Label step1Label;
     @FXML private Label step2Label;
     @FXML private Label step3Label;
-
     @FXML private Button next1Button;
     @FXML private Button next2Button;
     @FXML private Button back2Button;
     @FXML private Button back3Button;
     @FXML private Button submitButton;
-
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
-
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
     @FXML private DatePicker dobPicker;
@@ -51,12 +49,11 @@ public class RegistrationController {
     @FXML private ComboBox<String> roleComboBox;
 
     private int currentPage = 1;
+    private UserService userService;
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         showPage(currentPage);
         populateRoleComboBox();
-
         next1Button.setOnAction(e -> goToPage(2));
         back2Button.setOnAction(e -> goToPage(1));
         next2Button.setOnAction(e -> goToPage(3));
@@ -65,7 +62,7 @@ public class RegistrationController {
     }
 
     private void populateRoleComboBox() {
-        ResourceBundle bundle = LanguageManager.getBundle();
+        ResourceBundle bundle = LanguageManager.getInstance().getBundle();
         roleComboBox.getItems().clear();
         roleComboBox.getItems().addAll(
                 bundle.getString("general-public"),
@@ -119,81 +116,65 @@ public class RegistrationController {
             String postcode = postcodeField.getText().trim();
             String roleSelection = roleComboBox.getValue();
 
-            if (roleSelection != null) {
-                switch (roleSelection) {
-                    case "Y Cyhoedd Cyffredinol" -> roleSelection = "General Public";
-                    case "Gweithiwr Gofal Iechyd" -> roleSelection = "Healthcare Professional";
-                    case "Gweinyddwr" -> roleSelection = "Administrator";
-                }
-            }
-
             if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
-                    !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null) {
-                AlertUtils.showError("Error", "Please fill in all required fields and ensure passwords match.");
-                return;
+                    !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() ||
+                    roleSelection == null || dob == null || address1.isEmpty() ||
+                    city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
+
+                throw ExceptionFactory.validationError("Please fill in all fields and ensure passwords match.");
             }
 
-            String hashedPassword = PasswordUtils.hashPassword(password);
-
-            User.Role roleEnum;
-            User.AccountStatus accountStatusEnum;
+            if (userService == null) {
+                throw ExceptionFactory.unexpected(new IllegalStateException("UserService has not been set/injected."));
+            }
 
             switch (roleSelection) {
-                case "General Public" -> {
-                    roleEnum = User.Role.GeneralPublic;
-                    accountStatusEnum = User.AccountStatus.Active;
-                }
-                case "Healthcare Professional" -> {
-                    roleEnum = User.Role.HealthcareProfessional;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                case "Administrator" -> {
-                    roleEnum = User.Role.Administrator;
-                    accountStatusEnum = User.AccountStatus.Disabled;
-                }
-                default -> throw new IllegalArgumentException("Invalid role selected");
+                case "Y Cyhoedd Cyffredinol" -> roleSelection = "General Public";
+                case "Gweithiwr Gofal Iechyd" -> roleSelection = "Healthcare Professional";
+                case "Gweinyddwr" -> roleSelection = "Administrator";
             }
 
-            User newUser;
-            switch (roleEnum) {
-                case GeneralPublic -> newUser = new GeneralPublicUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                case HealthcareProfessional -> newUser = new HealthcareProfessionalUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                case Administrator -> newUser = new AdministratorUser(
-                        email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode,
-                        accountStatusEnum
-                );
-                default -> throw new IllegalArgumentException("Invalid role selected");
-            }
+            User.Role roleEnum = switch (roleSelection) {
+                case "General Public" -> User.Role.GeneralPublic;
+                case "Healthcare Professional" -> User.Role.HealthcareProfessional;
+                case "Administrator" -> User.Role.Administrator;
+                default -> throw ExceptionFactory.unexpected(new IllegalUserRoleException("Invalid role selected: " + roleSelection));
+            };
 
-            UserService userService = new UserService();
+            User newUser = switch (roleEnum) {
+                case GeneralPublic -> new GeneralPublicUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+                case HealthcareProfessional -> new HealthcareProfessionalUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+                case Administrator -> new AdministratorUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+            };
 
-            userService.addUserAsync(newUser)
-                    .thenRun(() -> javafx.application.Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "User registered successfully!");
+            userService.registerUserAsync(newUser)
+                    .thenRun(() -> Platform.runLater(() -> {
+                        AlertUtils.showInfo(
+                                "Success",
+                                "User registered successfully. Account status will be set after verification if required."
+                        );
                         clearForm();
+                        viewLogin();
                     }))
                     .exceptionally(ex -> {
-                        ex.printStackTrace();
-                        javafx.application.Platform.runLater(() ->
-                                AlertUtils.showError("Error", "An error occurred while registering the user.")
-                        );
+                        Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                        ExceptionHandler.handle(cause, "Error registering user asynchronously.");
                         return null;
                     });
-
         } catch (Exception e) {
-            e.printStackTrace();
-            AlertUtils.showError("Error", "An error occurred while registering the user.");
+            ExceptionHandler.handle(e, "Error during registration submission");
         }
     }
+
 
     private void clearForm() {
         emailField.clear();
@@ -211,8 +192,11 @@ public class RegistrationController {
         goToPage(1);
     }
 
-    @FXML
-    private void viewLogin() {
+    @FXML private void viewLogin() {
         SceneManager.switchRoot("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml");
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

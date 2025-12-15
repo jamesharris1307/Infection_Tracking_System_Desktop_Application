@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorController">
+            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorDashboardController">
 
     <top>
         <HBox spacing="10">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
-            <Button fx:id="btnFilter" text="Filter"/>
-            <Button fx:id="btnSearch" text="Search"/>
-            <Button fx:id="btnSort" text="Sort"/>
-        </HBox>
 
+            <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
+            <ComboBox fx:id="cmbFilter" promptText="%filter-by"/>
+            <Button fx:id="btnApplyFilter" text="%apply-filter" onAction="#onFilterClicked"/>
+            <TextField fx:id="txtSearch" onKeyReleased="#onSearchKeyTyped"/>
+        </HBox>
     </top>
 
     <center>
         <TableView fx:id="casesTable">
             <columns>
-                <TableColumn fx:id="colCaseId" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colFirstName" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colLastName" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colEmail" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colRole" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colAccountStatus" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colEditAction" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colDisableEnableAction" text="UserID" prefWidth="80"/>
-                <TableColumn fx:id="colDeleteAction" text="UserID" prefWidth="80"/>
+                <TableColumn fx:id="colCaseId" text="%user-id" prefWidth="80"/>
+                <TableColumn fx:id="colFirstName" text="%first-name" prefWidth="80"/>
+                <TableColumn fx:id="colLastName" text="%last-name" prefWidth="80"/>
+                <TableColumn fx:id="colEmail" text="%email" prefWidth="80"/>
+                <TableColumn fx:id="colRole" text="%role" prefWidth="80"/>
+                <TableColumn fx:id="colAccountStatus" text="%account_status" prefWidth="80"/>
+                <TableColumn fx:id="colEditAction" text="%edit" prefWidth="80"/>
+                <TableColumn fx:id="colDisableEnableAction" text="%enable-disable" prefWidth="80"/>
+                <TableColumn fx:id="colDeleteAction" text="%delete" prefWidth="80"/>
             </columns>
         </TableView>
     </center>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -11,8 +8,8 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.SettingsPageController">
 
-    <Button fx:id="changeThemeButton" text="Change Theme" maxWidth="300" onAction="#handleChangeTheme"/>
-    <Button fx:id="changeLanguageButton" text="Change Language" maxWidth="300" onAction="#handleChangeLanguage"/>
-    <Button fx:id="editProfileButton" text="Edit Profile" maxWidth="300"/>
+    <Button fx:id="changeThemeButton" text="%change-theme" maxWidth="300" onAction="#handleChangeTheme"/>
+    <Button fx:id="changeLanguageButton" text="%change-language" maxWidth="300" onAction="#handleChangeLanguage"/>
+    <Button fx:id="editProfileButton" text="%edit-profile" maxWidth="300"/>
 
 </VBox>

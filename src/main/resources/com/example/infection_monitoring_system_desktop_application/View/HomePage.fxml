@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -11,9 +8,7 @@
       xmlns="http://javafx.com/javafx/25"
       xmlns:fx="http://javafx.com/fxml/1">
 
-    <Button fx:id="updateMedicalHistoryButton" text="Update Medical History" maxWidth="300"/>
-    <Button fx:id="submitReportButton" text="Submit Report" maxWidth="300"/>
+    <Button fx:id="updateMedicalHistoryButton" text="%update-medical-history" maxWidth="300"/>
+    <Button fx:id="submitReportButton" text="%submit-report" maxWidth="300"/>
     <Button fx:id="viewSubmissionsButton" text="View Submissions" maxWidth="300"/>
-
 </VBox>
-

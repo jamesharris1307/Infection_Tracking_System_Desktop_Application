@@ -1,7 +1,8 @@
-package com.example.infection_monitoring_system_desktop_application.Util;
+package com.example.infection_monitoring_system_desktop_application.Manager;
 
+import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.PreferencesException;
+import com.example.infection_monitoring_system_desktop_application.Util.UserPreferences;
 import javafx.scene.Scene;
-
 import java.util.Objects;
 
 public class ThemeManager {
@@ -16,7 +17,7 @@ public class ThemeManager {
         return instance;
     }
 
-    public void toggleTheme() {
+    public void toggleTheme() throws PreferencesException {
         darkMode = !darkMode;
         UserPreferences.saveDarkMode(darkMode);
     }
@@ -29,7 +30,7 @@ public class ThemeManager {
         scene.getStylesheets().add(cssPath);
     }
 
-    public void applySavedTheme(Scene scene) {
+    public void applySavedTheme(Scene scene) throws PreferencesException {
         darkMode = UserPreferences.loadDarkMode();
         applyTheme(scene);
     }

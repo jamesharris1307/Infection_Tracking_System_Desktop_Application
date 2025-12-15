@@ -11,8 +11,7 @@ public class HealthcareProfessionalUser extends User {
                 addressLine1, addressLine2, townCity, county, postcode, accountStatus);
     }
 
-    @Override
-    public Role getRole() {
+    @Override public Role getRole() {
         return Role.HealthcareProfessional;
     }
 }
