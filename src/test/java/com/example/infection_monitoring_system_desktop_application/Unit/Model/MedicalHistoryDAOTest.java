@@ -16,27 +16,21 @@ import java.sql.*;
 
 class MedicalHistoryDAOTest {
 
-    @Mock
-    private DataSource mockDataSource;
+    @Mock private DataSource mockDataSource;
 
-    @Mock
-    private Connection mockConn;
+    @Mock private Connection mockConn;
 
-    @Mock
-    private PreparedStatement mockStmt;
+    @Mock private PreparedStatement mockStmt;
 
-    @Mock
-    private ResultSet mockRs;
+    @Mock private ResultSet mockRs;
 
-    @InjectMocks
-    private MedicalHistoryDAO medicalHistoryDAO;
+    @InjectMocks private MedicalHistoryDAO medicalHistoryDAO;
 
     private final int TEST_USER_ID = 50;
     private final LocalDateTime TEST_TIME = LocalDateTime.now();
     private MedicalHistory testHistory;
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @BeforeEach void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
 
         when(mockDataSource.getConnection()).thenReturn(mockConn);
@@ -52,8 +46,7 @@ class MedicalHistoryDAOTest {
         );
     }
 
-    @Test
-    void testAddMedicalHistory_Success() throws Exception {
+    @Test void testAddMedicalHistory_Success() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
 
         medicalHistoryDAO.addMedicalHistory(testHistory);
@@ -65,16 +58,14 @@ class MedicalHistoryDAOTest {
         verify(mockConn).close();
     }
 
-    @Test
-    void testAddMedicalHistory_ThrowsDAOExceptionOnSqlError() throws Exception {
+    @Test void testAddMedicalHistory_ThrowsDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("DB Insert failed"));
 
         assertThrows(DAOException.class, () -> medicalHistoryDAO.addMedicalHistory(testHistory));
         verify(mockConn).close();
     }
 
-    @Test
-    void testUpdateMedicalHistory_Success() throws Exception {
+    @Test void testUpdateMedicalHistory_Success() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
 
         medicalHistoryDAO.updateMedicalHistory(testHistory);
@@ -86,8 +77,7 @@ class MedicalHistoryDAOTest {
     }
 
 
-    @Test
-    void testGetMedicalHistory_Success_Found() throws Exception {
+    @Test void testGetMedicalHistory_Success_Found() throws Exception {
         when(mockStmt.executeQuery()).thenReturn(mockRs);
         when(mockRs.next()).thenReturn(true, false); // First call returns true, subsequent returns false
         when(mockRs.getBoolean("longTermConditions")).thenReturn(testHistory.isLongTermConditions());
@@ -106,8 +96,7 @@ class MedicalHistoryDAOTest {
         verify(mockRs).close();
     }
 
-    @Test
-    void testGetMedicalHistory_NotFound() throws Exception {
+    @Test void testGetMedicalHistory_NotFound() throws Exception {
         when(mockStmt.executeQuery()).thenReturn(mockRs);
         when(mockRs.next()).thenReturn(false);
 

@@ -63,8 +63,7 @@ public class RegistrationControllerTest extends ApplicationTest {
         }
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Registration.fxml"),
@@ -90,15 +89,13 @@ public class RegistrationControllerTest extends ApplicationTest {
         stage.show();
     }
 
-    @BeforeEach
-    public void setup() {
+    @BeforeEach public void setup() {
         ExceptionHandler.setLoggingEnabled(false);
         userDAO.getAllUsers().forEach(u -> userDAO.deleteUser(u.getEmail()));
         SessionManager.getInstance().setCurrentUser(null);
     }
 
-    @AfterEach
-    public void cleanup() {
+    @AfterEach public void cleanup() {
         ExceptionHandler.setLoggingEnabled(false);
     }
 
@@ -141,24 +138,21 @@ public class RegistrationControllerTest extends ApplicationTest {
         }
     }
 
-    @Test
-    public void registerGeneralPublicIntegrationTest() throws Exception {
+    @Test public void registerGeneralPublicIntegrationTest() throws Exception {
         String email = uniqueEmail();
         fillForm(email, "Password123", "John", "Doe", "General Public");
         clickOn("#submitButton");
         assertUserPersisted(GeneralPublicUser.class, email);
     }
 
-    @Test
-    public void registerHealthcareProfessionalIntegrationTest() throws Exception {
+    @Test public void registerHealthcareProfessionalIntegrationTest() throws Exception {
         String email = uniqueEmail();
         fillForm(email, "Password123", "Alice", "Smith", "Healthcare Professional");
         clickOn("#submitButton");
         assertUserPersisted(HealthcareProfessionalUser.class, email);
     }
 
-    @Test
-    public void registerAdministratorIntegrationTest() throws Exception {
+    @Test public void registerAdministratorIntegrationTest() throws Exception {
         String email = uniqueEmail();
         fillForm(email, "Password123", "Bob", "Brown", "Administrator");
         clickOn("#submitButton");

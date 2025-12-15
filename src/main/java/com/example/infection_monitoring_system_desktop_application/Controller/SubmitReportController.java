@@ -17,34 +17,20 @@ import java.util.Set;
 public class SubmitReportController {
     private GeneralPublicDashboardController parentController;
 
-    @FXML
-    private RadioButton feverSymptomCheck;
-    @FXML
-    private RadioButton coughSymptomCheck;
-    @FXML
-    private RadioButton headacheSymptomCheck;
-    @FXML
-    private RadioButton fatigueSymptomCheck;
-    @FXML
-    private RadioButton shortnessOfBreathCheck;
-    @FXML
-    private RadioButton lossOfSmellCheck;
-    @FXML
-    private RadioButton MildSeverityCheck;
-    @FXML
-    private RadioButton ModerateSeverityCheck;
-    @FXML
-    private RadioButton SevereSeverityCheck;
-    @FXML
-    private RadioButton YesWorsenedSymptomCheck;
-    @FXML
-    private RadioButton NoWorsenedSymptomCheck;
-    @FXML
-    private DatePicker symptomsStartDate;
-    @FXML
-    private CheckBox exposureCheck;
-    @FXML
-    private Button backButton;
+    @FXML private RadioButton feverSymptomCheck;
+    @FXML private RadioButton coughSymptomCheck;
+    @FXML private RadioButton headacheSymptomCheck;
+    @FXML private RadioButton fatigueSymptomCheck;
+    @FXML private RadioButton shortnessOfBreathCheck;
+    @FXML private RadioButton lossOfSmellCheck;
+    @FXML private RadioButton MildSeverityCheck;
+    @FXML private RadioButton ModerateSeverityCheck;
+    @FXML private RadioButton SevereSeverityCheck;
+    @FXML private RadioButton YesWorsenedSymptomCheck;
+    @FXML private RadioButton NoWorsenedSymptomCheck;
+    @FXML private DatePicker symptomsStartDate;
+    @FXML private CheckBox exposureCheck;
+    @FXML private Button backButton;
 
     private final ToggleGroup severityGroup = new ToggleGroup();
     private final ToggleGroup worsenedGroup = new ToggleGroup();
@@ -59,8 +45,7 @@ public class SubmitReportController {
         this.parentController = parent;
     }
 
-    @FXML
-    private void initialize() {
+    @FXML private void initialize() {
         try {
             MildSeverityCheck.setToggleGroup(severityGroup);
             ModerateSeverityCheck.setToggleGroup(severityGroup);

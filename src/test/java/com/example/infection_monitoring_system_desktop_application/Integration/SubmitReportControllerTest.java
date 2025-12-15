@@ -98,8 +98,7 @@ public class SubmitReportControllerTest extends ApplicationTest {
     }
 
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/SubmitReport.fxml"),
@@ -127,8 +126,7 @@ public class SubmitReportControllerTest extends ApplicationTest {
         stage.show();
     }
 
-    @AfterEach
-    public void cleanup() {
+    @AfterEach public void cleanup() {
         ExceptionHandler.setLoggingEnabled(false);
         SessionManager.getInstance().clearSession();
     }
@@ -146,8 +144,7 @@ public class SubmitReportControllerTest extends ApplicationTest {
         WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS, () -> !caseDAO.getAllCases().isEmpty());
     }
 
-    @Test
-    public void submitReportSuccessIntegrationTest() throws TimeoutException {
+    @Test public void submitReportSuccessIntegrationTest() throws TimeoutException {
         LocalDate symptomsBeganDate = LocalDate.now().minusDays(5);
 
         fillAndSubmitForm(symptomsBeganDate);
@@ -162,8 +159,7 @@ public class SubmitReportControllerTest extends ApplicationTest {
         assertEquals(symptomsBeganDate, savedCase.getSymptomsBegan().toLocalDate(), "The start date must match input.");
     }
 
-    @Test
-    public void submitReportMissingSeverityValidationTest() {
+    @Test public void submitReportMissingSeverityValidationTest() {
         int initialCaseCount = caseDAO.getAllCases().size();
 
         interact(() -> {

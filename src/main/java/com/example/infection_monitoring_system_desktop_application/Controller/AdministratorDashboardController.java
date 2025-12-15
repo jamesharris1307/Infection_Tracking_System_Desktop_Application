@@ -92,8 +92,7 @@ public class AdministratorDashboardController {
                     }
                 });
             }
-            @Override
-            protected void updateItem(Void item, boolean empty) {
+            @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : button);
             }

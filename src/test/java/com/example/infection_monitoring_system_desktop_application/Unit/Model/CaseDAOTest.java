@@ -20,19 +20,14 @@ import java.sql.*;
 
 class CaseDAOTest {
 
-    @Mock
-    private DataSource mockDataSource;
+    @Mock private DataSource mockDataSource;
 
-    @Mock
-    private Connection mockConn;
+    @Mock private Connection mockConn;
 
-    @InjectMocks
-    private CaseDAO caseDAO;
+    @InjectMocks private CaseDAO caseDAO;
 
-    @Mock
-    private PreparedStatement mockStmt;
-    @Mock
-    private ResultSet mockRs;
+    @Mock private PreparedStatement mockStmt;
+    @Mock private ResultSet mockRs;
 
     private final LocalDateTime REPORT_TIME = LocalDateTime.now().minusHours(2);
     private final LocalDateTime SYMPTOMS_BEGAN = LocalDateTime.now().minusDays(1);
@@ -47,8 +42,7 @@ class CaseDAOTest {
             true
     );
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @BeforeEach void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
 
         when(mockDataSource.getConnection()).thenReturn(mockConn);
@@ -56,8 +50,7 @@ class CaseDAOTest {
         doNothing().when(mockRs).close();
     }
 
-    @Test
-    void testAddCaseSuccess() throws Exception {
+    @Test void testAddCaseSuccess() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
 
         caseDAO.addCase(testCase);
@@ -74,8 +67,7 @@ class CaseDAOTest {
         verify(mockStmt).close();
     }
 
-    @Test
-    void testAddCase_SymptomsBeganIsNullSuccess() throws Exception {
+    @Test void testAddCase_SymptomsBeganIsNullSuccess() throws Exception {
         Case caseWithoutOnset = new Case(102, REPORT_TIME, null, SYMPTOMS, "Mild", false);
         when(mockStmt.executeUpdate()).thenReturn(1);
 
@@ -88,8 +80,7 @@ class CaseDAOTest {
         verify(mockStmt).close();
     }
 
-    @Test
-    void testAddCase_InvalidSeverity() {
+    @Test void testAddCase_InvalidSeverity() {
         Case invalidCase = new Case(101, REPORT_TIME, SYMPTOMS_BEGAN, SYMPTOMS, "Critical", true);
 
         assertThrows(IllegalArgumentException.class, () -> caseDAO.addCase(invalidCase));
@@ -97,8 +88,7 @@ class CaseDAOTest {
         verifyNoInteractions(mockConn);
     }
 
-    @Test
-    void testAddCase_InvalidSymptom() {
+    @Test void testAddCase_InvalidSymptom() {
         Set<String> badSymptoms = Set.of("Fever", "Nausea");
         Case invalidCase = new Case(101, REPORT_TIME, SYMPTOMS_BEGAN, badSymptoms, "Moderate", true);
 
@@ -107,16 +97,14 @@ class CaseDAOTest {
         verifyNoInteractions(mockConn);
     }
 
-    @Test
-    void testAddCase_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testAddCase_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Insert failed"));
 
         assertThrows(DAOException.class, () -> caseDAO.addCase(testCase));
         verify(mockConn).close();
     }
 
-    @Test
-    void testGetAllCasesSuccess_TwoCases() throws Exception {
+    @Test void testGetAllCasesSuccess_TwoCases() throws Exception {
         User user1 = new GeneralPublicUser("user1@example.com", "hash", "Alice", "A", null, "Addr", "", "Town", "County", "Post", User.AccountStatus.Active);
         User user2 = new GeneralPublicUser("user2@example.com", "hash", "Bob", "B", null, "Addr", "", "Town", "County", "Post", User.AccountStatus.Active);
 
@@ -179,8 +167,7 @@ class CaseDAOTest {
         verify(mockRs).close();
     }
 
-    @Test
-    void testGetAllCases_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testGetAllCases_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Select all failed"));
 
         assertThrows(DAOException.class, () -> caseDAO.getAllCases());

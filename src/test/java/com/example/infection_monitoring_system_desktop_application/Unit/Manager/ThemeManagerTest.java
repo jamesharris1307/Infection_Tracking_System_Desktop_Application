@@ -17,8 +17,7 @@ import javafx.scene.Scene;
 
 class ThemeManagerTest {
 
-    @BeforeAll
-    static void initJfx() throws InterruptedException {
+    @BeforeAll static void initJfx() throws InterruptedException {
         if (Platform.isFxApplicationThread() || isPlatformRunning()) {
             return;
         }

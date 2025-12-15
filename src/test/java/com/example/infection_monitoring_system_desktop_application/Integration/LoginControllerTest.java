@@ -58,8 +58,7 @@ public class LoginControllerTest extends ApplicationTest {
         }
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/Login.fxml"),
@@ -86,15 +85,13 @@ public class LoginControllerTest extends ApplicationTest {
         stage.show();
     }
 
-    @BeforeEach
-    public void setup() {
+    @BeforeEach public void setup() {
         ExceptionHandler.setLoggingEnabled(false);
         userDAO.getAllUsers().forEach(u -> userDAO.deleteUser(u.getEmail()));
         SessionManager.getInstance().setCurrentUser(null);
     }
 
-    @AfterEach
-    public void cleanup() {
+    @AfterEach public void cleanup() {
         ExceptionHandler.setLoggingEnabled(false);
     }
 
@@ -102,8 +99,7 @@ public class LoginControllerTest extends ApplicationTest {
         userDAO.addUser(user);
     }
 
-    @Test
-    public void loginAsGeneralPublicIntegrationTest() throws Exception {
+    @Test public void loginAsGeneralPublicIntegrationTest() throws Exception {
         User user = new GeneralPublicUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("password123"),
@@ -125,8 +121,7 @@ public class LoginControllerTest extends ApplicationTest {
         assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
     }
 
-    @Test
-    public void loginAsHealthcareProfessionalIntegrationTest() throws Exception {
+    @Test public void loginAsHealthcareProfessionalIntegrationTest() throws Exception {
         User user = new HealthcareProfessionalUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("password123"),
@@ -148,8 +143,7 @@ public class LoginControllerTest extends ApplicationTest {
         assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
     }
 
-    @Test
-    public void loginAsAdministratorIntegrationTest() throws Exception {
+    @Test public void loginAsAdministratorIntegrationTest() throws Exception {
         User user = new AdministratorUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("password123"),
@@ -171,8 +165,7 @@ public class LoginControllerTest extends ApplicationTest {
         assertEquals("user@example.com", SessionManager.getInstance().getCurrentUser().getEmail());
     }
 
-    @Test
-    public void loginInvalidPasswordIntegrationTest() throws Exception {
+    @Test public void loginInvalidPasswordIntegrationTest() throws Exception {
         User user = new GeneralPublicUser(
                 "user@example.com",
                 PasswordUtils.hashPassword("correctpassword"),
@@ -192,8 +185,7 @@ public class LoginControllerTest extends ApplicationTest {
         assertNull(SessionManager.getInstance().getCurrentUser());
     }
 
-    @Test
-    public void loginUserNotFoundIntegrationTest() throws Exception {
+    @Test public void loginUserNotFoundIntegrationTest() throws Exception {
         clickOn("#usernameTextField").write("missing@example.com");
         clickOn("#passwordField").write("password123");
         clickOn("#loginButton");

@@ -16,19 +16,14 @@ import java.sql.*;
 
 class UserDAOTest {
 
-    @Mock
-    private DataSource mockDataSource;
+    @Mock private DataSource mockDataSource;
 
-    @Mock
-    private Connection mockConn;
+    @Mock private Connection mockConn;
 
-    @InjectMocks
-    private UserDAO userDAO;
+    @InjectMocks private UserDAO userDAO;
 
-    @Mock
-    private PreparedStatement mockStmt;
-    @Mock
-    private ResultSet mockRs;
+    @Mock private PreparedStatement mockStmt;
+    @Mock private ResultSet mockRs;
 
     private final String TEST_EMAIL = "test@example.com";
     private final String TEST_PASSWORD_HASH = PasswordUtils.hashPassword("password123");
@@ -41,8 +36,7 @@ class UserDAOTest {
             User.AccountStatus.Active
     );
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @BeforeEach void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
 
         when(mockDataSource.getConnection()).thenReturn(mockConn);
@@ -71,8 +65,7 @@ class UserDAOTest {
         when(mockRs.getString("Role")).thenReturn(userToMock.getRole().name());
     }
 
-    @Test
-    void testAddUserSuccess() throws Exception {
+    @Test void testAddUserSuccess() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
 
         userDAO.addUser(testUser);
@@ -89,16 +82,14 @@ class UserDAOTest {
         verify(mockStmt).setString(12, testUser.getRole().name());
     }
 
-    @Test
-    void testAddUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testAddUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Insert failed"));
 
         assertThrows(DAOException.class, () -> userDAO.addUser(testUser));
         verify(mockConn).close();
     }
 
-    @Test
-    void testGetUserByEmailSuccess() throws Exception {
+    @Test void testGetUserByEmailSuccess() throws Exception {
         mockSuccessfulResultSet(testUser);
 
         User user = userDAO.getUserByEmail(TEST_EMAIL);
@@ -117,8 +108,7 @@ class UserDAOTest {
         verify(mockRs).close();
     }
 
-    @Test
-    void testGetUserByEmail_NotFound() throws Exception {
+    @Test void testGetUserByEmail_NotFound() throws Exception {
         when(mockStmt.executeQuery()).thenReturn(mockRs);
         when(mockRs.next()).thenReturn(false); // No user found
 
@@ -129,8 +119,7 @@ class UserDAOTest {
         verify(mockConn).close();
     }
 
-    @Test
-    void testGetUserByEmail_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testGetUserByEmail_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Query failed"));
 
         assertThrows(DAOException.class, () -> userDAO.getUserByEmail(TEST_EMAIL));
@@ -138,8 +127,7 @@ class UserDAOTest {
     }
 
 
-    @Test
-    void testUpdateUserSuccess() throws Exception {
+    @Test void testUpdateUserSuccess() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
         String originalEmail = "old@email.com";
 
@@ -164,16 +152,14 @@ class UserDAOTest {
         verify(mockStmt).close();
     }
 
-    @Test
-    void testUpdateUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testUpdateUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Update failed"));
 
         assertThrows(DAOException.class, () -> userDAO.updateUser(testUser, TEST_EMAIL));
         verify(mockConn).close();
     }
 
-    @Test
-    void testGetAllUsersSuccess_TwoUsers() throws Exception {
+    @Test void testGetAllUsersSuccess_TwoUsers() throws Exception {
         AdministratorUser adminUser = new AdministratorUser(
                 "admin@example.com", TEST_PASSWORD_HASH, "Boss", "Man",
                 LocalDate.of(1980, 1, 1), "1 Admin Rd", "", "HQ", "Zone", "ADMIN1",
@@ -248,16 +234,14 @@ class UserDAOTest {
         verify(mockRs).close();
     }
 
-    @Test
-    void testGetAllUsers_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testGetAllUsers_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Select all failed"));
 
         assertThrows(DAOException.class, () -> userDAO.getAllUsers());
         verify(mockConn).close();
     }
 
-    @Test
-    void testDeleteUserSuccess() throws Exception {
+    @Test void testDeleteUserSuccess() throws Exception {
         when(mockStmt.executeUpdate()).thenReturn(1);
 
         userDAO.deleteUser(TEST_EMAIL);
@@ -268,16 +252,14 @@ class UserDAOTest {
         verify(mockStmt).close();
     }
 
-    @Test
-    void testDeleteUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
+    @Test void testDeleteUser_ShouldThrowDAOExceptionOnSqlError() throws Exception {
         when(mockConn.prepareStatement(anyString())).thenThrow(new SQLException("Delete failed"));
 
         assertThrows(DAOException.class, () -> userDAO.deleteUser(TEST_EMAIL));
         verify(mockConn).close();
     }
 
-    @Test
-    void constructor_ShouldThrowExceptionWhenDataSourceIsNull() {
+    @Test void constructor_ShouldThrowExceptionWhenDataSourceIsNull() {
         assertThrows(IllegalArgumentException.class, () -> new UserDAO(null));
     }
 }

@@ -83,8 +83,7 @@ class EditDetailsControllerTest extends ApplicationTest {
         SessionManager.getInstance().setCurrentUser(savedUser);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource(
@@ -115,8 +114,7 @@ class EditDetailsControllerTest extends ApplicationTest {
         stage.show();
     }
 
-    @Test
-    void editDetailsSuccessfullyUpdatesUser() throws TimeoutException {
+    @Test void editDetailsSuccessfullyUpdatesUser() throws TimeoutException {
         interact(() -> {
             lookup("#fieldFirstName").queryAs(TextField.class).setText("New");
             lookup("#fieldLastName").queryAs(TextField.class).setText("User");
@@ -146,8 +144,7 @@ class EditDetailsControllerTest extends ApplicationTest {
                 "Original email should no longer exist after update.");
     }
 
-    @AfterEach
-    void cleanup() {
+    @AfterEach void cleanup() {
         SessionManager.getInstance().clearSession();
     }
 }

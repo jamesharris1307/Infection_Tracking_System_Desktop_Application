@@ -90,8 +90,7 @@ public class UpdateMedicalHistoryControllerTest extends ApplicationTest {
         SessionManager.getInstance().setCurrentUser(savedUser);
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    @Override public void start(Stage stage) throws Exception {
         ResourceBundle bundle = ResourceBundle.getBundle("i18n.messages");
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/infection_monitoring_system_desktop_application/View/UpdateMedicalHistory.fxml"),
@@ -119,8 +118,7 @@ public class UpdateMedicalHistoryControllerTest extends ApplicationTest {
         stage.show();
     }
 
-    @AfterEach
-    public void cleanup() {
+    @AfterEach public void cleanup() {
         ExceptionHandler.setLoggingEnabled(false);
         SessionManager.getInstance().clearSession();
 
@@ -143,9 +141,7 @@ public class UpdateMedicalHistoryControllerTest extends ApplicationTest {
         WaitForAsyncUtils.waitForFxEvents();
     }
 
-    @Test
-    @DisplayName("Successfully submit medical history with all 'Yes' selected")
-    public void updateHistorySuccessIntegrationTest() throws TimeoutException {
+    @Test public void updateHistorySuccessIntegrationTest() throws TimeoutException {
         fillForm(true, true, true, true);
         clickOn("#submitUpdateMedicalHistoryButton");
 
@@ -163,9 +159,7 @@ public class UpdateMedicalHistoryControllerTest extends ApplicationTest {
         assertTrue(savedHistory.isAllergies(), "Allergies must be true.");
     }
 
-    @Test
-    @DisplayName("Validation fails when Allergies is not selected")
-    public void updateHistoryMissingFieldValidationTest() {
+    @Test public void updateHistoryMissingFieldValidationTest() {
         int initialCount = 0;
 
         interact(() -> {

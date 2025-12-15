@@ -11,8 +11,7 @@ public class AdministratorUser extends User {
                 addressLine1, addressLine2, townCity, county, postcode, accountStatus);
     }
 
-    @Override
-    public Role getRole() {
+    @Override public Role getRole() {
         return Role.Administrator;
     }
 }
