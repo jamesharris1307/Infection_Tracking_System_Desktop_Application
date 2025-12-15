@@ -54,7 +54,7 @@ public class SubmitReportController {
             YesWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
             NoWorsenedSymptomCheck.setToggleGroup(worsenedGroup);
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error initializing case report form controls.");
+            ExceptionHandler.handle(e, "Error Initialising Case Report");
         }
     }
 
@@ -63,11 +63,11 @@ public class SubmitReportController {
             User currentUser = SessionManager.getInstance().getCurrentUser();
 
             if (currentUser == null || currentUser.getUserId() <= 0) {
-                throw ExceptionFactory.validationError("No valid user is logged in. Please log in again.");
+                throw ExceptionFactory.validationError("No Valid User Logged In");
             }
 
             if (caseService == null) {
-                throw ExceptionFactory.unexpected(new IllegalStateException("CaseService dependency not initialized."));
+                throw ExceptionFactory.unexpected(new IllegalStateException("CaseService Not Initialized."));
             }
 
             int userId = currentUser.getUserId();
@@ -89,7 +89,7 @@ public class SubmitReportController {
                     : null;
 
             if (severity == null || symptomsSet.isEmpty()) {
-                throw ExceptionFactory.validationError("Please select at least one symptom and a severity level.");
+                throw ExceptionFactory.validationError("Please Select at Least One Symptom and a Severity Option.");
             }
 
             boolean confirmedWorsened = YesWorsenedSymptomCheck.isSelected();
@@ -97,7 +97,7 @@ public class SubmitReportController {
 
             caseService.addCaseAsync(newCase)
                     .thenRun(() -> Platform.runLater(() -> {
-                        AlertUtils.showInfo("Submitted", "Your case report has been submitted.");
+                        AlertUtils.showInfo("Submitted", "Case Report Submitted.");
                         clearForm();
                         if (parentController != null) {
                             parentController.showHomePage();
@@ -105,11 +105,11 @@ public class SubmitReportController {
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to submit case report asynchronously.");
+                        ExceptionHandler.handle(cause, "Failed to Submit Case Report Asynchronously.");
                         return null;
                     });
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error submitting case report");
+            ExceptionHandler.handle(e, "Error Submitting Case Report");
         }
     }
 
