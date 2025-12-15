@@ -159,4 +159,45 @@ public class UserDAO {
             throw new DAOException("Failed to delete user: " + email, e);
         }
     }
+
+    public DashboardInfo getDashboardInfoByUserId(int userId) {
+        String sql = """
+        SELECT u.Email, u.FirstName, u.LastName, u.DateOfBirth,
+               mh.LastUpdated, mh.LongTermConditions, mh.VaccinationUpToDate
+        FROM Users u
+        LEFT JOIN MedicalHistory mh ON u.UserID = mh.UserID
+        WHERE u.UserID = ?
+        ORDER BY mh.LastUpdated DESC
+        LIMIT 1
+    """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    DashboardInfo info = new DashboardInfo();
+                    info.setEmail(rs.getString("Email"));
+                    info.setFirstName(rs.getString("FirstName"));
+                    info.setLastName(rs.getString("LastName"));
+                    info.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+
+                    Date lastUpdated = rs.getDate("LastUpdated");
+                    if (lastUpdated != null) {
+                        info.setLastHistoryUpdate(lastUpdated.toLocalDate());
+                    }
+
+                    info.setExistingConditions(rs.getString("LongTermConditions"));
+                    info.setVaccinationStatus(rs.getString("VaccinationUpToDate"));
+
+                    return info;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get Dashboard Info for User: " + userId, e);
+        }
+    }
 }

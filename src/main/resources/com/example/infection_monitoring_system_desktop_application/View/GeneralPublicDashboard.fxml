@@ -1,61 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25"
-           xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
+<StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
 
     <AnchorPane fx:id="rootContent">
-        <HBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
-              AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
             <VBox prefWidth="250" spacing="15" styleClass="sidePanel">
-                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
 
                 <HBox alignment="CENTER" spacing="20">
-                    <Button fx:id="settingsButton" styleClass="NoBackground" text="%settings"/>
-                    <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
+                    <Button fx:id="settingsButton" styleClass="NoBackground" text="%settings" />
+                    <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout" />
                 </HBox>
 
-                <Label fx:id="labelFullName" text=""/>
-                <Label fx:id="labelEmail" text=""/>
+                <Label fx:id="labelFullName" alignment="CENTER" prefHeight="17.0" prefWidth="215.0" styleClass="panelBackground" text="lol" />
+                <Label fx:id="labelEmail" alignment="CENTER" prefHeight="17.0" prefWidth="223.0" styleClass="panelBackground" text="lol" />
             </VBox>
 
-            <StackPane fx:id="centerPages" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
-                <VBox fx:id="initialContent"
-                      alignment="TOP_CENTER"
-                      spacing="20"
-                      maxWidth="600" prefWidth="600"
-                      style="-fx-padding: 30 20 30 20;">
+            <StackPane fx:id="centerPages" alignment="TOP_CENTER" HBox.hgrow="ALWAYS">
+                <VBox fx:id="initialContent" alignment="TOP_CENTER" maxWidth="600" prefWidth="600" spacing="20" style="-fx-padding: 30 20 30 20;">
                 </VBox>
             </StackPane>
 
             <VBox prefWidth="250" spacing="15" styleClass="sidePanel">
-                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
 
-                <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="%today-date" />
+                <VBox alignment="CENTER" styleClass="panelBackground">
+                    <Label alignment="CENTER" style="-fx-font-weight: bold;" text="%today-date" />
                     <Label fx:id="lblCurrentDate" />
                 </VBox>
 
-                <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="%medical-history" />
+                <VBox alignment="CENTER" styleClass="panelBackground">
+                    <Label alignment="CENTER" style="-fx-font-weight: bold;" text="%medical-history" />
                     <Label fx:id="lblHistoryDate" />
                 </VBox>
 
-                <VBox styleClass="panelBackground">
+                <VBox alignment="CENTER" styleClass="panelBackground">
                     <Label style="-fx-font-weight: bold;" text="%vaccination-status" />
                     <Label fx:id="lblVaccStatus" />
                 </VBox>
 
-                <VBox styleClass="panelBackground">
+                <VBox alignment="CENTER" styleClass="panelBackground">
                     <Label style="-fx-font-weight: bold;" text="%existing-conditions" />
                     <Label fx:id="lblExistingConditions" />
                 </VBox>

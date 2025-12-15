@@ -14,6 +14,10 @@
     -fx-font-weight: 900;
 }
 
+.button:hover, ToggleButton:hover {
+    -fx-background-color: #7827c5;
+}
+
 .active-page-indicator {
     -fx-fill: #601F9E;
 }
@@ -39,7 +43,20 @@
 }
 
 .panelBackground {
+    -fx-font-weight: 900;
+    -fx-padding: 5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-background-color: #313131;
+    -fx-text-fill: #FFFFFF;
+}
+
+.panelBackground:hover {
+    -fx-background-color: #393939;
+}
+
+.labelDashboard {
+    -fx-text-fill: #FFFFFF;
 }
 
 .label {

@@ -10,11 +10,13 @@ import com.example.infection_monitoring_system_desktop_application.Util.AlertUti
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import java.time.LocalDate;
 import javafx.fxml.FXML;
 
 public class EditDetailsController {
 
+    public Button backButton;
     @FXML private TextField fieldFirstName;
     @FXML private TextField fieldLastName;
     @FXML private TextField fieldEmail;
