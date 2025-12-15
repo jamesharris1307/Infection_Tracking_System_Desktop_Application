@@ -44,9 +44,11 @@ public class AdministratorDashboardController {
         colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
         colRole.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getRole()));
         colAccountStatus.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getAccountStatus()));
+
         addButtonToTable(colEditAction, "Edit", this::handleEditUser);
         addButtonToTable(colDisableEnableAction, "Toggle", this::handleToggleUserStatus);
         addButtonToTable(colDeleteAction, "Delete", this::handleDeleteUser);
+
         cmbFilter.getItems().addAll("All", "Active", "Disabled");
         cmbFilter.getSelectionModel().select("All");
         logoutButton.setOnAction(e -> handleLogout());
