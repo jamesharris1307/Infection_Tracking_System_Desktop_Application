@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Controller;
 
+import com.example.infection_monitoring_system_desktop_application.Manager.LanguageManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
@@ -55,7 +56,10 @@ public class GeneralPublicDashboardController {
 
     private void loadPage(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(fxmlPath),
+                    LanguageManager.getInstance().getBundle()
+            );
 
             if (loader.getLocation() == null) {
                 throw new SceneLoadException("Resource not found: " + fxmlPath);

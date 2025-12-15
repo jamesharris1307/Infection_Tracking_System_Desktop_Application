@@ -20,12 +20,12 @@
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
                 <HBox alignment="CENTER" spacing="20">
-                    <Button fx:id="settingsButton" styleClass="NoBackground" text="Settings"/>
-                    <Button fx:id="logoutButton" styleClass="NoBackground" text="Logout"/>
+                    <Button fx:id="settingsButton" styleClass="NoBackground" text="%settings"/>
+                    <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
                 </HBox>
 
-                <Label fx:id="labelFullName" text="Label"/>
-                <Label fx:id="labelEmail" text="Label"/>
+                <Label fx:id="labelFullName" text=""/>
+                <Label fx:id="labelEmail" text=""/>
             </VBox>
 
             <StackPane fx:id="centerPages" HBox.hgrow="ALWAYS" alignment="TOP_CENTER">
@@ -41,22 +41,22 @@
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
                 <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="Today's Date:" />
+                    <Label style="-fx-font-weight: bold;" text="%today-date" />
                     <Label fx:id="lblCurrentDate" />
                 </VBox>
 
                 <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="Medical History:" />
+                    <Label style="-fx-font-weight: bold;" text="%medical-history" />
                     <Label fx:id="lblHistoryDate" />
                 </VBox>
 
                 <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="Vaccination Status:" />
+                    <Label style="-fx-font-weight: bold;" text="%vaccination-status" />
                     <Label fx:id="lblVaccStatus" />
                 </VBox>
 
                 <VBox styleClass="panelBackground">
-                    <Label style="-fx-font-weight: bold;" text="Existing Conditions:" />
+                    <Label style="-fx-font-weight: bold;" text="%existing-conditions" />
                     <Label fx:id="lblExistingConditions" />
                 </VBox>
             </VBox>

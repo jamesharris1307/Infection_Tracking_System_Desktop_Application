@@ -23,7 +23,7 @@ public class SceneManager {
         try {
             if (mainScene == null) {
                 mainScene = new Scene(root);
-                ThemeManager.getInstance().applySavedTheme(mainScene); // throws PreferencesException
+                ThemeManager.getInstance().applySavedTheme(mainScene);
 
                 mainScene.setOnKeyPressed(event -> {
                     if (Objects.requireNonNull(event.getCode()) == KeyCode.ESCAPE) {
@@ -35,7 +35,7 @@ public class SceneManager {
                 mainStage.show();
             } else {
                 mainScene.setRoot(root);
-                ThemeManager.getInstance().applySavedTheme(mainScene); // throws PreferencesException
+                ThemeManager.getInstance().applySavedTheme(mainScene);
             }
 
             String fxmlPath = (String) root.getUserData();
@@ -56,7 +56,7 @@ public class SceneManager {
 
             loader.setControllerFactory(AppContext.getInstance()::getControllerInstance);
 
-            Parent root = loader.load(); // Throws IOException
+            Parent root = loader.load();
             root.setUserData(fxmlPath);
 
             switchRoot(root);

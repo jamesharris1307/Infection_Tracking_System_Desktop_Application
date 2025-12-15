@@ -14,9 +14,9 @@
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <Button fx:id="logoutButton" styleClass="NoBackground" text="Logout"/>
-            <ComboBox fx:id="cmbFilter" promptText="Filter By"/>
-            <Button fx:id="btnApplyFilter" text="Apply Filter" onAction="#onFilterClicked"/>
+            <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
+            <ComboBox fx:id="cmbFilter" promptText="%filter-by"/>
+            <Button fx:id="btnApplyFilter" text="%apply-filter" onAction="#onFilterClicked"/>
             <TextField fx:id="txtSearch" onKeyReleased="#onSearchKeyTyped"/>
         </HBox>
     </top>
@@ -24,15 +24,15 @@
     <center>
         <TableView fx:id="casesTable">
             <columns>
-                <TableColumn fx:id="colCaseId" text="User ID" prefWidth="80"/>
-                <TableColumn fx:id="colFirstName" text="First Name" prefWidth="80"/>
-                <TableColumn fx:id="colLastName" text="Last Name" prefWidth="80"/>
-                <TableColumn fx:id="colEmail" text="Email" prefWidth="80"/>
-                <TableColumn fx:id="colRole" text="Role" prefWidth="80"/>
-                <TableColumn fx:id="colAccountStatus" text="Account Status" prefWidth="80"/>
-                <TableColumn fx:id="colEditAction" text="Edit" prefWidth="80"/>
-                <TableColumn fx:id="colDisableEnableAction" text="Enable/Disable" prefWidth="80"/>
-                <TableColumn fx:id="colDeleteAction" text="Delete" prefWidth="80"/>
+                <TableColumn fx:id="colCaseId" text="%user-id" prefWidth="80"/>
+                <TableColumn fx:id="colFirstName" text="%first-name" prefWidth="80"/>
+                <TableColumn fx:id="colLastName" text="%last-name" prefWidth="80"/>
+                <TableColumn fx:id="colEmail" text="%email" prefWidth="80"/>
+                <TableColumn fx:id="colRole" text="%role" prefWidth="80"/>
+                <TableColumn fx:id="colAccountStatus" text="%account_status" prefWidth="80"/>
+                <TableColumn fx:id="colEditAction" text="%edit" prefWidth="80"/>
+                <TableColumn fx:id="colDisableEnableAction" text="%enable-disable" prefWidth="80"/>
+                <TableColumn fx:id="colDeleteAction" text="%delete" prefWidth="80"/>
             </columns>
         </TableView>
     </center>

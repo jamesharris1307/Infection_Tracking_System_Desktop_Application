@@ -117,9 +117,10 @@ public class RegistrationController {
             String postcode = postcodeField.getText().trim();
             String roleSelection = roleComboBox.getValue();
 
-            if (email.isEmpty() || password.isEmpty() || confirmPasswordField.getText().isEmpty() ||
-                    !password.equals(confirmPasswordField.getText()) || firstName.isEmpty() || lastName.isEmpty() || roleSelection == null ||
-                    dob == null || address1.isEmpty() || city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
+                    !password.equals(confirmPassword) || firstName.isEmpty() || lastName.isEmpty() ||
+                    roleSelection == null || dob == null || address1.isEmpty() ||
+                    city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
 
                 throw ExceptionFactory.validationError("Please fill in all fields and ensure passwords match.");
             }
@@ -134,29 +135,34 @@ public class RegistrationController {
                 case "Gweinyddwr" -> roleSelection = "Administrator";
             }
 
-            String hashedPassword = PasswordUtils.hashPassword(password);
-            User.Role roleEnum;
-            User.AccountStatus accountStatusEnum;
-
-            switch (roleSelection) {
-                case "General Public" -> { roleEnum = User.Role.GeneralPublic; accountStatusEnum = User.AccountStatus.Active; }
-                case "Healthcare Professional" -> { roleEnum = User.Role.HealthcareProfessional; accountStatusEnum = User.AccountStatus.Disabled; }
-                case "Administrator" -> { roleEnum = User.Role.Administrator; accountStatusEnum = User.AccountStatus.Disabled; }
+            User.Role roleEnum = switch (roleSelection) {
+                case "General Public" -> User.Role.GeneralPublic;
+                case "Healthcare Professional" -> User.Role.HealthcareProfessional;
+                case "Administrator" -> User.Role.Administrator;
                 default -> throw ExceptionFactory.unexpected(new IllegalUserRoleException("Invalid role selected: " + roleSelection));
-            }
-
-            User newUser = switch (roleEnum) {
-                case GeneralPublic -> new GeneralPublicUser(email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode, accountStatusEnum);
-                case HealthcareProfessional -> new HealthcareProfessionalUser(email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode, accountStatusEnum);
-                case Administrator -> new AdministratorUser(email, hashedPassword, firstName, lastName, dob,
-                        address1, address2, city, county, postcode, accountStatusEnum);
             };
 
-            userService.addUserAsync(newUser)
+            User newUser = switch (roleEnum) {
+                case GeneralPublic -> new GeneralPublicUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+                case HealthcareProfessional -> new HealthcareProfessionalUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+                case Administrator -> new AdministratorUser(
+                        email, password, firstName, lastName, dob,
+                        address1, address2, city, county, postcode, null
+                );
+            };
+
+            userService.registerUserAsync(newUser)
                     .thenRun(() -> Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "User registered successfully! Account status is set to " + newUser.getAccountStatus() + ".");
+                        AlertUtils.showInfo(
+                                "Success",
+                                "User registered successfully. Account status will be set after verification if required."
+                        );
                         clearForm();
                         viewLogin();
                     }))
@@ -169,6 +175,7 @@ public class RegistrationController {
             ExceptionHandler.handle(e, "Error during registration submission");
         }
     }
+
 
     private void clearForm() {
         emailField.clear();
