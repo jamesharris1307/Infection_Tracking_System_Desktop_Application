@@ -1,5 +1,6 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.DataAccessObject;
 
+import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javax.sql.DataSource;
 import java.sql.*;

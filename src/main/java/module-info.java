@@ -27,4 +27,8 @@ module com.example.infection_monitoring_system_desktop_application {
 
     exports com.example.infection_monitoring_system_desktop_application;
     exports com.example.infection_monitoring_system_desktop_application.Model;
+    exports com.example.infection_monitoring_system_desktop_application.Util;
+    opens com.example.infection_monitoring_system_desktop_application.Util to javafx.fxml, javafx.graphics, org.testfx.core;
+    exports com.example.infection_monitoring_system_desktop_application.DataAccessObject;
+    opens com.example.infection_monitoring_system_desktop_application.DataAccessObject to javafx.fxml, javafx.graphics, org.testfx.core;
 }

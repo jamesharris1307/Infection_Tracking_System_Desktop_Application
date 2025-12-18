@@ -1,7 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
-import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistoryDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.MedicalHistoryDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.MedicalHistory;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +79,7 @@ class MedicalHistoryDAOTest {
 
     @Test void testGetMedicalHistory_Success_Found() throws Exception {
         when(mockStmt.executeQuery()).thenReturn(mockRs);
-        when(mockRs.next()).thenReturn(true, false); // First call returns true, subsequent returns false
+        when(mockRs.next()).thenReturn(true, false);
         when(mockRs.getBoolean("longTermConditions")).thenReturn(testHistory.isLongTermConditions());
         when(mockRs.getBoolean("longTermMedications")).thenReturn(testHistory.isLongTermMedications());
         when(mockRs.getBoolean("vaccinationUpToDate")).thenReturn(testHistory.isVaccinationUpToDate());

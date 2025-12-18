@@ -63,7 +63,14 @@ public class GeneralPublicDashboardController {
         settingsButton.setOnAction(e -> showSettingsPage());
     }
 
-    private String yesNoOrDash(String value) {
+    private String yesNoOrDashVaccination(String value) {
+        if (value == null) return "-";
+        if (value.equals("1")) return "Up to Date";
+        if (value.equals("0")) return "Not Up to Date";
+        return "-";
+    }
+
+    private String yesNoOrDashExistingConditions(String value) {
         if (value == null) return "-";
         if (value.equals("1")) return "Yes";
         if (value.equals("0")) return "No";
@@ -82,8 +89,8 @@ public class GeneralPublicDashboardController {
                         lblHistoryDate.setText(info.getLastHistoryUpdate() != null
                                 ? info.getLastHistoryUpdate().format(formatter)
                                 : "-");
-                        lblVaccStatus.setText(yesNoOrDash(info.getVaccinationStatus()));
-                        lblExistingConditions.setText(yesNoOrDash(info.getExistingConditions()));
+                        lblVaccStatus.setText(yesNoOrDashVaccination(info.getVaccinationStatus()));
+                        lblExistingConditions.setText(yesNoOrDashExistingConditions(info.getExistingConditions()));
                         labelFullName.setText(info.getFirstName() + " " + info.getLastName());
                         labelEmail.setText(info.getEmail());
                     } else {

@@ -1,5 +1,6 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.DataAccessObject;
 
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ public class UserDAO {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
     private static final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE Email = ?";
+
     private static final String UPDATE_USER_SQL = """
         UPDATE Users SET 
         FirstName = ?, LastName = ?, Email = ?, 
@@ -22,7 +24,9 @@ public class UserDAO {
         Postcode = ?, AccountStatus = ? 
         WHERE Email = ?
     """;
+
     private static final String SELECT_ALL_USERS_SQL = "SELECT * FROM Users";
+
     private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE Email = ?";
 
     private final DataSource dataSource;
@@ -87,9 +91,7 @@ public class UserDAO {
             pstmt.setString(12, user.getRole().name());
 
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Failed to add user: " + user.getEmail(), e);
-        }
+        } catch (SQLException e) { throw new DAOException("Failed to add user: " + user.getEmail(), e); }
     }
 
     public User getUserByEmail(String email) {
@@ -98,9 +100,7 @@ public class UserDAO {
             pstmt.setString(1, email);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToUser(rs);
-                }
+                if (rs.next()) { return mapResultSetToUser(rs);}
             }
             return null;
         } catch (SQLException e) {

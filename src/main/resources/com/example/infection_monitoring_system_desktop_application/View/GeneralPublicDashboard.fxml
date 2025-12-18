@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
+<StackPane fx:id="rootScaler" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.GeneralPublicDashboardController">
 
     <AnchorPane fx:id="rootContent">
         <HBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">

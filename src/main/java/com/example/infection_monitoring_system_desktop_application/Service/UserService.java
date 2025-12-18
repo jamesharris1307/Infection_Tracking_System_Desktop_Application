@@ -5,12 +5,10 @@ import com.example.infection_monitoring_system_desktop_application.Index.UserInd
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
 import com.example.infection_monitoring_system_desktop_application.Model.DashboardInfo;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ObservableList;
-import java.util.List;
-import java.util.Set;
 
 public class UserService {
 

@@ -1,8 +1,11 @@
 package com.example.infection_monitoring_system_desktop_application.Manager;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.*;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.MedicalHistoryDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Service.*;
-import com.example.infection_monitoring_system_desktop_application.Model.*;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.LegacyConnectionAdapter;
 
 public final class AppContext {
 

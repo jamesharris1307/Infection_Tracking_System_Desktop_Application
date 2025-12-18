@@ -1,4 +1,4 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.Util;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -40,3 +40,5 @@ public final class DatabaseConnection {
         return DriverManager.getConnection(url, user, password);
     }
 }
+
+
