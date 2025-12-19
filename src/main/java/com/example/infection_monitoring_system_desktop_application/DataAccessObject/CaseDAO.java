@@ -1,5 +1,8 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.DataAccessObject;
 
+import com.example.infection_monitoring_system_desktop_application.Model.Case;
+import com.example.infection_monitoring_system_desktop_application.Model.GeneralPublicUser;
+import com.example.infection_monitoring_system_desktop_application.Model.User;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import java.time.LocalDateTime;
 import javax.sql.DataSource;

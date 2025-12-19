@@ -10,5 +10,4 @@
 
     <Button fx:id="updateMedicalHistoryButton" text="%update-medical-history" maxWidth="300"/>
     <Button fx:id="submitReportButton" text="%submit-report" maxWidth="300"/>
-    <Button fx:id="viewSubmissionsButton" text="View Submissions" maxWidth="300"/>
 </VBox>

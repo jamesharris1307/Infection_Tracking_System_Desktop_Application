@@ -51,16 +51,16 @@ public class UpdateMedicalHistoryController {
     @FXML private void handleUpdateMedicalHistory() {
         try {
             if (SessionManager.getInstance().getCurrentUser() == null) {
-                throw ExceptionFactory.validationError("No user is currently logged in. Please log in again.");
+                throw ExceptionFactory.validationError("No User Logged In");
             }
 
             if (medicalHistoryService == null) {
-                throw ExceptionFactory.unexpected(new IllegalStateException("MedicalHistoryService dependency not initialized."));
+                throw ExceptionFactory.unexpected(new IllegalStateException("MedicalHistoryService Not Initialized."));
             }
 
             if (longTermConditionsGroup.getSelectedToggle() == null || longTermMedicationsGroup.getSelectedToggle() == null ||
                     upToDateVaccinationsGroup.getSelectedToggle() == null || allergiesGroup.getSelectedToggle() == null) {
-                throw ExceptionFactory.validationError("Please make a selection for all medical history fields.");
+                throw ExceptionFactory.validationError("Fill in All Required Fields");
             }
 
             int userId = SessionManager.getInstance().getCurrentUser().getUserId();
@@ -74,7 +74,7 @@ public class UpdateMedicalHistoryController {
 
             medicalHistoryService.saveOrUpdateHistoryAsync(medicalHistory)
                     .thenRun(() -> javafx.application.Platform.runLater(() -> {
-                        AlertUtils.showInfo("Success", "Medical history saved successfully.");
+                        AlertUtils.showInfo("Success", "Medical History Saved Successfully.");
                         clearForm();
                         if (parentController != null) {
                             parentController.showHomePage();
@@ -82,11 +82,11 @@ public class UpdateMedicalHistoryController {
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Failed to save medical history asynchronously.");
+                        ExceptionHandler.handle(cause, "Failed to Save Medical History Asynchronously.");
                         return null;
                     });
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error during medical history submission.");
+            ExceptionHandler.handle(e, "Error During Medical History Submission.");
         }
     }
 

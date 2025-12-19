@@ -24,8 +24,8 @@ public class SettingsPageController {
     private void handleNavigation() {
         if (parentController == null) {
             ExceptionHandler.handle(
-                    ExceptionFactory.unexpected(new IllegalStateException("Parent controller link is missing.")),
-                    "CRITICAL: Cannot open Edit Details page. Dependency Injection failed."
+                    ExceptionFactory.unexpected(new IllegalStateException("Parent Controller Missing")),
+                    "CRITICAL: Dependency Injection Failed"
             );
             return;
         }
@@ -33,7 +33,7 @@ public class SettingsPageController {
         try {
             parentController.showEditDetailsPage();
         } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Failed to navigate to Edit Details page.");
+            ExceptionHandler.handle(ex, "Failed to Show Edit Details Page");
         }
     }
 
@@ -42,7 +42,7 @@ public class SettingsPageController {
             ThemeManager.getInstance().toggleTheme();
             SceneManager.refreshCurrentRoot();
         } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Failed to apply new theme.");
+            ExceptionHandler.handle(ex, "Failed to Apply New Theme");
         }
     }
 
@@ -51,7 +51,7 @@ public class SettingsPageController {
             LanguageManager.getInstance().toggleLanguage();
             SceneManager.refreshCurrentRoot();
         } catch (Exception ex) {
-            ExceptionHandler.handle(ex, "Failed to switch language.");
+            ExceptionHandler.handle(ex, "Failed Language Switch");
         }
     }
 }

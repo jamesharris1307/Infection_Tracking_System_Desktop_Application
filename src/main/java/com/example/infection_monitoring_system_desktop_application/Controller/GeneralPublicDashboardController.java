@@ -9,14 +9,25 @@ import com.example.infection_monitoring_system_desktop_application.Util.Exceptio
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
+import java.time.format.DateTimeFormatter;
 import javafx.scene.layout.StackPane;
+import javafx.application.Platform;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
+import java.time.LocalDate;
 import javafx.scene.Node;
 import javafx.fxml.FXML;
 
 public class GeneralPublicDashboardController {
+
+    public Label lblCurrentDate;
+    public Label lblHistoryDate;
+    public Label lblVaccStatus;
+    public Label lblExistingConditions;
+    public Label labelFullName;
+    public Label labelEmail;
 
     @FXML private StackPane centerPages;
     @FXML private Button logoutButton;
@@ -41,6 +52,7 @@ public class GeneralPublicDashboardController {
         try {
             loadPage("/com/example/infection_monitoring_system_desktop_application/View/HomePage.fxml");
             setupButtons();
+            loadPanelData();
         } catch (SceneLoadException e) {
             ExceptionHandler.handle(e, "CRITICAL: Failed to Load HomePage.fxml");
         }
@@ -49,6 +61,55 @@ public class GeneralPublicDashboardController {
     private void setupButtons() {
         logoutButton.setOnAction(e -> handleLogout());
         settingsButton.setOnAction(e -> showSettingsPage());
+    }
+
+    private String yesNoOrDashVaccination(String value) {
+        if (value == null) return "-";
+        if (value.equals("1")) return "Up to Date";
+        if (value.equals("0")) return "Not Up to Date";
+        return "-";
+    }
+
+    private String yesNoOrDashExistingConditions(String value) {
+        if (value == null) return "-";
+        if (value.equals("1")) return "Yes";
+        if (value.equals("0")) return "No";
+        return "-";
+    }
+
+    private void loadPanelData() {
+        int userId = SessionManager.getInstance().getCurrentUser().getUserId();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+
+        lblCurrentDate.setText(LocalDate.now().format(formatter));
+
+        userService.getDashboardInfoAsync(userId)
+                .thenAccept(info -> Platform.runLater(() -> {
+                    if (info != null) {
+                        lblHistoryDate.setText(info.getLastHistoryUpdate() != null
+                                ? info.getLastHistoryUpdate().format(formatter)
+                                : "-");
+                        lblVaccStatus.setText(yesNoOrDashVaccination(info.getVaccinationStatus()));
+                        lblExistingConditions.setText(yesNoOrDashExistingConditions(info.getExistingConditions()));
+                        labelFullName.setText(info.getFirstName() + " " + info.getLastName());
+                        labelEmail.setText(info.getEmail());
+                    } else {
+                        lblHistoryDate.setText("-");
+                        lblVaccStatus.setText("-");
+                        lblExistingConditions.setText("-");
+                        labelFullName.setText("-");
+                        labelEmail.setText("-");
+                    }
+                }))
+                .exceptionally(ex -> {
+                    lblHistoryDate.setText("-");
+                    lblVaccStatus.setText("-");
+                    lblExistingConditions.setText("-");
+                    labelFullName.setText("-");
+                    labelEmail.setText("-");
+                    ExceptionHandler.handle(ex, "Failed to Load Panel Info");
+                    return null;
+                });
     }
 
     private void loadPage(String fxmlPath) {

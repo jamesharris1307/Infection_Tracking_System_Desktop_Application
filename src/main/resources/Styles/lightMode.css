@@ -1,6 +1,6 @@
 .root {
     -fx-background-color: #B2CED6;
-    -fx-text-fill: rgba(0, 0, 0, 0.5);
+    -fx-text-fill: rgb(255, 255, 255);
 }
 
 .text-field, .password-field {
@@ -12,6 +12,10 @@
     -fx-background-color: #96BCB4;
     -fx-text-fill: #FFFFFF;
     -fx-font-weight: 900;
+}
+
+.button:hover, ToggleButton:hover {
+    -fx-background-color: #a9d5cc;
 }
 
 .active-page-indicator {
@@ -39,9 +43,18 @@
 }
 
 .panelBackground {
-    -fx-background-color: #FFFFFF;
+    -fx-font-weight: 900;
+    -fx-padding: 5;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+    -fx-text-fill: #FFFFFF;
 }
 
-/*.label {*/
-/*    -fx-text-fill: rgb(0, 0, 0);*/
-/*}*/
+.label {
+    -fx-text-fill: #FFFFFF;
+}
+
+.panelBackground:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+}

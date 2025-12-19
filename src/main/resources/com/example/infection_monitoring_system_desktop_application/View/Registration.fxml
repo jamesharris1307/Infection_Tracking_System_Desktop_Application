@@ -17,7 +17,8 @@
 <?import javafx.scene.shape.Line?>
 <?import java.lang.String?>
 
-<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController">
+<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.RegistrationController">
     <children>
 
         <HBox fx:id="stepIndicator" alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -3,13 +3,12 @@ package com.example.infection_monitoring_system_desktop_application.Service;
 import com.example.infection_monitoring_system_desktop_application.Manager.ConcurrencyManager;
 import com.example.infection_monitoring_system_desktop_application.Index.UserIndexManager;
 import com.example.infection_monitoring_system_desktop_application.Util.ExceptionFactory;
+import com.example.infection_monitoring_system_desktop_application.Model.DashboardInfo;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.User;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ObservableList;
-import java.util.List;
-import java.util.Set;
 
 public class UserService {
 
@@ -100,5 +99,12 @@ public class UserService {
             userDAO.deleteUser(user.getEmail());
             indexManager.removeFromIndexes(user);
         }, ConcurrencyManager.getExecutor());
+    }
+
+    public CompletableFuture<DashboardInfo> getDashboardInfoAsync(int userId) {
+        return CompletableFuture.supplyAsync(() ->
+                        userDAO.getDashboardInfoByUserId(userId),
+                ConcurrencyManager.getExecutor()
+        );
     }
 }

@@ -121,11 +121,11 @@ public class RegistrationController {
                     roleSelection == null || dob == null || address1.isEmpty() ||
                     city.isEmpty() || county.isEmpty() || postcode.isEmpty()) {
 
-                throw ExceptionFactory.validationError("Please fill in all fields and ensure passwords match.");
+                throw ExceptionFactory.validationError("Fill in All Fields and Ensure Passwords Match");
             }
 
             if (userService == null) {
-                throw ExceptionFactory.unexpected(new IllegalStateException("UserService has not been set/injected."));
+                throw ExceptionFactory.unexpected(new IllegalStateException("UserService Not Set"));
             }
 
             switch (roleSelection) {
@@ -138,7 +138,7 @@ public class RegistrationController {
                 case "General Public" -> User.Role.GeneralPublic;
                 case "Healthcare Professional" -> User.Role.HealthcareProfessional;
                 case "Administrator" -> User.Role.Administrator;
-                default -> throw ExceptionFactory.unexpected(new IllegalUserRoleException("Invalid role selected: " + roleSelection));
+                default -> throw ExceptionFactory.unexpected(new IllegalUserRoleException("Invalid Role" + roleSelection));
             };
 
             User newUser = switch (roleEnum) {
@@ -160,18 +160,18 @@ public class RegistrationController {
                     .thenRun(() -> Platform.runLater(() -> {
                         AlertUtils.showInfo(
                                 "Success",
-                                "User registered successfully. Account status will be set after verification if required."
+                                "User Registered Successfully"
                         );
                         clearForm();
                         viewLogin();
                     }))
                     .exceptionally(ex -> {
                         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-                        ExceptionHandler.handle(cause, "Error registering user asynchronously.");
+                        ExceptionHandler.handle(cause, "Error Registering User Asynchronously");
                         return null;
                     });
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Error during registration submission");
+            ExceptionHandler.handle(e, "Error During Registration");
         }
     }
 

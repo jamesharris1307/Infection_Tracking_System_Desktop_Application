@@ -4,38 +4,75 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorDashboardController">
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.infection_monitoring_system_desktop_application.Controller.AdministratorDashboardController">
 
-    <top>
-        <HBox spacing="10">
+    <BorderPane fx:id="mainContent">
+
+        <top>
+            <HBox spacing="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
+                <ComboBox fx:id="cmbFilter" promptText="%filter-by"/>
+                <Button fx:id="btnApplyFilter" text="%apply-filter" onAction="#onFilterClicked"/>
+                <TextField fx:id="txtSearch" onKeyReleased="#onSearchKeyTyped"/>
+            </HBox>
+        </top>
+
+        <center>
+            <TableView fx:id="casesTable">
+                <columns>
+                    <TableColumn fx:id="colCaseId" text="%user-id" prefWidth="80"/>
+                    <TableColumn fx:id="colFirstName" text="%first-name" prefWidth="80"/>
+                    <TableColumn fx:id="colLastName" text="%last-name" prefWidth="80"/>
+                    <TableColumn fx:id="colEmail" text="%email" prefWidth="80"/>
+                    <TableColumn fx:id="colRole" text="%role" prefWidth="80"/>
+                    <TableColumn fx:id="colAccountStatus" text="%account_status" prefWidth="80"/>
+                    <TableColumn fx:id="colEditAction" text="%edit" prefWidth="80"/>
+                    <TableColumn fx:id="colDisableEnableAction" text="%enable-disable" prefWidth="80"/>
+                    <TableColumn fx:id="colDeleteAction" text="%delete" prefWidth="80"/>
+                </columns>
+            </TableView>
+        </center>
+
+    </BorderPane>
+
+    <StackPane fx:id="editOverlay"
+               visible="false"
+               managed="false"
+               style="-fx-background-color: rgba(0,0,0,0.4);">
+
+        <VBox spacing="12"
+              alignment="CENTER"
+              styleClass="panelBackground"
+              maxWidth="450">
+
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="20" right="30" bottom="20" left="30"/>
             </padding>
 
-            <Button fx:id="logoutButton" styleClass="NoBackground" text="%logout"/>
-            <ComboBox fx:id="cmbFilter" promptText="%filter-by"/>
-            <Button fx:id="btnApplyFilter" text="%apply-filter" onAction="#onFilterClicked"/>
-            <TextField fx:id="txtSearch" onKeyReleased="#onSearchKeyTyped"/>
-        </HBox>
-    </top>
+            <HBox spacing="20"><Label text="%first-name"/><TextField fx:id="fieldFirstName"/></HBox>
+            <HBox spacing="20"><Label text="%last-name"/><TextField fx:id="fieldLastName"/></HBox>
+            <HBox spacing="20"><Label text="%email"/><TextField fx:id="fieldEmail"/></HBox>
+            <HBox spacing="20"><Label text="%date-of-birth"/><DatePicker fx:id="fieldDob"/></HBox>
+            <HBox spacing="20"><Label text="%address-line-1"/><TextField fx:id="fieldAddress1"/></HBox>
+            <HBox spacing="20"><Label text="%address-line-2"/><TextField fx:id="fieldAddress2"/></HBox>
+            <HBox spacing="20"><Label text="%town-city"/><TextField fx:id="fieldCity"/></HBox>
+            <HBox spacing="20"><Label text="%county"/><TextField fx:id="fieldCounty"/></HBox>
+            <HBox spacing="20"><Label text="%postcode"/><TextField fx:id="fieldPostcode"/></HBox>
+            <HBox spacing="20"><Label text="%password"/><PasswordField fx:id="fieldPassword"/></HBox>
+            <HBox spacing="20"><Label text="%confirm-password"/><PasswordField fx:id="fieldConfirmPassword"/></HBox>
 
-    <center>
-        <TableView fx:id="casesTable">
-            <columns>
-                <TableColumn fx:id="colCaseId" text="%user-id" prefWidth="80"/>
-                <TableColumn fx:id="colFirstName" text="%first-name" prefWidth="80"/>
-                <TableColumn fx:id="colLastName" text="%last-name" prefWidth="80"/>
-                <TableColumn fx:id="colEmail" text="%email" prefWidth="80"/>
-                <TableColumn fx:id="colRole" text="%role" prefWidth="80"/>
-                <TableColumn fx:id="colAccountStatus" text="%account_status" prefWidth="80"/>
-                <TableColumn fx:id="colEditAction" text="%edit" prefWidth="80"/>
-                <TableColumn fx:id="colDisableEnableAction" text="%enable-disable" prefWidth="80"/>
-                <TableColumn fx:id="colDeleteAction" text="%delete" prefWidth="80"/>
-            </columns>
-        </TableView>
-    </center>
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="%cancel" onAction="#closeEditOverlay"/>
+                <Button text="%submit" onAction="#handleEditDetailsSubmit"/>
+            </HBox>
 
-</BorderPane>
+        </VBox>
+    </StackPane>
 
+</StackPane>

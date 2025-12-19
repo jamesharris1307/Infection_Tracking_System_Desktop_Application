@@ -1,6 +1,7 @@
 package com.example.infection_monitoring_system_desktop_application.Integration;
 
 import com.example.infection_monitoring_system_desktop_application.Controller.EditDetailsController;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Manager.SessionManager;
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.UserService;

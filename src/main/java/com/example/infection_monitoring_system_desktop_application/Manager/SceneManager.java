@@ -69,7 +69,7 @@ public class SceneManager {
     private static String deriveTitleFromFXML(String fxmlPath) {
         String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1);
         if (fileName.endsWith(".fxml")) fileName = fileName.replace(".fxml", "");
-        return fileName + " - My Application";
+        return fileName + " - Infection Monitoring System";
     }
 
     public static void refreshCurrentRoot() {

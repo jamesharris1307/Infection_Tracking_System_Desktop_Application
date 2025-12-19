@@ -1,5 +1,6 @@
-package com.example.infection_monitoring_system_desktop_application.Model;
+package com.example.infection_monitoring_system_desktop_application.DataAccessObject;
 
+import com.example.infection_monitoring_system_desktop_application.Model.*;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -14,6 +15,7 @@ public class UserDAO {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
     private static final String SELECT_USER_BY_EMAIL_SQL = "SELECT * FROM Users WHERE Email = ?";
+
     private static final String UPDATE_USER_SQL = """
         UPDATE Users SET 
         FirstName = ?, LastName = ?, Email = ?, 
@@ -22,7 +24,9 @@ public class UserDAO {
         Postcode = ?, AccountStatus = ? 
         WHERE Email = ?
     """;
+
     private static final String SELECT_ALL_USERS_SQL = "SELECT * FROM Users";
+
     private static final String DELETE_USER_SQL = "DELETE FROM Users WHERE Email = ?";
 
     private final DataSource dataSource;
@@ -87,9 +91,7 @@ public class UserDAO {
             pstmt.setString(12, user.getRole().name());
 
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException("Failed to add user: " + user.getEmail(), e);
-        }
+        } catch (SQLException e) { throw new DAOException("Failed to add user: " + user.getEmail(), e); }
     }
 
     public User getUserByEmail(String email) {
@@ -98,9 +100,7 @@ public class UserDAO {
             pstmt.setString(1, email);
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapResultSetToUser(rs);
-                }
+                if (rs.next()) { return mapResultSetToUser(rs);}
             }
             return null;
         } catch (SQLException e) {
@@ -157,6 +157,47 @@ public class UserDAO {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DAOException("Failed to delete user: " + email, e);
+        }
+    }
+
+    public DashboardInfo getDashboardInfoByUserId(int userId) {
+        String sql = """
+        SELECT u.Email, u.FirstName, u.LastName, u.DateOfBirth,
+               mh.LastUpdated, mh.LongTermConditions, mh.VaccinationUpToDate
+        FROM Users u
+        LEFT JOIN MedicalHistory mh ON u.UserID = mh.UserID
+        WHERE u.UserID = ?
+        ORDER BY mh.LastUpdated DESC
+        LIMIT 1
+    """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    DashboardInfo info = new DashboardInfo();
+                    info.setEmail(rs.getString("Email"));
+                    info.setFirstName(rs.getString("FirstName"));
+                    info.setLastName(rs.getString("LastName"));
+                    info.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+
+                    Date lastUpdated = rs.getDate("LastUpdated");
+                    if (lastUpdated != null) {
+                        info.setLastHistoryUpdate(lastUpdated.toLocalDate());
+                    }
+
+                    info.setExistingConditions(rs.getString("LongTermConditions"));
+                    info.setVaccinationStatus(rs.getString("VaccinationUpToDate"));
+
+                    return info;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DAOException("Failed to get Dashboard Info for User: " + userId, e);
         }
     }
 }

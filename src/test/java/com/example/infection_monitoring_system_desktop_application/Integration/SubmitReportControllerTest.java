@@ -6,8 +6,8 @@ import com.example.infection_monitoring_system_desktop_application.Util.Exceptio
 import com.example.infection_monitoring_system_desktop_application.Manager.SceneManager;
 import com.example.infection_monitoring_system_desktop_application.Service.CaseService;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
-import com.example.infection_monitoring_system_desktop_application.Model.CaseDAO;
-import com.example.infection_monitoring_system_desktop_application.Model.UserDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.CaseDAO;
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Model.*;
 import org.testfx.framework.junit5.ApplicationTest;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,5 +1,6 @@
 package com.example.infection_monitoring_system_desktop_application.Unit.Model;
 
+import com.example.infection_monitoring_system_desktop_application.DataAccessObject.UserDAO;
 import com.example.infection_monitoring_system_desktop_application.Util.Exceptions.DAOException;
 import com.example.infection_monitoring_system_desktop_application.Util.PasswordUtils;
 import com.example.infection_monitoring_system_desktop_application.Model.*;

@@ -27,7 +27,7 @@ public class LoginController {
         String password = passwordField.getText().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            AlertUtils.showError("Error", "Enter Both Email and Password.");
+            AlertUtils.showError("Error", "Enter Email and Password.");
             return;
         }
 
@@ -61,7 +61,7 @@ public class LoginController {
                     "/com/example/infection_monitoring_system_desktop_application/View/GeneralPublicDashboard.fxml");
             default -> {
                 ExceptionHandler.handle(
-                        ExceptionFactory.unexpected(new IllegalUserRoleException("Unknown user role: " + role)),
+                        ExceptionFactory.unexpected(new IllegalUserRoleException("Unknown User Role: " + role)),
                         "Invalid Dashboard Switch Attempt."
                 );
             }
@@ -73,7 +73,7 @@ public class LoginController {
             ThemeManager.getInstance().toggleTheme();
             SceneManager.refreshCurrentRoot();
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Failed to toggle application theme due to preferences error.");
+            ExceptionHandler.handle(e, "Failed to Toggle Application Theme Preferences Error.");
         }
     }
 
@@ -82,7 +82,7 @@ public class LoginController {
             LanguageManager.getInstance().toggleLanguage();
             SceneManager.refreshCurrentRoot();
         } catch (Exception e) {
-            ExceptionHandler.handle(e, "Failed to toggle application language due to preferences error.");
+            ExceptionHandler.handle(e, "Failed to Toggle Application Language Preferences Error.");
         }
     }
 
